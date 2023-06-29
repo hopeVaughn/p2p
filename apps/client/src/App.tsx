@@ -1,9 +1,18 @@
+import { useEffect, useState } from "react";
+
 function App() {
+  const [greeting, setGreeting] = useState<string>('');
+
+  useEffect(() => {
+    fetch('/api')
+      .then((res) => res.text())
+      .then(setGreeting);
+  }, []);
 
   return (
-    <>
-      <h1>P2P App</h1>
-    </>
+    <div className="flex justify-center items-center h-screen">
+      <h1 className="font-bold">{greeting}</h1>
+    </div>
   );
 }
 
