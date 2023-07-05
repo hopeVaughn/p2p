@@ -12,91 +12,96 @@ datasource db {
 
 /// Registered users of the application
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  bathrooms Bathroom[] @relation("createdBathrooms") 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  userRoles UserRole[] // renamed from roles to userRoles
-  verifiedBathrooms Bathroom[] @relation("bathroomVerifications") 
-  verifiedVerifications Verification[] 
-  ratedRatings Rating[] 
-  reportedReports Report[] 
+  id                    String         @id @default(uuid())
+  email                 String         @unique
+  password              String
+  bathrooms             Bathroom[]     @relation("createdBathrooms")
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  userRoles             UserRole[] 
+  verifiedBathrooms     Bathroom[]     @relation("bathroomVerifications")
+  verifiedVerifications Verification[]
+  ratedRatings          Rating[]
+  reportedReports       Report[]
 }
 
 /// Public bathrooms added by users
 model Bathroom {
-  id                 String   @id @default(uuid())
-  createdBy          User     @relation(fields: [createdById], references: [id], name: "createdBathrooms") 
-  createdById        String
-  gender             String
-  stallType          String
+  id                   String         @id @default(uuid())
+  createdBy            User           @relation(fields: [createdById], references: [id], name: "createdBathrooms")
+  createdById          String
+  gender               String
+  stallType            String
   wheelchairAccessible Boolean
-  cleanliness        Float
-  keyRequirement     Boolean
-  hoursOfOperation   String
-  latitude           Float   
-  longitude          Float 
-  address            String
-  verifiedByUser    User    @relation("bathroomVerifications", fields: [verifiedById], references: [id])
-  verifiedById      String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  ratings            Rating[]
-  reports            Report[]
-  verifications      Verification[]
+  cleanliness          Float
+  keyRequirement       Boolean
+  hoursOfOperation     String
+  latitude             Float
+  longitude            Float
+  address              String
+  verifiedByUser       User           @relation("bathroomVerifications", fields: [verifiedById], references: [id])
+  verifiedById         String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  ratings              Rating[]
+  reports              Report[]
+  verifications        Verification[]
+
   @@index([latitude, longitude])
 }
 
 /// Verification of bathroom by user
 model Verification {
-  id          String   @id @default(uuid())
-  bathroom    Bathroom @relation(fields: [bathroomId], references: [id])
-  bathroomId  String
-  verifiedBy  User     @relation(fields: [verifiedById], references: [id])
+  id           String   @id @default(uuid())
+  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
+  bathroomId   String
+  verifiedBy   User     @relation(fields: [verifiedById], references: [id])
   verifiedById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 /// Rating of bathroom by user
 model Rating {
-  id          String   @id @default(uuid())
-  bathroom    Bathroom @relation(fields: [bathroomId], references: [id])
-  bathroomId  String
-  ratedBy     User     @relation(fields: [ratedById], references: [id])
-  ratedById   String
-  stars       Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  bathroom   Bathroom @relation(fields: [bathroomId], references: [id])
+  bathroomId String
+  ratedBy    User     @relation(fields: [ratedById], references: [id])
+  ratedById  String
+  stars      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 /// Report of false information by user
 model Report {
-  id          String   @id @default(uuid())
-  bathroom    Bathroom @relation(fields: [bathroomId], references: [id])
-  bathroomId  String
-  reportedBy  User     @relation(fields: [reportedById], references: [id])
+  id           String   @id @default(uuid())
+  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
+  bathroomId   String
+  reportedBy   User     @relation(fields: [reportedById], references: [id])
   reportedById String
-  reason      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  reason       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Role {
-  id    String   @id @default(uuid())
-  name  RoleName
-  userRoles UserRole[] // renamed from users to userRoles
+  id        String     @id @default(uuid())
+  name      RoleName
+  userRoles UserRole[] 
 }
 
 /// Assignment of roles to users
+
+// This UserRole table is a crucial part of the application's role-based access control (RBAC) system. 
+// It helps manage user permissions efficiently and securely, making the application more robust, scalable, and secure.
+
 model UserRole {
-  id     String @id @default(uuid())
-  role   Role   @relation(fields: [roleId], references: [id])
-  roleId String
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  id        String   @id @default(uuid())
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
