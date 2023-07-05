@@ -12,3 +12,9 @@ This app is designed to help users find the nearest public restroom. Users can s
 - [Contributing](#contributing)
 - [Questions](#questions)
 - [License](#license)
+
+## Installation
+
+To install necessary dependencies, run the following command from the root of the project folder:
+
+`npm install`
