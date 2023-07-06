@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { join } from 'path';
 
 @Module({
@@ -10,7 +8,7 @@ import { join } from 'path';
       rootPath: join(__dirname, '../..', 'client', 'dist'), // <-- path to the static files
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
