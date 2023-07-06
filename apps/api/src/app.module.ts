@@ -9,6 +9,7 @@ import { ReportModule } from './report/report.module';
 import { RoleModule } from './role/role.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { UserReportModule } from './user-report/user-report.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserReportModule } from './user-report/user-report.module';
     RoleModule,
     UserRoleModule,
     UserReportModule,
+    PrismaModule,
   ],
   controllers: [],
   providers: [],
