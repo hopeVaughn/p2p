@@ -4,6 +4,11 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BathroomModule } from './bathroom/bathroom.module';
+import { RatingModule } from './rating/rating.module';
+import { ReportModule } from './report/report.module';
+import { RoleModule } from './role/role.module';
+import { UserRoleModule } from './user-role/user-role.module';
+import { UserReportModule } from './user-report/user-report.module';
 
 @Module({
   imports: [
@@ -13,6 +18,11 @@ import { BathroomModule } from './bathroom/bathroom.module';
     AuthModule,
     UserModule,
     BathroomModule,
+    RatingModule,
+    ReportModule,
+    RoleModule,
+    UserRoleModule,
+    UserReportModule,
   ],
   controllers: [],
   providers: [],
