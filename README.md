@@ -10,6 +10,7 @@ This app is designed to help users find the nearest public restroom. Users can s
 - [Usage](#usage)
 - [Technologies](#technologies)
 - [Contributing](#contributing)
+- [Project Planning](#project-planning)
 - [Questions](#questions)
 - [License](#license)
 
