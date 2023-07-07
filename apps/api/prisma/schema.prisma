@@ -12,13 +12,13 @@ datasource db {
 
 /// Registered users of the application
 model User {
-  id                    String         @id @default(uuid())
+  id                    String         @id @default(uuid()) @db.VarChar(36)
   email                 String         @unique
   password              String
   bathrooms             Bathroom[]     @relation("createdBathrooms")
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
-  userRoles             UserRole[] 
+  userRoles             UserRole[]
   verifiedBathrooms     Bathroom[]     @relation("bathroomVerifications")
   verifiedVerifications Verification[]
   ratedRatings          Rating[]
@@ -28,7 +28,7 @@ model User {
 
 /// Public bathrooms added by users
 model Bathroom {
-  id                   String         @id @default(uuid())
+  id                   String         @id @default(uuid()) @db.VarChar(36)
   createdBy            User           @relation(fields: [createdById], references: [id], name: "createdBathrooms")
   createdById          String
   gender               BathroomGender
@@ -53,7 +53,7 @@ model Bathroom {
 
 /// Verification of bathroom by user
 model Verification {
-  id           String   @id @default(uuid())
+  id           String   @id @default(uuid()) @db.VarChar(36)
   bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
   bathroomId   String
   verifiedBy   User     @relation(fields: [verifiedById], references: [id])
@@ -64,7 +64,7 @@ model Verification {
 
 /// Rating of bathroom by user
 model Rating {
-  id         String   @id @default(uuid())
+  id         String   @id @default(uuid()) @db.VarChar(36)
   bathroom   Bathroom @relation(fields: [bathroomId], references: [id])
   bathroomId String
   ratedBy    User     @relation(fields: [ratedById], references: [id])
@@ -76,21 +76,21 @@ model Rating {
 
 /// Report of false information by user
 model Report {
-  id           String   @id @default(uuid())
-  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
+  id           String       @id @default(uuid()) @db.VarChar(36)
+  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
   bathroomId   String
-  reportedBy   User     @relation(fields: [reportedById], references: [id])
+  reportedBy   User         @relation(fields: [reportedById], references: [id])
   reportedById String
   reason       String
   userReports  UserReport[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model Role {
-  id        String     @id @default(uuid())
+  id        String     @id @default(uuid()) @db.VarChar(36)
   name      RoleName
-  userRoles UserRole[] 
+  userRoles UserRole[]
 }
 
 // This UserRole table is a crucial part of the application's role-based access control (RBAC) system. 
@@ -98,7 +98,7 @@ model Role {
 
 /// Assignment of roles to users
 model UserRole {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) @db.VarChar(36)
   role      Role     @relation(fields: [roleId], references: [id])
   roleId    String
   user      User     @relation(fields: [userId], references: [id])
@@ -109,13 +109,13 @@ model UserRole {
 
 // UserReport model for reporting false information
 model UserReport {
-  id          String   @id @default(uuid())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-  report      Report   @relation(fields: [reportId], references: [id])
-  reportId    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  report    Report   @relation(fields: [reportId], references: [id])
+  reportId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// User roles (e.g., admin, user, super)
@@ -127,8 +127,7 @@ enum RoleName {
 
 /// Bathroom Gender Options
 enum BathroomGender {
-  MALE
-  FEMALE
+  GENDERED
   GENDER_NEUTRAL
   BOTH
 }
@@ -138,4 +137,3 @@ enum StallType {
   SINGLE_STALL
   CONNECTED
 }
-
