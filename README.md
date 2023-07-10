@@ -20,4 +20,6 @@ To install necessary dependencies, run the following command from the root of th
 
 `npm install`
 
-### This app is under development and as such this readme may not be up to date. Breaking changes may occur in development. Please check back later for updates
+### Special Note
+
+This app is under development and as such this readme may not be up to date. Breaking changes may occur in development. Please check back later for updates
