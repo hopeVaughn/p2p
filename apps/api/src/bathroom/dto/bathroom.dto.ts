@@ -11,7 +11,7 @@ import { BathroomGender, StallType } from '@prisma/client';
 export class CreateBathroomDto {
   @IsNotEmpty()
   @IsUUID()
-  readonly createdBy: string;
+  createdBy: string;
 
   @IsNotEmpty()
   @IsEnum(BathroomGender)
@@ -51,9 +51,6 @@ export class CreateBathroomDto {
 }
 
 export class UpdateBathroomDto {
-  @IsUUID()
-  createdBy?: string;
-
   @IsEnum(BathroomGender)
   gender?: BathroomGender;
 
