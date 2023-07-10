@@ -13,6 +13,8 @@ import {
 import { BathroomService } from './bathroom.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { GetUser } from 'src/auth/decorator';
+import { User } from '@prisma/client';
 
 @Controller('bathroom')
 export class BathroomController {
@@ -49,6 +51,14 @@ export class BathroomController {
     @Body() updateBathroomDto: UpdateBathroomDto,
   ) {
     return this.bathroomService.update(id, updateBathroomDto);
+  }
+
+  // Verify a specific bathroom. This route is protected, and only authenticated users can access it.
+  @Patch('verify/:id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  verify(@Param('id') id: string, @GetUser() user: User) {
+    return this.bathroomService.verify(id, user.id);
   }
 
   // Delete a specific bathroom. This route is protected, and only authenticated users can access it.
