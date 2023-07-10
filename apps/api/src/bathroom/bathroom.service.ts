@@ -39,12 +39,16 @@ export class BathroomService {
 
   async findOne(id: string) {
     try {
-      const bathroom = await this.prisma.bathroom.findUnique({ where: { id } });
+      const bathroom = await this.prisma.bathroom.findUnique({
+        where: { id },
+      });
       if (!bathroom) throw new NotFoundException('Bathroom not found');
       return bathroom;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Error retrieving the bathroom');
+      throw new InternalServerErrorException(
+        `Error during bathroom creation: ${error.message}`,
+      );
     }
   }
 
@@ -59,7 +63,9 @@ export class BathroomService {
       });
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Error updating the bathroom');
+      throw new InternalServerErrorException(
+        `Error during bathroom creation: ${error.message}`,
+      );
     }
   }
 

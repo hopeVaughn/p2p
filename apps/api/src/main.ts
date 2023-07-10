@@ -8,6 +8,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
+      transform: true,
+      skipMissingProperties: true,
     }),
   );
   await app.listen(3333);

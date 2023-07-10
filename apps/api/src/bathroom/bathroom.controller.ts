@@ -34,14 +34,14 @@ export class BathroomController {
   }
 
   // Get a specific bathroom by its ID. This route is public.
-  @Get(':bathroom_id')
+  @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
     return this.bathroomService.findOne(id);
   }
 
   // Update a specific bathroom. This route is protected, and only authenticated users can access it.
-  @Patch(':bathroom_id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   update(
