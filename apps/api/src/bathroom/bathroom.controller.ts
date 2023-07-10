@@ -19,7 +19,7 @@ export class BathroomController {
   constructor(private readonly bathroomService: BathroomService) {}
 
   // Create a new bathroom. This route is protected, and only authenticated users can access it.
-  @Post()
+  @Post('add_bathroom')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createBathroomDto: CreateBathroomDto) {
@@ -27,21 +27,21 @@ export class BathroomController {
   }
 
   // Get a list of all bathrooms. This route is public.
-  @Get()
+  @Get('all_bathrooms')
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.bathroomService.findAll();
   }
 
   // Get a specific bathroom by its ID. This route is public.
-  @Get(':id')
+  @Get(':bathroom_id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
     return this.bathroomService.findOne(id);
   }
 
   // Update a specific bathroom. This route is protected, and only authenticated users can access it.
-  @Patch(':id')
+  @Patch(':bathroom_id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   update(
