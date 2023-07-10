@@ -77,7 +77,9 @@ export class BathroomService {
       return await this.prisma.bathroom.delete({ where: { id } });
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Error deleting the bathroom');
+      throw new InternalServerErrorException(
+        `Error during bathroom creation: ${error.message}`,
+      );
     }
   }
 }
