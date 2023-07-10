@@ -19,3 +19,5 @@ This app is designed to help users find the nearest public restroom. Users can s
 To install necessary dependencies, run the following command from the root of the project folder:
 
 `npm install`
+
+### This app is under development and as such this readme may not be up to date. Please check back later for updates
