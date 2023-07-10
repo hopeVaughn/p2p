@@ -23,7 +23,9 @@ export class BathroomService {
         },
       });
     } catch (error) {
-      throw new InternalServerErrorException('Error during bathroom creation');
+      throw new InternalServerErrorException(
+        `Error during bathroom creation: ${error.message}`,
+      );
     }
   }
 

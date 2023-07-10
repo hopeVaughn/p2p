@@ -40,8 +40,8 @@ model Bathroom {
   latitude             Float
   longitude            Float
   address              String
-  verifiedByUser       User           @relation("bathroomVerifications", fields: [verifiedById], references: [id])
-  verifiedById         String
+  verifiedByUser       User?          @relation("bathroomVerifications", fields: [verifiedById], references: [id])
+  verifiedById         String?
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
   ratings              Rating[]
