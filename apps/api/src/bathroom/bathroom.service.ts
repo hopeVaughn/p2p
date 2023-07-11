@@ -6,23 +6,38 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
-
+import { RatingService } from 'src/rating/rating.service';
 @Injectable()
 export class BathroomService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private ratingService: RatingService,
+  ) {}
 
   async create(createBathroomDto: CreateBathroomDto) {
     try {
-      return await this.prisma.bathroom.create({
+      const { createdBy, stars } = createBathroomDto;
+
+      // Create the bathroom
+      const bathroom = await this.prisma.bathroom.create({
         data: {
           ...createBathroomDto,
           createdBy: {
             connect: {
-              id: createBathroomDto.createdBy,
+              id: createdBy,
             },
           },
         },
       });
+
+      // Create the initial rating for the bathroom
+      await this.ratingService.create({
+        bathroomId: bathroom.id,
+        ratedById: createdBy,
+        stars,
+      });
+
+      return bathroom;
     } catch (error) {
       throw new InternalServerErrorException(
         `Error during bathroom creation: ${error.message}`,

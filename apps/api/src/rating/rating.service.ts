@@ -69,4 +69,18 @@ export class RatingService {
     // Else return the average rating rounded down to a whole number
     return Math.floor(result[0]._avg.stars);
   }
+
+  async updateAverageStars(bathroomId: string) {
+    try {
+      const averageStars = await this.getAverageRating(bathroomId);
+      await this.prisma.bathroom.update({
+        where: { id: bathroomId },
+        data: { stars: averageStars },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error updating the average stars for the bathroom',
+      );
+    }
+  }
 }

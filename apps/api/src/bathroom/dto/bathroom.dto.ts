@@ -27,7 +27,7 @@ export class CreateBathroomDto {
 
   @IsNotEmpty()
   @IsNumber()
-  cleanliness: number;
+  stars: number;
 
   @IsNotEmpty()
   @IsBoolean()
