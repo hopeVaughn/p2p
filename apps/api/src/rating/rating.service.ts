@@ -13,6 +13,28 @@ export class RatingService {
   async create(createRatingDto: CreateRatingDto) {
     try {
       const { bathroomId, ratedById, stars } = createRatingDto;
+
+      // Check if the user has already rated the bathroom
+      const existingRating = await this.prisma.rating.findFirst({
+        where: {
+          bathroomId,
+          ratedById,
+        },
+      });
+
+      if (existingRating) {
+        // Update the existing rating instead of creating a new one
+        return await this.prisma.rating.update({
+          where: {
+            id: existingRating.id,
+          },
+          data: {
+            stars,
+          },
+        });
+      }
+
+      // Create a new rating entry
       return await this.prisma.rating.create({
         data: {
           bathroom: { connect: { id: bathroomId } },
@@ -35,15 +57,15 @@ export class RatingService {
     try {
       const rating = await this.prisma.rating.findFirst({
         where: {
-          id: id,
-          ratedById: ratedById,
+          id,
+          ratedById,
         },
       });
 
       if (!rating) throw new NotFoundException('Rating not found');
 
       return await this.prisma.rating.update({
-        where: { id: id },
+        where: { id },
         data: updateRatingDto,
       });
     } catch (error) {
@@ -55,7 +77,7 @@ export class RatingService {
   async getAverageRating(bathroomId: string): Promise<number> {
     const result = await this.prisma.rating.groupBy({
       by: ['bathroomId'],
-      where: { bathroomId: bathroomId },
+      where: { bathroomId },
       _avg: {
         stars: true,
       },
