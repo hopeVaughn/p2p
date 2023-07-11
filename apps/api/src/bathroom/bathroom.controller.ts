@@ -15,17 +15,26 @@ import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { GetUser } from 'src/auth/decorator';
 import { User } from '@prisma/client';
+import { RatingService } from 'src/rating/rating.service';
 
 @Controller('bathroom')
 export class BathroomController {
-  constructor(private readonly bathroomService: BathroomService) {}
+  constructor(
+    private readonly bathroomService: BathroomService,
+    private ratingService: RatingService,
+  ) {}
 
   // Create a new bathroom. This route is protected, and only authenticated users can access it.
   @Post('add_bathroom')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createBathroomDto: CreateBathroomDto) {
-    return this.bathroomService.create(createBathroomDto);
+  async create(@Body() createBathroomDto: CreateBathroomDto) {
+    const bathroom = await this.bathroomService.create(createBathroomDto);
+
+    // Update the average stars for the created bathroom
+    await this.ratingService.updateAverageStars(bathroom.id);
+
+    return bathroom;
   }
 
   // Get a list of all bathrooms. This route is public.
