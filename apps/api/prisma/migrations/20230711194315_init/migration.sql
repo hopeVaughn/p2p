@@ -25,7 +25,7 @@ CREATE TABLE "Bathroom" (
     "gender" "BathroomGender" NOT NULL,
     "stallType" "StallType" NOT NULL,
     "wheelchairAccessible" BOOLEAN NOT NULL,
-    "cleanliness" DOUBLE PRECISION NOT NULL,
+    "stars" DOUBLE PRECISION NOT NULL,
     "keyRequirement" BOOLEAN NOT NULL,
     "hoursOfOperation" TEXT NOT NULL,
     "latitude" DOUBLE PRECISION NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE "Rating" (
     "id" VARCHAR(36) NOT NULL,
     "bathroomId" TEXT NOT NULL,
     "ratedById" TEXT NOT NULL,
-    "stars" INTEGER NOT NULL,
+    "stars" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
