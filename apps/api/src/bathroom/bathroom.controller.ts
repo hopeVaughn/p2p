@@ -74,7 +74,7 @@ export class BathroomController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return this.bathroomService.remove(id);
+  remove(@Param('id') id: string, @GetUser() user: User) {
+    return this.bathroomService.remove(id, user.id);
   }
 }

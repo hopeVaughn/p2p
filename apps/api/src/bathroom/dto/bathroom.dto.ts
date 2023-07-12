@@ -78,3 +78,23 @@ export class UpdateBathroomDto {
   @IsString()
   address?: string;
 }
+
+export class DeleteBathroomDto {
+  @IsNotEmpty()
+  @IsUUID()
+  id: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  deletedBy: string;
+}
+
+export class VerifyBathroomDto {
+  @IsNotEmpty()
+  @IsUUID()
+  id: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  userId: string;
+}

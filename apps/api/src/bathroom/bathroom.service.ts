@@ -3,6 +3,7 @@ import {
   NotFoundException,
   InternalServerErrorException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
@@ -13,6 +14,17 @@ export class BathroomService {
     private prisma: PrismaService,
     private ratingService: RatingService,
   ) {}
+
+  async isCreator(userId: string, bathroomId: string): Promise<boolean> {
+    const bathroom = await this.prisma.bathroom.findUnique({
+      where: { id: bathroomId },
+    });
+
+    if (!bathroom)
+      throw new NotFoundException('Bathroom created by this user not found');
+
+    return bathroom.createdById === userId;
+  }
 
   async create(createBathroomDto: CreateBathroomDto) {
     try {
@@ -85,16 +97,20 @@ export class BathroomService {
     }
   }
 
-  async remove(id: string) {
-    try {
-      const bathroom = await this.prisma.bathroom.findUnique({ where: { id } });
-      if (!bathroom) throw new NotFoundException('Bathroom not found');
+  async remove(id: string, userId: string) {
+    const isCreator = await this.isCreator(userId, id);
 
+    if (!isCreator) {
+      throw new UnauthorizedException(
+        'You are not authorized to delete this bathroom.',
+      );
+    }
+
+    try {
       return await this.prisma.bathroom.delete({ where: { id } });
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(
-        `Error during bathroom creation: ${error.message}`,
+        `Error during bathroom deletion: ${error.message}`,
       );
     }
   }
