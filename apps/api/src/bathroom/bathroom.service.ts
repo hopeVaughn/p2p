@@ -59,7 +59,19 @@ export class BathroomService {
 
   async findAll() {
     try {
-      return await this.prisma.bathroom.findMany();
+      const bathrooms = await this.prisma.bathroom.findMany({
+        include: {
+          verifications: true,
+        },
+      });
+
+      return bathrooms.map((bathroom) => {
+        const { verifications, ...rest } = bathroom;
+        return {
+          ...rest,
+          verificationCount: verifications.length,
+        };
+      });
     } catch (error) {
       throw new InternalServerErrorException('Error retrieving bathrooms');
     }
@@ -111,34 +123,6 @@ export class BathroomService {
     } catch (error) {
       throw new InternalServerErrorException(
         `Error during bathroom deletion: ${error.message}`,
-      );
-    }
-  }
-
-  async verify(id: string, userId: string) {
-    try {
-      const bathroom = await this.prisma.bathroom.findUnique({ where: { id } });
-      if (!bathroom) throw new NotFoundException('Bathroom not found');
-
-      const user = await this.prisma.user.findUnique({ where: { id: userId } });
-      if (!user) throw new NotFoundException('User not found');
-
-      // Check if the user is the creator of the bathroom
-      if (bathroom.createdById === userId) {
-        throw new BadRequestException(
-          'A bathroom cannot be verified by its creator.',
-        );
-      }
-
-      return await this.prisma.bathroom.update({
-        where: { id },
-        data: { verifiedByUser: { connect: { id: userId } } },
-      });
-    } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof BadRequestException) throw error;
-      throw new InternalServerErrorException(
-        `Error during bathroom verification: ${error.message}`,
       );
     }
   }
