@@ -71,7 +71,7 @@ model Rating {
   updatedAt  DateTime @updatedAt
 }
 
-/// Report of false information by user
+/// Report of false bathroom location by another user
 model Report {
   id           String       @id @default(uuid()) @db.VarChar(36)
   bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
