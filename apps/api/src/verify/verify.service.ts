@@ -5,16 +5,13 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { VerifyDto } from './dto/verify.dto';
 
 @Injectable()
 export class VerifyService {
   constructor(private prisma: PrismaService) {}
 
-  async verify(verifyDto: VerifyDto) {
+  async verify(bathroomId: string, userId: string) {
     try {
-      const { bathroomId, verifiedById } = verifyDto;
-
       // Fetch the bathroom to be verified
       const bathroom = await this.prisma.bathroom.findUnique({
         where: { id: bathroomId },
@@ -24,7 +21,7 @@ export class VerifyService {
       }
 
       // Ensure the user is not the creator of the bathroom
-      if (bathroom.createdById === verifiedById) {
+      if (bathroom.createdById === userId) {
         throw new BadRequestException(
           'A user cannot verify their own bathroom',
         );
@@ -33,7 +30,7 @@ export class VerifyService {
       // Check if the user has already verified this bathroom
       const existingVerification = await this.prisma.verification.findFirst({
         where: {
-          verifiedById: verifiedById,
+          verifiedById: userId,
           bathroomId: bathroomId,
         },
       });
@@ -48,7 +45,7 @@ export class VerifyService {
       const verification = await this.prisma.verification.create({
         data: {
           bathroomId: bathroomId,
-          verifiedById: verifiedById,
+          verifiedById: userId,
         },
       });
 
@@ -64,5 +61,11 @@ export class VerifyService {
         `Error during verification: ${error.message}`,
       );
     }
+  }
+  async countVerifications(bathroomId: string): Promise<number> {
+    const count = await this.prisma.verification.count({
+      where: { bathroomId },
+    });
+    return count;
   }
 }

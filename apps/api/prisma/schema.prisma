@@ -19,7 +19,6 @@ model User {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
   userRoles             UserRole[]
-  verifiedBathrooms     Bathroom[]     @relation("bathroomVerifications")
   verifiedVerifications Verification[]
   ratedRatings          Rating[]
   reportedReports       Report[]
@@ -40,8 +39,6 @@ model Bathroom {
   latitude             Float
   longitude            Float
   address              String
-  verifiedByUser       User?          @relation("bathroomVerifications", fields: [verifiedById], references: [id])
-  verifiedById         String?
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
   ratings              Rating[]
