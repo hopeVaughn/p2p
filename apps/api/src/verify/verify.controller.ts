@@ -4,20 +4,21 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Body,
+  Param,
 } from '@nestjs/common';
 import { VerifyService } from './verify.service';
-import { VerifyDto } from './dto/verify.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { GetUser } from 'src/auth/decorator';
+import { User } from '@prisma/client';
 
 @Controller('verify')
 export class VerifyController {
   constructor(private readonly verifyService: VerifyService) {}
 
-  @Post()
+  @Post(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async verify(@Body() verifyDto: VerifyDto) {
-    return this.verifyService.verify(verifyDto);
+  async verify(@Param('id') bathroomId: string, @GetUser() user: User) {
+    return this.verifyService.verify(bathroomId, user.id);
   }
 }
