@@ -28,8 +28,8 @@ model User {
 /// Public bathrooms added by users
 model Bathroom {
   id                   String         @id @default(uuid()) @db.VarChar(36)
-  createdBy            User           @relation(fields: [createdById], references: [id], name: "createdBathrooms", onDelete: Cascade)
-  createdById          String
+  createdBy            User?          @relation(fields: [createdById], references: [id], name: "createdBathrooms")
+  createdById          String?
   gender               BathroomGender
   stallType            StallType
   wheelchairAccessible Boolean
