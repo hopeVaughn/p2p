@@ -36,62 +36,95 @@ describe('App (e2e)', () => {
   });
   // test logic
   describe('Auth', () => {
+    const dto: AuthDto = {
+      email: 'hope@email.com',
+      password: 'hope123',
+    };
     describe('Signup', () => {
-      it('should create a new user', () => {
-        const dto: AuthDto = {
-          email: 'hope@email.com',
-          password: 'hope123',
-        };
-        return pactum
-          .spec()
-          .post('/auth/signup')
-          .withBody(dto)
-          .expectStatus(201);
+      describe('Signup', () => {
+        it('should create a new user', () => {
+          return pactum
+            .spec()
+            .post('/auth/signup')
+            .withBody(dto)
+            .expectStatus(201)
+            .inspect();
+        });
+        it('should throw if the password field is left blank', () => {
+          return pactum
+            .spec()
+            .post('/auth/signup')
+            .withBody({
+              email: '',
+              password: dto.password,
+            })
+            .expectStatus(400);
+        });
+        it('should throw if the email field is left blank', () => {
+          return pactum
+            .spec()
+            .post('/auth/signup')
+            .withBody({
+              email: dto.email,
+              password: '',
+            })
+            .expectStatus(400);
+        });
+        it('should throw if there is no body', () => {
+          return pactum
+            .spec()
+            .post('/auth/signup')
+            .withBody({
+              email: '',
+              password: '',
+            })
+            .expectStatus(400);
+        });
+        describe('Signin', () => {
+          it.todo('should sign in an existing user');
+        });
       });
-    });
-    describe('Signin', () => {
-      it.todo('should sign in an existing user');
-    });
-  });
-  describe('User', () => {
-    describe('Get User', () => {
-      // do something
-    });
-    describe('Edit User', () => {
-      // do something
-    });
-  });
-  describe('Bathrooms', () => {
-    describe('Get All Bathrooms', () => {
-      // do something
-    });
-    describe('Get Bathroom by ID', () => {
-      // do something
-    });
-    describe('Create Bathroom', () => {
-      // do something
-    });
-    describe('Delete Bathroom', () => {
-      // do something
-    });
-  });
-  describe('Rating', () => {
-    describe('Add Rating', () => {
-      // do something
-    });
-    describe('Edit Rating', () => {
-      // do something
-    });
-    describe('Create Bathroom', () => {
-      // do something
-    });
-  });
-  describe('Verify', () => {
-    describe('Verify Another User Bathroom', () => {
-      // do something
-    });
-    describe('Verify Own Bathroom', () => {
-      // do something
+      describe('User', () => {
+        describe('Get User', () => {
+          // do something
+        });
+        describe('Edit User', () => {
+          // do something
+        });
+      });
+      describe('Bathrooms', () => {
+        describe('Get All Bathrooms', () => {
+          // do something
+        });
+        describe('Get Bathroom by ID', () => {
+          // do something
+        });
+        describe('Create Bathroom', () => {
+          // do something
+        });
+        describe('Delete Bathroom', () => {
+          // do something
+        });
+      });
+      describe('Rating', () => {
+        describe('Add Rating', () => {
+          // do something
+        });
+        describe('Edit Rating', () => {
+          // do something
+        });
+        describe('Create Bathroom', () => {
+          // do something
+        });
+      });
+      describe('Verify', () => {
+        describe('Verify Another User Bathroom', () => {
+          // do something
+        });
+        describe('Verify Own Bathroom', () => {
+          // do something
+        });
+      });
     });
   });
 });
