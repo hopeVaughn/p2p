@@ -13,9 +13,9 @@ import {
 import { BathroomService } from './bathroom.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
-import { GetUser } from 'src/auth/decorator';
+import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
-import { RatingService } from 'src/rating/rating.service';
+import { RatingService } from '../rating/rating.service';
 
 @Controller('bathroom')
 export class BathroomController {

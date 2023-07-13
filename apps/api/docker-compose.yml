@@ -1,0 +1,36 @@
+version: '3.8'
+# Define the services that make up the application
+services:
+  # Define the dev-db service
+  dev-db:
+    # Use the postgres:15 image
+    image: postgres:15
+    # Map port 5432 in the container to port 5434 on the host
+    ports:
+      - 5434:5432
+    # Set environment variables for the container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: p2p
+    # Connect the container to the imagineers network
+    networks:
+      - imagineers
+  # Define the test-db service
+  test-db:
+    # Use the postgres:15 image
+    image: postgres:15
+    # Map port 5432 in the container to port 5435 on the host
+    ports:
+      - 5435:5432
+    # Set environment variables for the container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: p2p
+    # Connect the container to the imagineers network
+    networks:
+      - imagineers
+# Define the network that the containers will use to communicate
+networks:
+  imagineers:

@@ -2,12 +2,11 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
-  BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
-import { RatingService } from 'src/rating/rating.service';
+import { RatingService } from '../rating/rating.service';
 @Injectable()
 export class BathroomService {
   constructor(

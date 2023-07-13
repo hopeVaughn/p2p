@@ -28,8 +28,8 @@ model User {
 /// Public bathrooms added by users
 model Bathroom {
   id                   String         @id @default(uuid()) @db.VarChar(36)
-  createdBy            User           @relation(fields: [createdById], references: [id], name: "createdBathrooms")
-  createdById          String
+  createdBy            User?          @relation(fields: [createdById], references: [id], name: "createdBathrooms")
+  createdById          String?
   gender               BathroomGender
   stallType            StallType
   wheelchairAccessible Boolean
@@ -51,9 +51,9 @@ model Bathroom {
 /// Verification of bathroom by user
 model Verification {
   id           String   @id @default(uuid()) @db.VarChar(36)
-  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
+  bathroom     Bathroom @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
   bathroomId   String
-  verifiedBy   User     @relation(fields: [verifiedById], references: [id])
+  verifiedBy   User     @relation(fields: [verifiedById], references: [id], onDelete: Cascade)
   verifiedById String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -64,7 +64,7 @@ model Rating {
   id         String   @id @default(uuid()) @db.VarChar(36)
   bathroom   Bathroom @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
   bathroomId String
-  ratedBy    User     @relation(fields: [ratedById], references: [id])
+  ratedBy    User     @relation(fields: [ratedById], references: [id], onDelete: Cascade)
   ratedById  String
   stars      Float
   createdAt  DateTime @default(now())
@@ -74,9 +74,9 @@ model Rating {
 /// Report of false bathroom location by another user
 model Report {
   id           String       @id @default(uuid()) @db.VarChar(36)
-  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
+  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
   bathroomId   String
-  reportedBy   User         @relation(fields: [reportedById], references: [id])
+  reportedBy   User         @relation(fields: [reportedById], references: [id], onDelete: Cascade)
   reportedById String
   reason       String
   userReports  UserReport[]
@@ -96,9 +96,9 @@ model Role {
 /// Assignment of roles to users
 model UserRole {
   id        String   @id @default(uuid()) @db.VarChar(36)
-  role      Role     @relation(fields: [roleId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -107,9 +107,9 @@ model UserRole {
 // UserReport model for reporting false information
 model UserReport {
   id        String   @id @default(uuid()) @db.VarChar(36)
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  report    Report   @relation(fields: [reportId], references: [id])
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
   reportId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
