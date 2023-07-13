@@ -60,4 +60,23 @@ describe('App (e2e)', () => {
       // do something
     });
   });
+  describe('Rating', () => {
+    describe('Add Rating', () => {
+      // do something
+    });
+    describe('Edit Rating', () => {
+      // do something
+    });
+    describe('Create Bathroom', () => {
+      // do something
+    });
+  });
+  describe('Verify', () => {
+    describe('Verify Another User Bathroom', () => {
+      // do something
+    });
+    describe('Verify Own Bathroom', () => {
+      // do something
+    });
+  });
 });
