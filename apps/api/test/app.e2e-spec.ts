@@ -147,15 +147,6 @@ describe('App (e2e)', () => {
         longitude: -123.3645,
         address: '2323 Blanshard St, Victoria, BC, Canada',
       };
-      describe('Get All Bathrooms', () => {
-        it('Get All Bathrooms', () => {
-          return pactum
-            .spec()
-            .get('/bathroom/all_bathrooms')
-            .expectStatus(200)
-            .inspect();
-        });
-      });
       describe('Create Bathroom', () => {
         it('create a bathroom', () => {
           return pactum
@@ -169,6 +160,15 @@ describe('App (e2e)', () => {
               createdBy: userUuid,
             })
             .expectStatus(201)
+            .inspect();
+        });
+      });
+      describe('Get All Bathrooms', () => {
+        it('Get All Bathrooms', () => {
+          return pactum
+            .spec()
+            .get('/bathroom/all_bathrooms')
+            .expectStatus(200)
             .inspect();
         });
       });
