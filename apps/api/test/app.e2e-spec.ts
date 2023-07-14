@@ -1,12 +1,11 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AuthDto } from '../src/auth/dto/auth.dto';
 import { CreateBathroomDto } from 'src/bathroom/dto';
-
+import * as jwt from 'jsonwebtoken';
 describe('App (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
@@ -38,10 +37,14 @@ describe('App (e2e)', () => {
   });
   // test logic
   describe('Auth', () => {
+    let accessToken: string;
+    let userUuid: string;
+
     const dto: AuthDto = {
       email: 'hope@email.com',
       password: 'hope123',
     };
+
     describe('Signup', () => {
       describe('Signup', () => {
         it('should throw if the password field is left blank', () => {
@@ -79,8 +82,7 @@ describe('App (e2e)', () => {
             .spec()
             .post('/auth/signup')
             .withBody(dto)
-            .expectStatus(201)
-            .inspect();
+            .expectStatus(201);
         });
       });
     });
@@ -116,51 +118,59 @@ describe('App (e2e)', () => {
             })
             .expectStatus(400);
         });
-        it('should sign in an existing user', () => {
-          return pactum
+        it('should sign in an existing user', async () => {
+          const response = await pactum
             .spec()
             .post('/auth/signin')
             .withBody(dto)
-            .expectStatus(200)
-            .inspect()
-            .stores('userAt', 'access_token');
+            .expectStatus(200);
+
+          accessToken = response.json.access_token;
+
+          // Decode the token to get the userUuid
+          const decodedToken = jwt.decode(accessToken);
+          userUuid = decodedToken['sub'].toString();
+          console.log('userUuid', userUuid);
         });
       });
     });
-  });
-  describe('Bathroom', () => {
-    describe('Get All Bathrooms', () => {
-      it('Get All Bathrooms', () => {
-        return pactum
-          .spec()
-          .get('/bathroom/all_bathrooms')
-          .expectStatus(200)
-          .inspect();
-      });
-    });
-    describe('Create Bathroom', () => {
+    describe('Bathroom', () => {
       const dto: CreateBathroomDto = {
-        createdBy: '$S{userAt.id}',
+        createdBy: '',
         gender: 'GENDERED',
-        stallType: 'CONNECTED',
+        stallType: 'SINGLE_STALL',
         wheelchairAccessible: true,
-        stars: 2,
-        keyRequirement: false,
-        hoursOfOperation: '24/7',
-        latitude: 122.22,
-        longitude: 122.22,
-        address: '1234 Main St',
+        stars: 4,
+        keyRequirement: true,
+        hoursOfOperation: '9 to 5',
+        latitude: 48.4294,
+        longitude: -123.3645,
+        address: '2323 Blanshard St, Victoria, BC, Canada',
       };
-      it('create a bathroom', () => {
-        return pactum
-          .spec()
-          .post('/bathroom/add_bathroom')
-          .withHeaders({
-            Authorization: 'Bearer $S{userAt}',
-          })
-          .withBody(dto)
-          .expectStatus(201)
-          .inspect();
+      describe('Get All Bathrooms', () => {
+        it('Get All Bathrooms', () => {
+          return pactum
+            .spec()
+            .get('/bathroom/all_bathrooms')
+            .expectStatus(200)
+            .inspect();
+        });
+      });
+      describe('Create Bathroom', () => {
+        it('create a bathroom', () => {
+          return pactum
+            .spec()
+            .post('/bathroom/add_bathroom')
+            .withHeaders({
+              Authorization: 'Bearer ' + accessToken,
+            })
+            .withBody({
+              ...dto,
+              createdBy: userUuid,
+            })
+            .expectStatus(201)
+            .inspect();
+        });
       });
     });
   });
