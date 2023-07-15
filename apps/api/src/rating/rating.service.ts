@@ -14,6 +14,17 @@ export class RatingService {
     try {
       const { bathroomId, ratedById, stars } = createRatingDto;
 
+      // Check if the bathroom exists
+      const bathroom = await this.prisma.bathroom.findUnique({
+        where: { id: bathroomId },
+      });
+
+      if (!bathroom) {
+        throw new NotFoundException(
+          `Bathroom with id ${bathroomId} does not exist`,
+        );
+      }
+
       // Check if the user has already rated the bathroom
       const existingRating = await this.prisma.rating.findFirst({
         where: {
@@ -22,9 +33,11 @@ export class RatingService {
         },
       });
 
+      let newRating;
+
       if (existingRating) {
         // Update the existing rating instead of creating a new one
-        return await this.prisma.rating.update({
+        newRating = await this.prisma.rating.update({
           where: {
             id: existingRating.id,
           },
@@ -32,20 +45,29 @@ export class RatingService {
             stars,
           },
         });
+      } else {
+        // Create a new rating entry
+        newRating = await this.prisma.rating.create({
+          data: {
+            bathroom: { connect: { id: bathroomId } },
+            ratedBy: { connect: { id: ratedById } },
+            stars,
+          },
+        });
       }
 
-      // Create a new rating entry
-      return await this.prisma.rating.create({
-        data: {
-          bathroom: { connect: { id: bathroomId } },
-          ratedBy: { connect: { id: ratedById } },
-          stars,
-        },
-      });
+      // Update the average stars for the bathroom
+      await this.updateAverageStars(bathroomId);
+
+      return newRating;
     } catch (error) {
-      throw new InternalServerErrorException(
-        `Error during rating creation: ${error.message}`,
-      );
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(
+          `Error during rating creation: ${error.message}`,
+        );
+      }
     }
   }
 
@@ -64,10 +86,15 @@ export class RatingService {
 
       if (!rating) throw new NotFoundException('Rating not found');
 
-      return await this.prisma.rating.update({
+      const updatedRating = await this.prisma.rating.update({
         where: { id },
         data: updateRatingDto,
       });
+
+      // Update the average stars for the bathroom
+      await this.updateAverageStars(rating.bathroomId);
+
+      return updatedRating;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException('Error updating the rating');
