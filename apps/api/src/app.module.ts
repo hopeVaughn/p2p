@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
+import { UserModule } from './user-report/user.module';
 import { BathroomModule } from './bathroom/bathroom.module';
 import { RatingModule } from './rating/rating.module';
 import { ReportModule } from './report/report.module';
