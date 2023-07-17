@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { Role } from '@prisma/client';
 @Injectable()
 export class UserRoleService {
   constructor(private prisma: PrismaService) {}

@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { Role, RoleName } from '@prisma/client';
 @Injectable()
 export class RoleService {
   constructor(private prisma: PrismaService) {}
@@ -14,7 +14,7 @@ export class RoleService {
    * @param name - The name of the role to create.
    * @throws InternalServerErrorException if there was an error creating the role.
    */
-  async createRole(name: string): Promise<Role> {
+  async createRole(name: RoleName): Promise<Role> {
     try {
       return await this.prisma.role.create({
         data: { name },
