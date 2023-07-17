@@ -1,73 +1,74 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# P2P Bathroom Finder
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is a backend application for a peer-to-peer bathroom finding service. Users can find bathrooms and rate them based on their experiences. The application is built with the NestJS framework and uses Prisma for database access. It follows a modular structure, with each module serving a unique feature set.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+1. [Modules](#modules)
+    - [App Module](#app-module)
+    - [Auth Module](#auth-module)
+    - [Bathroom Module](#bathroom-module)
+    - [Prisma Module](#prisma-module)
+    - [Rating Module](#rating-module)
+    - [Report Module](#report-module)
+    - [Role Module](#role-module)
+    - [User Module](#user-module)
+    - [UserReport Module](#userreport-module)
+    - [UserRole Module](#userrole-module)
+    - [Verify Module](#verify-module)
+2. [Installation & Running](#installation--running)
+3. [Running Tests](#running-tests)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Modules
 
-## Installation
+### App Module
 
-```bash
-$ npm install
-```
+The `app.module.ts` is the root module of the application. All other modules are imported here. It sets up the NestJS application and initializes other modules such as the `AuthModule`, `UserModule`, `BathroomModule`, `RatingModule`, `ReportModule`, `RoleModule`, `UserRoleModule`, `UserReportModule`, `VerifyModule`, and `PrismaModule`.
 
-## Running the app
+### Auth Module
 
-```bash
-# development
-$ npm run start
+The `auth` module handles authentication-related operations. It provides signup and signin functionalities, uses Argon2 for password hashing and verification, and JSON Web Tokens (JWT) for maintaining user sessions. The `auth` module is imported in the `app.module.ts`.
 
-# watch mode
-$ npm run start:dev
+### Bathroom Module
 
-# production mode
-$ npm run start:prod
-```
+The `bathroom` module handles all the operations related to bathrooms. It allows authenticated users to create, retrieve, update, and delete bathrooms. It interacts with the `UserModule` and `RatingModule` for user authentication and bathroom rating respectively. The module takes precautions in the controller to ensure that only authenticated users can create, update, or delete bathrooms. In the service, it ensures that a user cannot delete a bathroom if they are not the creator of the bathroom.
 
-## Test
+### Prisma Module
 
-```bash
-# unit tests
-$ npm run test
+The `prisma` module provides the Prisma service, which is responsible for database access. It is used by all other modules that need to interact with the database. The Prisma service is created with configurations for the specific database URL which can be provided in the environment variables. It also provides a method to clean the database which can be useful for testing.
 
-# e2e tests
-$ npm run test:e2e
+### Rating Module
 
-# test coverage
-$ npm run test:cov
-```
+The `rating` module allows users to create or update ratings for bathrooms. It calculates the average rating for each bathroom. It interacts with the `UserModule` and `BathroomModule` for user authentication and bathroom details respectively. In the service of this module, it is taken care of that a user cannot rate a bathroom more than once. In case a user tries to rate a bathroom more than once, the existing rating is updated instead of creating a new rating.
 
-## Support
+### Report Module
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The `report` module handles the creation of reports by users. A report is created when a user reports a bathroom. The user needs to be authenticated and provide a reason for the report.
 
-## Stay in touch
+### Role Module
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The `role` module is responsible for managing user roles. The roles determine the permissions a user has within the application.
 
-## License
+### User Module
 
-Nest is [MIT licensed](LICENSE).
+The `user` module handles operations related to user management. It provides functionalities to fetch user details.
+
+### UserReport Module
+
+The `user-report` module handles the reports made by users. It allows users to create, retrieve, update, and delete reports. The `UserReportService` interacts with the `PrismaService` to perform database operations.
+
+### UserRole Module
+
+The `user-role` module manages the assignment of roles to users. It allows to set, update, and delete roles of a user.
+
+### Verify Module
+
+The `verify` module handles the verification of bathrooms. A user can verify a bathroom if they have used it. The `VerifyService` interacts with the `PrismaService` to perform database operations.
+
+## Installation & Running
+
+TBD....
+
+## Running Tests
+
+TBD....
