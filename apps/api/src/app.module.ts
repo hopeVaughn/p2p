@@ -12,7 +12,6 @@ import { UserRoleModule } from './user-role/user-role.module';
 import { UserReportModule } from './user-report/user-report.module';
 import { VerifyModule } from './verify/verify.module';
 import { PrismaModule } from './prisma/prisma.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({

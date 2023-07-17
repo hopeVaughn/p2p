@@ -1,16 +1,19 @@
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 // The CreateReportDto class is used when creating a new Report. It validates that the bathroomId and reportedById properties are not empty and are valid UUIDs, and that the reason property is not empty.
 export class CreateReportDto {
   @IsNotEmpty()
   @IsUUID()
+  @IsString()
   bathroomId: string;
 
   @IsNotEmpty()
   @IsUUID()
+  @IsString()
   reportedById: string;
 
   @IsNotEmpty()
+  @IsString()
   reason: string;
 }
 
@@ -22,5 +25,6 @@ export class UpdateReportDto {
   @IsUUID()
   reportedById?: string;
 
+  @IsString()
   reason?: string;
 }
