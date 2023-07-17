@@ -1,13 +1,12 @@
-import { IsNotEmpty } from 'class-validator';
-
 // This DTO validates that the id, userId, and reportId fields are not empty.
-export class UserReportDto {
-  @IsNotEmpty()
-  id: string;
+import { IsString, IsNotEmpty } from 'class-validator';
 
+export class CreateUserReportDto {
+  @IsString()
   @IsNotEmpty()
-  userId: string;
+  readonly userId: string;
 
+  @IsString()
   @IsNotEmpty()
-  reportId: string;
+  readonly reportId: string;
 }
