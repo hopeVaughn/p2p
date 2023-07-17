@@ -16,6 +16,11 @@ import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
+  /**
+   * Create a new rating.
+   * @param createRatingDto The data to create the rating.
+   * @returns The created rating.
+   */
   @Post()
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
@@ -23,6 +28,12 @@ export class RatingController {
     return this.ratingService.create(createRatingDto);
   }
 
+  /**
+   * Update an existing rating.
+   * @param id The ID of the rating to update.
+   * @param updateRatingDto The data to update the rating.
+   * @returns The updated rating.
+   */
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)

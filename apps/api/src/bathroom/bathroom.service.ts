@@ -15,7 +15,13 @@ export class BathroomService {
     private ratingService: RatingService,
   ) {}
 
-  // Check if the user is the creator of the bathroom
+  /**
+   * Check if the user is the creator of the bathroom
+   * @param userId - The id of the user
+   * @param bathroomId - The id of the bathroom
+   * @returns A boolean indicating whether the user is the creator of the bathroom
+   * @throws NotFoundException if the bathroom is not found
+   */
   async isCreator(userId: string, bathroomId: string): Promise<boolean> {
     // Find the bathroom by id
     const bathroom = await this.prisma.bathroom.findUnique({
@@ -30,7 +36,12 @@ export class BathroomService {
     return bathroom.createdById === userId;
   }
 
-  // Create a new bathroom
+  /**
+   * Create a new bathroom
+   * @param createBathroomDto - The data for creating a new bathroom
+   * @returns The created bathroom
+   * @throws InternalServerErrorException if there is an error during bathroom creation
+   */
   async create(createBathroomDto: CreateBathroomDto) {
     try {
       const { createdBy, stars } = createBathroomDto;
@@ -64,7 +75,11 @@ export class BathroomService {
     }
   }
 
-  // Find all bathrooms
+  /**
+   * Find all bathrooms
+   * @returns An array of all bathrooms with their verification count
+   * @throws InternalServerErrorException if there is an error retrieving bathrooms
+   */
   async findAll() {
     try {
       // Find all bathrooms and include their verifications
@@ -88,7 +103,13 @@ export class BathroomService {
     }
   }
 
-  // Find a bathroom by id
+  /**
+   * Find a bathroom by id
+   * @param id - The id of the bathroom to find
+   * @returns The bathroom with the given id
+   * @throws NotFoundException if the bathroom is not found
+   * @throws InternalServerErrorException if there is an error retrieving the bathroom
+   */
   async findOne(id: string) {
     try {
       // Find the bathroom by id
@@ -110,7 +131,14 @@ export class BathroomService {
     }
   }
 
-  // Update a bathroom by id
+  /**
+   * Update a bathroom by id
+   * @param id - The id of the bathroom to update
+   * @param updateBathroomDto - The data for updating the bathroom
+   * @returns The updated bathroom
+   * @throws NotFoundException if the bathroom is not found
+   * @throws InternalServerErrorException if there is an error updating the bathroom
+   */
   async update(id: string, updateBathroomDto: UpdateBathroomDto) {
     try {
       // Find the bathroom by id
@@ -133,7 +161,14 @@ export class BathroomService {
     }
   }
 
-  // Remove a bathroom by id
+  /**
+   * Remove a bathroom by id
+   * @param id - The id of the bathroom to remove
+   * @param userId - The id of the user requesting to remove the bathroom
+   * @returns The deleted bathroom
+   * @throws UnauthorizedException if the user is not the creator of the bathroom
+   * @throws InternalServerErrorException if there is an error deleting the bathroom
+   */
   async remove(id: string, userId: string) {
     // Check if the user is the creator of the bathroom
     const isCreator = await this.isCreator(userId, id);

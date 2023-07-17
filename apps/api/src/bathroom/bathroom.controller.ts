@@ -24,7 +24,11 @@ export class BathroomController {
     private ratingService: RatingService,
   ) {}
 
-  // Create a new bathroom. This route is protected, and only authenticated users can access it.
+  /**
+   * Create a new bathroom. This route is protected, and only authenticated users can access it.
+   * @param createBathroomDto - The DTO containing the data for the new bathroom
+   * @returns The newly created bathroom
+   */
   @Post('add_bathroom')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
@@ -37,21 +41,33 @@ export class BathroomController {
     return bathroom;
   }
 
-  // Get a list of all bathrooms. This route is public.
+  /**
+   * Get a list of all bathrooms. This route is public.
+   * @returns A list of all bathrooms
+   */
   @Get('all_bathrooms')
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.bathroomService.findAll();
   }
 
-  // Get a specific bathroom by its ID. This route is public.
+  /**
+   * Get a specific bathroom by its ID. This route is public.
+   * @param id - The ID of the bathroom to retrieve
+   * @returns The bathroom with the specified ID
+   */
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
     return this.bathroomService.findOne(id);
   }
 
-  // Update a specific bathroom. This route is protected, and only authenticated users can access it.
+  /**
+   * Update a specific bathroom. This route is protected, and only authenticated users can access it.
+   * @param id - The ID of the bathroom to update
+   * @param updateBathroomDto - The DTO containing the updated data for the bathroom
+   * @returns The updated bathroom
+   */
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -62,7 +78,12 @@ export class BathroomController {
     return this.bathroomService.update(id, updateBathroomDto);
   }
 
-  // Delete a specific bathroom. This route is protected, and only authenticated users can access it.
+  /**
+   * Delete a specific bathroom. This route is protected, and only authenticated users can access it.
+   * @param id - The ID of the bathroom to delete
+   * @param user - The authenticated user making the request
+   * @returns Nothing
+   */
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)

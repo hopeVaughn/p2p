@@ -10,6 +10,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class VerifyService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Verifies a bathroom by creating a verification entry in the database.
+   * @param bathroomId The ID of the bathroom to be verified.
+   * @param userId The ID of the user performing the verification.
+   * @returns The verification entry created in the database.
+   * @throws NotFoundException if the bathroom with the given ID is not found.
+   * @throws BadRequestException if the user is the creator of the bathroom or has already verified the bathroom.
+   * @throws InternalServerErrorException if there is an error during the verification process.
+   */
   async verify(bathroomId: string, userId: string) {
     try {
       // Fetch the bathroom to be verified
@@ -62,6 +71,12 @@ export class VerifyService {
       );
     }
   }
+
+  /**
+   * Counts the number of verifications for a given bathroom.
+   * @param bathroomId The ID of the bathroom to count verifications for.
+   * @returns The number of verifications for the given bathroom.
+   */
   async countVerifications(bathroomId: string): Promise<number> {
     const count = await this.prisma.verification.count({
       where: { bathroomId },

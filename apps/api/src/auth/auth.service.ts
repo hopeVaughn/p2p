@@ -13,8 +13,15 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
   ) {}
+
+  /**
+   * Signup a new user with the provided email and password
+   * @param dto - The AuthDto object containing the email and password
+   * @returns A Promise that resolves to an object containing an access token
+   * @throws ForbiddenException if the provided email already exists in the database
+   */
   async signup(dto: AuthDto) {
-    // generate password
+    // generate password hash
     const hash = await argon.hash(dto.password);
     // save user to db
     try {
@@ -25,7 +32,7 @@ export class AuthService {
         },
       });
       delete user.password;
-      // return saved user
+      // return saved user's access token
       return this.signToken(user.id, user.email);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -37,6 +44,12 @@ export class AuthService {
     }
   }
 
+  /**
+   * Signin a user with the provided email and password
+   * @param dto - The AuthDto object containing the email and password
+   * @returns A Promise that resolves to an object containing an access token
+   * @throws ForbiddenException if the provided email or password is incorrect
+   */
   async signin(dto: AuthDto) {
     // find user by email
     const user = await this.prisma.user.findUnique({
@@ -54,10 +67,16 @@ export class AuthService {
     if (!pwMatches) {
       throw new ForbiddenException('Credentials not found');
     }
-    // send back user
+    // send back user's access token
     return this.signToken(user.id, user.email);
   }
-  // sign token with user id
+
+  /**
+   * Sign a JWT token with the provided user id and email
+   * @param userId - The user id to sign the token with
+   * @param email - The user email to sign the token with
+   * @returns A Promise that resolves to an object containing an access token
+   */
   async signToken(
     userId: string,
     email: string,

@@ -1,3 +1,20 @@
+/**
+ * The root module of the NestJS application.
+ *
+ * This module imports all the necessary modules for the application to run, including:
+ * - ConfigModule: for loading configuration files
+ * - ServeStaticModule: for serving static files
+ * - AuthModule: for authentication
+ * - UserModule: for user management
+ * - BathroomModule: for bathroom management
+ * - RatingModule: for rating management
+ * - ReportModule: for report management
+ * - RoleModule: for role management
+ * - UserRoleModule: for user role management
+ * - UserReportModule: for user report management
+ * - VerifyModule: for user verification
+ * - PrismaModule: for database management
+ */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';

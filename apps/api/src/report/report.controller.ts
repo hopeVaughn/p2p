@@ -8,6 +8,11 @@ import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
+  /**
+   * Endpoint for creating a new report.
+   * @param dto - Data transfer object containing the report information.
+   * @returns The newly created report.
+   */
   @Post()
   async createReport(@Body() dto: CreateReportDto) {
     return this.reportService.createReport(dto);

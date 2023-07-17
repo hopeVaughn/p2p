@@ -19,19 +19,32 @@ import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 export class UserReportController {
   constructor(private readonly userReportService: UserReportService) {}
 
-  // This route handles POST requests to create a new user report
+  /**
+   * Handles POST requests to create a new user report
+   * @param dto - The data transfer object containing the user report information
+   * @returns The newly created user report
+   */
   @Post()
   async createUserReport(@Body() dto: CreateUserReportDto) {
     return this.userReportService.createUserReport(dto);
   }
 
-  // This route handles GET requests to retrieve user reports by user ID
+  /**
+   * Handles GET requests to retrieve user reports by user ID
+   * @param userId - The ID of the user whose reports are being retrieved
+   * @returns The user reports associated with the specified user ID
+   */
   @Get(':userId')
   async findUserReportsByUserId(@Param('userId') userId: string) {
     return this.userReportService.findUserReportsByUserId(userId);
   }
 
-  // This route handles PUT requests to update an existing user report
+  /**
+   * Handles PUT requests to update an existing user report
+   * @param id - The ID of the user report being updated
+   * @param dto - The data transfer object containing the updated user report information
+   * @returns The updated user report
+   */
   @Put(':id')
   async updateUserReport(
     @Param('id') id: string,
@@ -40,7 +53,11 @@ export class UserReportController {
     return this.userReportService.updateUserReport(id, dto);
   }
 
-  // This route handles DELETE requests to delete an existing user report
+  /**
+   * Handles DELETE requests to delete an existing user report
+   * @param id - The ID of the user report being deleted
+   * @returns The deleted user report
+   */
   @Delete(':id')
   async deleteUserReport(@Param('id') id: string) {
     return this.userReportService.deleteUserReport(id);
