@@ -14,11 +14,12 @@ export class ReportService {
   async createReport(dto: CreateReportDto) {
     return this.prisma.report.create({
       data: {
-        bathroomId: dto.bathroomId, // Use the bathroomId from the dto
-        reportedById: dto.reportedById, // Use the reportedById from the dto
         reason: dto.reason, // Use the reason from the dto
         bathroom: {
           connect: { id: dto.bathroomId }, // Connect to the existing bathroom using the bathroomId from the dto
+        },
+        reportedBy: {
+          connect: { id: dto.reportedById }, // Connect to the existing user using the reportedById from the dto
         },
       },
     });

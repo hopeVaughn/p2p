@@ -533,12 +533,6 @@ describe('App (e2e)', () => {
         address: '2323 Blanshard St, Victoria, BC, Canada',
       };
 
-      const reportDto: CreateReportDto = {
-        bathroomId: bathroomUuid,
-        reportedById: userUuid,
-        reason: 'bathroom no longer exists',
-      };
-
       it('should create a new report', async () => {
         // Create a new user and sign in to get auth token
         await pactum
@@ -579,6 +573,11 @@ describe('App (e2e)', () => {
         console.log('previous user access token', accessToken);
 
         // Create a report with the pervious users uuid
+        const reportDto: CreateReportDto = {
+          bathroomId: bathroomUuid,
+          reportedById: userUuid,
+          reason: 'bathroom no longer exists',
+        };
 
         const response = await pactum
           .spec()
