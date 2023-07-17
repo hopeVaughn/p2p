@@ -508,5 +508,76 @@ describe('App (e2e)', () => {
           .expectStatus(404); // Expecting Not Found
       });
     });
+    describe('Report', () => {
+      let reportId: string;
+
+      const dto = {
+        // Fill in the required fields
+      };
+
+      it('should create a new report', async () => {
+        const response = await pactum
+          .spec()
+          .post('/report')
+          .withHeaders({
+            Authorization: 'Bearer ' + accessToken,
+          })
+          .withBody(dto)
+          .expectStatus(201)
+          .inspect();
+
+        reportId = response.json.id;
+      });
+
+      // Add more tests for report operations
+    });
+
+    describe('Role', () => {
+      let roleId: string;
+
+      const dto = {
+        // Fill in the required fields
+      };
+
+      it('should create a new role', async () => {
+        const response = await pactum
+          .spec()
+          .post('/role')
+          .withHeaders({
+            Authorization: 'Bearer ' + accessToken,
+          })
+          .withBody(dto)
+          .expectStatus(201)
+          .inspect();
+
+        roleId = response.json.id;
+      });
+
+      // Add more tests for role operations
+    });
+
+    describe('UserRole', () => {
+      let userRoleId: string;
+
+      const dto = {
+        // Fill in the required fields
+      };
+
+      it('should assign a role to a user', async () => {
+        const response = await pactum
+          .spec()
+          .post('/user-role')
+          .withHeaders({
+            Authorization: 'Bearer ' + accessToken,
+          })
+          .withBody(dto)
+          .expectStatus(201)
+          .inspect();
+
+        userRoleId = response.json.id;
+      });
+
+      // Add more tests for user-role operations
+    });
   });
 });
