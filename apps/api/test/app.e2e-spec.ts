@@ -6,6 +6,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import { AuthDto } from '../src/auth/dto/auth.dto';
 import { CreateBathroomDto } from '../src/bathroom/dto';
 import { CreateRatingDto, UpdateRatingDto } from '../src/rating/dto';
+import { CreateReportDto } from '../src/report/dto';
 import * as jwt from 'jsonwebtoken';
 describe('App (e2e)', () => {
   let app: INestApplication;
@@ -507,6 +508,140 @@ describe('App (e2e)', () => {
           .withBody(createRatingDto)
           .expectStatus(404); // Expecting Not Found
       });
+    });
+    describe('Report', () => {
+      let reportId: string;
+      let bathroomUuid: string;
+      let newUserUuid: string;
+      let newAccessToken: string;
+
+      const newUserDto: AuthDto = {
+        email: 'reportTest@email.com',
+        password: 'reportTest123',
+      };
+
+      const bathroomDto: CreateBathroomDto = {
+        createdBy: '',
+        gender: 'GENDER_NEUTRAL',
+        stallType: 'CONNECTED',
+        wheelchairAccessible: true,
+        stars: 4,
+        keyRequirement: true,
+        hoursOfOperation: '9 to 5',
+        latitude: 48.4294,
+        longitude: -123.3645,
+        address: '2323 Blanshard St, Victoria, BC, Canada',
+      };
+
+      const reportDto: CreateReportDto = {
+        bathroomId: bathroomUuid,
+        reportedById: userUuid,
+        reason: 'bathroom no longer exists',
+      };
+
+      it('should create a new report', async () => {
+        // Create a new user and sign in to get auth token
+        await pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody(newUserDto)
+          .expectStatus(201);
+
+        // Sign in as the new user
+        const signInRes = await pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(newUserDto)
+          .expectStatus(200);
+
+        newAccessToken = signInRes.json.access_token;
+        // Decode the new user's token to get the userUuid
+        const decodedNewToken = jwt.decode(newAccessToken);
+        newUserUuid = decodedNewToken['sub'].toString();
+        console.log('new user uuid: ', newUserUuid);
+
+        // create a new bathroom with this new users uuid
+        const createResponse = await pactum
+          .spec()
+          .post('/bathroom/add_bathroom')
+          .withHeaders({
+            Authorization: 'Bearer ' + newAccessToken,
+          })
+          .withBody({
+            ...bathroomDto,
+            createdBy: newUserUuid,
+          })
+          .expectStatus(201)
+          .inspect();
+
+        bathroomUuid = createResponse.json.id;
+        console.log('bathroomUuid', bathroomUuid);
+        console.log('previous user access token', accessToken);
+
+        // Create a report with the pervious users uuid
+
+        const response = await pactum
+          .spec()
+          .post('/report')
+          .withHeaders({
+            Authorization: 'Bearer ' + accessToken,
+          })
+          .withBody(reportDto)
+          .expectStatus(201)
+          .inspect();
+
+        reportId = response.json.id;
+      });
+
+      // Add more tests for report operations
+    });
+
+    describe.skip('Role', () => {
+      let roleId: string;
+
+      const dto = {
+        // Fill in the required fields
+      };
+
+      it('should create a new role', async () => {
+        const response = await pactum
+          .spec()
+          .post('/role')
+          .withHeaders({
+            Authorization: 'Bearer ' + accessToken,
+          })
+          .withBody(dto)
+          .expectStatus(201)
+          .inspect();
+
+        roleId = response.json.id;
+      });
+
+      // Add more tests for role operations
+    });
+
+    describe.skip('UserRole', () => {
+      let userRoleId: string;
+
+      const dto = {
+        // Fill in the required fields
+      };
+
+      it('should assign a role to a user', async () => {
+        const response = await pactum
+          .spec()
+          .post('/user-role')
+          .withHeaders({
+            Authorization: 'Bearer ' + accessToken,
+          })
+          .withBody(dto)
+          .expectStatus(201)
+          .inspect();
+
+        userRoleId = response.json.id;
+      });
+
+      // Add more tests for user-role operations
     });
   });
 });

@@ -9,6 +9,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
+import { RoleName } from '@prisma/client';
 
 @Controller('roles')
 export class RoleController {
@@ -19,7 +20,7 @@ export class RoleController {
    * @route POST /roles
    */
   @Post()
-  async createRole(@Body('name') name: string) {
+  async createRole(@Body('name') name: RoleName) {
     try {
       return await this.roleService.createRole(name);
     } catch (error) {
