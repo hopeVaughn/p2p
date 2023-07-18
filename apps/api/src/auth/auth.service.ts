@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, RoleName } from '@prisma/client';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
@@ -23,6 +23,7 @@ export class AuthService {
   async signup(dto: AuthDto) {
     // generate password hash
     const hash = await argon.hash(dto.password);
+
     // save user to db
     try {
       const user = await this.prisma.user.create({
@@ -31,7 +32,23 @@ export class AuthService {
           password: hash,
         },
       });
+
+      // create default role
+      const defaultRole = await this.prisma.role.create({
+        data: {
+          name: RoleName.USER, //the name field accepts the enum RoleName
+        },
+      });
+
+      // assign default role
+      await this.prisma.userRole.create({
+        data: {
+          roleId: defaultRole.id,
+          userId: user.id,
+        },
+      });
       delete user.password;
+
       // return saved user's access token
       return this.signToken(user.id, user.email);
     } catch (error) {

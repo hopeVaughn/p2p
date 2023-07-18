@@ -5,7 +5,7 @@ import { RoleName } from '@prisma/client';
 export class AssignRoleDto {
   @IsNotEmpty()
   @IsUUID()
-  userUuid: string;
+  id: string;
 
   @IsEnum(RoleName)
   name: RoleName;
