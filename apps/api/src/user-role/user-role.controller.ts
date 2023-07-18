@@ -14,21 +14,23 @@ import {
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { UserRoleService } from './user-role.service';
 import { Roles } from './decorator';
-import { GetUser } from '../auth/decorator';
-import { User } from '@prisma/client';
+// import { GetUser } from '../auth/decorator';
+// import { User } from '@prisma/client';
 import { RoleName } from '@prisma/client';
 import { RolesGuard } from './guard';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('SUPER')
 @Controller('user-roles')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
 
   /**
    * Assigns a role to a user.
-   * @route POST /users/:userId/roles/:roleId
+   * @route PATCH user-roles/update/:userId
    */
 
   @Patch('update/:userId')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   async changeRole(
     @Param('userId') userId: string,
@@ -46,7 +48,7 @@ export class UserRoleController {
 
   /**
    * Gets all roles assigned to a user.
-   * @route GET /users/:userId/roles
+   * @route GET user-roles/:userId
    */
   @Get(':userid')
   async getRolesForUser(@Param('userId') userId: string) {

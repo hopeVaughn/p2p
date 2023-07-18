@@ -12,22 +12,34 @@ export class UserRoleService {
   /**
    * Assigns a role to a user.
    * @param userId - The ID of the user to assign the role to.
-   * @param roleId - The ID of the role to assign to the user.
+   * @param roleName - The name of the role to assign to the user.
    * @throws InternalServerErrorException if there was an error assigning the role.
    */
   async changeRole(userId: string, roleName: RoleName): Promise<void> {
     try {
-      await this.prisma.userRole.update({
-        where: { id: userId },
-        data: {
-          role: {
-            connect: { name: roleName },
+      const userRoles = await this.getRolesForUser(userId);
+      const existingRole = userRoles.find((role) => role.name === roleName);
+
+      if (!existingRole) {
+        const newRole = await this.prisma.role.create({
+          data: {
+            name: roleName,
           },
-        },
-      });
+        });
+
+        await this.prisma.userRole.updateMany({
+          where: { roleId: newRole.id },
+          data: { roleId: newRole.id },
+        });
+      } else {
+        await this.prisma.userRole.updateMany({
+          where: { roleId: existingRole.id },
+          data: { roleId: existingRole.id },
+        });
+      }
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error assigning role: ${error.message}`,
+        `Error changing role: ${error.message}`,
       );
     }
   }
