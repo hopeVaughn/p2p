@@ -21,17 +21,19 @@ export class UserRoleService {
       const existingRole = userRoles.find((role) => role.name === roleName);
 
       if (!existingRole) {
+        // create a role table entry if it doesn't exist
         const newRole = await this.prisma.role.create({
           data: {
             name: roleName,
           },
         });
-
+        // assign the new role to the user
         await this.prisma.userRole.updateMany({
           where: { roleId: newRole.id },
           data: { roleId: newRole.id },
         });
       } else {
+        // assign the existing role to the user
         await this.prisma.userRole.updateMany({
           where: { roleId: existingRole.id },
           data: { roleId: existingRole.id },
