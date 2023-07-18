@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Role } from '@prisma/client';
+import { Role, RoleName } from '@prisma/client';
 @Injectable()
 export class UserRoleService {
   constructor(private prisma: PrismaService) {}
@@ -15,46 +15,19 @@ export class UserRoleService {
    * @param roleId - The ID of the role to assign to the user.
    * @throws InternalServerErrorException if there was an error assigning the role.
    */
-  async assignRole(userId: string, roleId: string): Promise<void> {
+  async changeRole(userId: string, roleName: RoleName): Promise<void> {
     try {
-      await this.prisma.userRole.create({
+      await this.prisma.userRole.update({
+        where: { id: userId },
         data: {
-          userId,
-          roleId,
+          role: {
+            connect: { name: roleName },
+          },
         },
       });
     } catch (error) {
       throw new InternalServerErrorException(
         `Error assigning role: ${error.message}`,
-      );
-    }
-  }
-
-  /**
-   * Removes a role from a user.
-   * @param userId - The ID of the user to remove the role from.
-   * @param roleId - The ID of the role to remove from the user.
-   * @throws NotFoundException if the role was not found for the user.
-   * @throws InternalServerErrorException if there was an error removing the role.
-   */
-  async removeRole(userId: string, roleId: string): Promise<void> {
-    try {
-      const deleteResult = await this.prisma.userRole.deleteMany({
-        where: {
-          userId,
-          roleId,
-        },
-      });
-
-      if (deleteResult.count === 0) {
-        throw new NotFoundException('Role not found for this user');
-      }
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        `Error removing role: ${error.message}`,
       );
     }
   }
