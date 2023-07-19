@@ -1,7 +1,6 @@
 import {
   Controller,
   Body,
-  Delete,
   Get,
   Param,
   InternalServerErrorException,
@@ -20,7 +19,7 @@ import { RoleName } from '@prisma/client';
 import { RolesGuard } from './guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('SUPER')
+@Roles('SUPER', 'ADMIN')
 @Controller('user-roles')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
@@ -30,19 +29,16 @@ export class UserRoleController {
    * @route PATCH user-roles/update/:userId
    */
 
-  @Patch('update/:userId')
+  @Patch('update/:id')
   @HttpCode(HttpStatus.OK)
-  async changeRole(
-    @Param('userId') userId: string,
-    @Body() roleName: RoleName,
-  ) {
+  async changeRole(@Body() id: string, @Body() roleName: RoleName) {
     try {
-      await this.userRoleService.changeRole(userId, roleName);
+      await this.userRoleService.changeRole(id, roleName);
     } catch (error) {
       if (error instanceof InternalServerErrorException) {
         throw error;
       }
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -50,10 +46,10 @@ export class UserRoleController {
    * Gets all roles assigned to a user.
    * @route GET user-roles/:userId
    */
-  @Get(':userid')
-  async getRolesForUser(@Param('userId') userId: string) {
+  @Get(':id')
+  async getRolesForUser(@Param('id') id: string) {
     try {
-      return await this.userRoleService.getRolesForUser(userId);
+      return await this.userRoleService.getRolesForUser(id);
     } catch (error) {
       if (
         error instanceof NotFoundException ||

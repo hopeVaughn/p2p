@@ -18,22 +18,30 @@ export class UserRoleService {
   async changeRole(userId: string, roleName: RoleName): Promise<void> {
     try {
       const userRoles = await this.getRolesForUser(userId);
+
       const existingRole = userRoles.find((role) => role.name === roleName);
 
       if (!existingRole) {
         // create a role table entry if it doesn't exist
+        console.log('roleName2: ', roleName);
+
         const newRole = await this.prisma.role.create({
           data: {
             name: roleName,
           },
         });
+        console.log('newRole: ', newRole);
+
         // assign the new role to the user
+        console.log('userRoles: ', userRoles);
         await this.prisma.userRole.updateMany({
           where: { roleId: newRole.id },
           data: { roleId: newRole.id },
         });
       } else {
         // assign the existing role to the user
+        console.log('existingRole: ', existingRole);
+
         await this.prisma.userRole.updateMany({
           where: { roleId: existingRole.id },
           data: { roleId: existingRole.id },
