@@ -1,7 +1,6 @@
 import {
   Controller,
   Body,
-  Delete,
   Get,
   Param,
   InternalServerErrorException,
@@ -20,7 +19,7 @@ import { RoleName } from '@prisma/client';
 import { RolesGuard } from './guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('SUPER')
+@Roles('SUPER', 'ADMIN')
 @Controller('user-roles')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
