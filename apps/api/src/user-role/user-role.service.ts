@@ -16,46 +16,23 @@ export class UserRoleService {
    * @throws InternalServerErrorException if there was an error assigning the role.
    */
   async changeRole(userId: string, roleName: RoleName): Promise<void> {
-    const userRoles = await this.getRolesForUser(userId);
-
-    const existingRole = userRoles.includes(roleName);
     try {
-      if (!existingRole) {
-        // Create a role table entry if it doesn't exist
-        const newRole = await this.prisma.role.create({
-          data: {
-            name: roleName,
-          },
-        });
+      // Check if user already has this role
+      const userRoleExists = await this.prisma.userRole.findFirst({
+        where: {
+          userId: userId,
+          role: roleName,
+        },
+      });
 
-        // Assign the new role to the user
+      // If the role doesn't exist for the user, then create a new one
+      if (!userRoleExists) {
         await this.prisma.userRole.create({
           data: {
             userId: userId,
-            roleId: newRole.id,
+            role: roleName,
           },
         });
-      } else {
-        // Obtain the id of the existing role
-        const role = await this.prisma.role.findFirst({
-          where: {
-            name: roleName,
-          },
-        });
-
-        // If the role was found, assign the existing role to the user
-        if (role) {
-          await this.prisma.userRole.create({
-            data: {
-              userId: userId,
-              roleId: role.id,
-            },
-          });
-        } else {
-          throw new InternalServerErrorException(
-            `Error changing role: Role ${roleName} not found`,
-          );
-        }
       }
     } catch (error) {
       throw new InternalServerErrorException(
@@ -71,27 +48,27 @@ export class UserRoleService {
    * @throws NotFoundException if no roles were found for the user.
    * @throws InternalServerErrorException if there was an error fetching the roles.
    */
-  async getRolesForUser(userId: string): Promise<RoleName[]> {
-    try {
-      const userRoles = await this.prisma.userRole.findMany({
-        where: { userId: userId },
-        include: { role: true },
-      });
+  // async getRolesForUser(userId: string): Promise<RoleName[]> {
+  //   try {
+  //     const userRoles = await this.prisma.userRole.findMany({
+  //       where: { userId },
+  //       include: { role: true },
+  //     });
 
-      if (!userRoles) {
-        throw new NotFoundException('Roles not found for this user');
-      }
+  //     if (!userRoles) {
+  //       throw new NotFoundException('Roles not found for this user');
+  //     }
 
-      return userRoles.map((userRole) => userRole.role.name);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        `Error fetching roles: ${error.message}`,
-      );
-    }
-  }
+  //     return userRoles.map((userRole) => userRole.role.name);
+  //   } catch (error) {
+  //     if (error instanceof NotFoundException) {
+  //       throw error;
+  //     }
+  //     throw new InternalServerErrorException(
+  //       `Error fetching roles: ${error.message}`,
+  //     );
+  //   }
+  // }
 
   /**
    * Checks if a user has a specific role.
@@ -100,14 +77,14 @@ export class UserRoleService {
    * @returns True if the user has the role, false otherwise.
    * @throws InternalServerErrorException if there was an error checking the user role.
    */
-  async checkUserRole(userId: string, roleName: string): Promise<boolean> {
-    try {
-      const userRoles = await this.getRolesForUser(userId);
-      return userRoles.includes(roleName as RoleName);
-    } catch (error) {
-      throw new InternalServerErrorException(
-        `Error checking user role: ${error.message}`,
-      );
-    }
-  }
+  // async checkUserRole(userId: string, roleName: string): Promise<boolean> {
+  //   try {
+  //     const userRoles = await this.getRolesForUser(userId);
+  //     return userRoles.includes(roleName as RoleName);
+  //   } catch (error) {
+  //     throw new InternalServerErrorException(
+  //       `Error checking user role: ${error.message}`,
+  //     );
+  //   }
+  // }
 }
