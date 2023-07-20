@@ -39,42 +39,4 @@ export class UserRoleController {
       throw new InternalServerErrorException(error.message);
     }
   }
-
-  /**
-   * Gets all roles assigned to a user.
-   * @route GET user-roles/:userId
-   */
-  // @Get(':id')
-  // async getRolesForUser(@Param('id') id: string) {
-  //   try {
-  //     return await this.userRoleService.getRolesForUser(id);
-  //   } catch (error) {
-  //     if (
-  //       error instanceof NotFoundException ||
-  //       error instanceof InternalServerErrorException
-  //     ) {
-  //       throw error;
-  //     }
-  //     throw new InternalServerErrorException();
-  //   }
-  // }
-
-  /**
-   * Checks if a user has a specific role.
-   * @route GET /users/user-roles/:userId/:roleName
-   */
-  // @Get('user:id/:roleName')
-  // async checkUserRole(
-  //   @Param('userId') userId: string,
-  //   @Param('roleName') roleName: string,
-  // ) {
-  //   try {
-  //     return await this.userRoleService.checkUserRole(userId, roleName);
-  //   } catch (error) {
-  //     if (error instanceof InternalServerErrorException) {
-  //       throw error;
-  //     }
-  //     throw new InternalServerErrorException();
-  //   }
-  // }
 }
