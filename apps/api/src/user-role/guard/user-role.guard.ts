@@ -1,6 +1,8 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
+// src/user-role/guard/roles.guard.ts
+
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
@@ -15,7 +17,13 @@ export class RolesGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const userRole = user.userRoles[0]?.role; // Directly access the user's role
-    return roles.includes(userRole);
+
+    console.log('Roles from decorator: ', roles);
+    console.log('User from request: ', user);
+
+    const hasRole = () =>
+      user.userRoles.some((role) => roles.includes(role.role));
+
+    return user && user.userRoles && hasRole();
   }
 }

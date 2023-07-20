@@ -1,10 +1,7 @@
 import {
   Controller,
   Body,
-  Get,
-  Param,
   InternalServerErrorException,
-  NotFoundException,
   Patch,
   UseGuards,
   HttpCode,
@@ -13,13 +10,11 @@ import {
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { UserRoleService } from './user-role.service';
 import { Roles } from './decorator';
-// import { GetUser } from '../auth/decorator';
-// import { User } from '@prisma/client';
 import { RoleName } from '@prisma/client';
 import { RolesGuard } from './guard';
 
-@UseGuards(JwtAuthGuard)
-// @Roles('SUPER')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('SUPER')
 @Controller('user-roles')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
