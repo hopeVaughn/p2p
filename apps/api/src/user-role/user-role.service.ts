@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Role, RoleName } from '@prisma/client';
+import { RoleName } from '@prisma/client';
 @Injectable()
 export class UserRoleService {
   constructor(private prisma: PrismaService) {}
@@ -21,26 +21,41 @@ export class UserRoleService {
     const existingRole = userRoles.includes(roleName);
     try {
       if (!existingRole) {
-        // create a role table entry if it doesn't exist
-
+        // Create a role table entry if it doesn't exist
         const newRole = await this.prisma.role.create({
           data: {
             name: roleName,
           },
         });
 
-        // assign the new role to the user
-        await this.prisma.userRole.updateMany({
-          where: { roleId: newRole.id },
-          data: { roleId: newRole.id },
+        // Assign the new role to the user
+        await this.prisma.userRole.create({
+          data: {
+            userId: userId,
+            roleId: newRole.id,
+          },
         });
       } else {
-        // assign the existing role to the user
-
-        await this.prisma.userRole.updateMany({
-          where: { roleId: existingRole.id },
-          data: { roleId: existingRole.id },
+        // Obtain the id of the existing role
+        const role = await this.prisma.role.findFirst({
+          where: {
+            name: roleName,
+          },
         });
+
+        // If the role was found, assign the existing role to the user
+        if (role) {
+          await this.prisma.userRole.create({
+            data: {
+              userId: userId,
+              roleId: role.id,
+            },
+          });
+        } else {
+          throw new InternalServerErrorException(
+            `Error changing role: Role ${roleName} not found`,
+          );
+        }
       }
     } catch (error) {
       throw new InternalServerErrorException(
@@ -88,7 +103,7 @@ export class UserRoleService {
   async checkUserRole(userId: string, roleName: string): Promise<boolean> {
     try {
       const userRoles = await this.getRolesForUser(userId);
-      return userRoles.some((role) => role.name === roleName);
+      return userRoles.includes(roleName as RoleName);
     } catch (error) {
       throw new InternalServerErrorException(
         `Error checking user role: ${error.message}`,
