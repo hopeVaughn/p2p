@@ -16,31 +16,26 @@ export class UserRoleService {
    * @throws InternalServerErrorException if there was an error assigning the role.
    */
   async changeRole(userId: string, roleName: RoleName): Promise<void> {
+    const userRoles = await this.getRolesForUser(userId);
+
+    const existingRole = userRoles.includes(roleName);
     try {
-      const userRoles = await this.getRolesForUser(userId);
-
-      const existingRole = userRoles.find((role) => role.name === roleName);
-
       if (!existingRole) {
         // create a role table entry if it doesn't exist
-        console.log('roleName2: ', roleName);
 
         const newRole = await this.prisma.role.create({
           data: {
             name: roleName,
           },
         });
-        console.log('newRole: ', newRole);
 
         // assign the new role to the user
-        console.log('userRoles: ', userRoles);
         await this.prisma.userRole.updateMany({
           where: { roleId: newRole.id },
           data: { roleId: newRole.id },
         });
       } else {
         // assign the existing role to the user
-        console.log('existingRole: ', existingRole);
 
         await this.prisma.userRole.updateMany({
           where: { roleId: existingRole.id },
@@ -61,10 +56,10 @@ export class UserRoleService {
    * @throws NotFoundException if no roles were found for the user.
    * @throws InternalServerErrorException if there was an error fetching the roles.
    */
-  async getRolesForUser(userId: string): Promise<Role[]> {
+  async getRolesForUser(userId: string): Promise<RoleName[]> {
     try {
       const userRoles = await this.prisma.userRole.findMany({
-        where: { userId },
+        where: { userId: userId },
         include: { role: true },
       });
 
@@ -72,7 +67,7 @@ export class UserRoleService {
         throw new NotFoundException('Roles not found for this user');
       }
 
-      return userRoles.map((userRole) => userRole.role);
+      return userRoles.map((userRole) => userRole.role.name);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
