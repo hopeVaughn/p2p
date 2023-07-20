@@ -29,9 +29,12 @@ export class UserRoleController {
    * @route PATCH user-roles/update/:userId
    */
 
-  @Patch('update/:id')
+  @Patch('update')
   @HttpCode(HttpStatus.OK)
-  async changeRole(@Body() id: string, @Body() roleName: RoleName) {
+  async changeRole(
+    @Body('id') id: string,
+    @Body('roleName') roleName: RoleName,
+  ) {
     try {
       await this.userRoleService.changeRole(id, roleName);
     } catch (error) {

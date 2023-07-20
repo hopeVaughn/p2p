@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleName } from '@prisma/client';
 @Injectable()
@@ -15,12 +11,12 @@ export class UserRoleService {
    * @param roleName - The name of the role to assign to the user.
    * @throws InternalServerErrorException if there was an error assigning the role.
    */
-  async changeRole(userId: string, roleName: RoleName): Promise<void> {
+  async changeRole(id: string, roleName: RoleName): Promise<void> {
     try {
       // Check if user already has this role
       const userRoleExists = await this.prisma.userRole.findFirst({
         where: {
-          userId: userId,
+          userId: id,
           role: roleName,
         },
       });
@@ -29,7 +25,7 @@ export class UserRoleService {
       if (!userRoleExists) {
         await this.prisma.userRole.create({
           data: {
-            userId: userId,
+            userId: id,
             role: roleName,
           },
         });

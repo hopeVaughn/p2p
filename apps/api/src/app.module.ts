@@ -24,7 +24,6 @@ import { UserModule } from './user/user.module';
 import { BathroomModule } from './bathroom/bathroom.module';
 import { RatingModule } from './rating/rating.module';
 import { ReportModule } from './report/report.module';
-import { RoleModule } from './role/role.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { UserReportModule } from './user-report/user-report.module';
 import { VerifyModule } from './verify/verify.module';
@@ -42,7 +41,6 @@ import { PrismaModule } from './prisma/prisma.module';
     BathroomModule,
     RatingModule,
     ReportModule,
-    RoleModule,
     UserRoleModule,
     UserReportModule,
     VerifyModule,
