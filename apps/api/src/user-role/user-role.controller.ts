@@ -14,17 +14,17 @@ import { RoleName } from '@prisma/client';
 import { RolesGuard } from './guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('SUPER')
 @Controller('user-roles')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
 
   /**
    * Assigns a role to a user.
-   * @route PATCH user-roles/update/:userId
+   * @route PATCH user-roles/update/
    */
 
   @Patch('update')
+  @Roles('SUPER')
   @HttpCode(HttpStatus.OK)
   async changeRole(
     @Body('id') id: string,
