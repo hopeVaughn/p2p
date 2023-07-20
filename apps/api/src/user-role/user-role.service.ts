@@ -21,8 +21,17 @@ export class UserRoleService {
         },
       });
 
+      // If the role exists for the user, then update it to reset the 'updatedAt' field
+      if (userRoleExists) {
+        await this.prisma.userRole.update({
+          where: {
+            id: userRoleExists.id,
+          },
+          data: {},
+        });
+      }
       // If the role doesn't exist for the user, then create a new one
-      if (!userRoleExists) {
+      else {
         await this.prisma.userRole.create({
           data: {
             userId: id,

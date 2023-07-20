@@ -18,8 +18,8 @@ import { Roles } from './decorator';
 import { RoleName } from '@prisma/client';
 import { RolesGuard } from './guard';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('SUPER')
+@UseGuards(JwtAuthGuard)
+// @Roles('SUPER')
 @Controller('user-roles')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
