@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .button-blur-shadow {
+    @apply transform transition-all ease-in-out duration-500;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+
+    &:hover {
+      @apply translate-y-[-3px];
+      box-shadow: 0 12px 24px rgba(0,0,0,0.30), 0 8px 10px rgba(0,0,0,0.22);
+    }
+
+    &:active {
+      @apply duration-200 translate-y-[-1px];
+      box-shadow: 0 8px 16px rgba(0,0,0,0.19), 0 4px 6px rgba(0,0,0,0.23);
+    }
+  }
+}

@@ -34,7 +34,7 @@ import { PrismaModule } from './prisma/prisma.module';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client', 'dist'), // <-- path to the static files
+      rootPath: join(__dirname, '../../..', 'client', 'dist'), // <-- path to the static files
     }),
     AuthModule,
     UserModule,
