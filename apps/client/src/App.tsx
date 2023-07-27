@@ -1,18 +1,20 @@
-import Button from "./Global_Components/Buttons";
 import FormRow from "./Global_Components/FormRow";
 import FormBackdrop from "./Global_Components/FormBackdrop";
+import Navbar from "./Global_Components/Navbar";
 function App() {
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Handle form submission here
-  };
+  // const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   // Handle form submission here
+  // };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Handle input changes here
-  };
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   // Handle input changes here
+  // };
   return (
     <div className="flex justify-center items-center h-screen bg-orange-100">
-      <FormBackdrop onSubmit={handleFormSubmit}>
+      <Navbar />
+
+      {/* <FormBackdrop onSubmit={handleFormSubmit}>
         <FormRow
           type="text"
           name="name"
@@ -29,8 +31,8 @@ function App() {
           labelText="Email:"
           placeholder="hope@email.com"
         />
-        {/* Add more form rows as needed */}
-      </FormBackdrop>
+        
+      </FormBackdrop> */}
     </div>
   );
 }
