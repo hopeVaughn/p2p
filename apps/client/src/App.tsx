@@ -11,7 +11,7 @@ function App() {
   //   // Handle input changes here
   // };
   return (
-    <div className="flex justify-center items-center h-screen bg-orange-100 p-1">
+    <div className="flex justify-center h-screen bg-orange-100 p-1">
       <Navbar />
 
       {/* <FormBackdrop onSubmit={handleFormSubmit}>
