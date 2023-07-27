@@ -4,7 +4,7 @@ function App() {
     <div className="flex justify-center items-center h-screen">
       <Button
         variant="primary"
-        btnText="Default Button Text"
+        btnText="default booper"
       />
 
     </div>
