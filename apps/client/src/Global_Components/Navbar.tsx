@@ -1,14 +1,17 @@
 import React from 'react';
-import Banner from '../assets/Icons/Banner.svg';
-import Logo_Main from '../assets/Icons/Logo_Main.svg';
+import Logo from './Logo';
+import Button from './Buttons';
+import NavLinks from './NavLinks';
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="relative w-full h-16 z-50 px-2vw">
-      <img src={Banner} alt="Banner" className="absolute top-0 left-0 h-16 w-full z-10" />
-
-      <div className="absolute top-0 flex items-center justify-start h-full w-full z-20 px-6">
-        <img src={Logo_Main} alt="Logo" style={{ position: 'absolute', width: '25vw', height: '15vw', left: '1vw' }} />
+    <nav className="relative w-full h-24 z-50 mx-4 mt-2 rounded-tr-3xl rounded-bl-3xl bg-orange-200 flex items-center justify-between">
+      <Logo />
+      <div className="flex items-center space-x-4 pr-8">
+        <div className="pr-16">
+          <Button btnText='Sign In' />
+        </div>
+        <NavLinks isLoggedIn={false} />
       </div>
     </nav>
   );
