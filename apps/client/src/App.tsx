@@ -1,10 +1,13 @@
-import Navbar from "./Global_Components/Navbar";
+import Landing from "./Pages/Landing"
+
+
 function App() {
 
   return (
-    <div className="flex justify-center h-screen bg-orange-100 p-1">
-      <Navbar />
-    </div>
+    <>
+      <Landing />
+
+    </>
   );
 }
 

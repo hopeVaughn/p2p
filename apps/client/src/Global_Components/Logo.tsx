@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import Logo_Main from "../assets/Icons/Logo_Main.svg";
 const Logo: React.FC = () => {
   return (

@@ -1,20 +1,51 @@
-import React from 'react';
-import Logo from './Logo';
-import Button from './Buttons';
-import NavLinks from './NavLinks';
+import React, { useState } from 'react'
+import { Bars3Icon } from '@heroicons/react/24/outline'
+import Logo from '../Global_Components/Logo';
 
-const Navbar: React.FC = () => {
-  return (
-    <nav className="relative w-full h-24 z-50 mx-4 mt-2 rounded-tr-3xl rounded-bl-3xl bg-orange-200 flex items-center justify-between">
-      <Logo />
-      <div className="flex items-center space-x-4 pr-8">
-        <div className="pr-16">
-          <Button btnText='Sign In' />
-        </div>
-        <NavLinks isLoggedIn={false} />
-      </div>
-    </nav>
-  );
-};
+interface NavigationItem {
+  name: string
+  href: string
+}
 
-export default Navbar;
+interface NavbarProps {
+  navigation: NavigationItem[];
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen }) => (
+  <nav className="flex mx-auto items-center justify-between p-6 mr-0 lg:px-8" aria-label="Global">
+    <div className="flex lg:flex-1">
+      {!mobileMenuOpen && (
+        <a href="#" className="-m-1.5 p-1.5 mr-auto">
+          <span className="sr-only">Societas</span>
+          <Logo />
+        </a>
+      )}
+    </div>
+    <div className="flex lg:hidden">
+      <button
+        type="button"
+        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-teal-900"
+        onClick={() => setMobileMenuOpen(true)}
+      >
+        <span className="sr-only">Open main menu</span>
+        <Bars3Icon className="h-10 w-10" aria-hidden="true" />
+      </button>
+    </div>
+    <div className="hidden lg:flex lg:gap-x-12">
+      {navigation.map((item) => (
+        <a key={item.name} href={item.href} className="text-xl font-regular leading-6 text-teal-900">
+          {item.name}
+        </a>
+      ))}
+    </div>
+    <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+      <a href="#" className="text-xl leading-6 text-teal-900">
+        log in <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </nav>
+)
+
+export default Navbar
