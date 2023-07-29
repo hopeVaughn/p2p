@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { destination, informed, world } from '../assets/';
 import About from './Components/About';
+import Faq from './Components/Faq';
+import ContactForm from './Components/Contact';
 import Button from '../Global_Components/Buttons';
 import Navbar from '../Global_Components/Navbar';
 import Sidebar from '../Global_Components/Sidebar';
@@ -66,6 +68,8 @@ const Landing: React.FC = () => {
           </div>
         </section>
         <About />
+        <Faq />
+        <ContactForm />
       </main>
     </div>
   )
