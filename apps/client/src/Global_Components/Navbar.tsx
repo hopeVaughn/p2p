@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import Logo from '../Global_Components/Logo';
+import Button from '../Global_Components/Buttons';
 
 interface NavigationItem {
   name: string
@@ -26,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
     <div className="flex lg:hidden">
       <button
         type="button"
-        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-teal-900"
+        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-teal-900 hover:text-teal-700"
         onClick={() => setMobileMenuOpen(true)}
       >
         <span className="sr-only">Open main menu</span>
@@ -35,15 +36,13 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
     </div>
     <div className="hidden lg:flex lg:gap-x-12">
       {navigation.map((item) => (
-        <a key={item.name} href={item.href} className="text-xl font-regular leading-6 text-teal-900">
+        <a key={item.name} href={item.href} className="text-xl font-regular leading-6 text-teal-900 hover:text-teal-500">
           {item.name}
         </a>
       ))}
     </div>
     <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-      <a href="#" className="text-xl leading-6 text-teal-900">
-        log in <span aria-hidden="true">&rarr;</span>
-      </a>
+      <Button btnText='Sign In' />
     </div>
   </nav>
 )

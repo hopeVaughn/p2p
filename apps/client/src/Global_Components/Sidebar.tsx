@@ -1,4 +1,3 @@
-// Import necessary packages and components
 import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -24,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, setMobileMenuOpen, mobile
           </a>
           <button
             type="button"
-            className="-m-2.5 rounded-md p-2.5 text-gray-700"
+            className="-m-2.5 rounded-md p-2.5 text-teal-900 hover:text-teal-700"
             onClick={() => setMobileMenuOpen(false)}
           >
             <span className="sr-only">Close menu</span>
@@ -38,14 +37,15 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, setMobileMenuOpen, mobile
                 <a
                   key={item.name}
                   href={item.href}
-                  className="-mx-3 block rounded-lg px-3 py-2 text-xl font-regular leading-7 text-teal-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-xl font-regular leading-7 text-teal-900 hover:text-teal-600 flex justify-center items-center"
                 >
                   {item.name}
                 </a>
               ))}
             </div>
-            <div className="py-6">
+            <div className="py-6 flex justify-between items-center space-x-4">
               <Button btnText='Sign Up' />
+              <Button btnText='Sign In' />
             </div>
           </div>
         </div>

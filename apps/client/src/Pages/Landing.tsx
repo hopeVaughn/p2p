@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import Button from '../Global_Components/Buttons';
 import { destination, informed, world } from '../assets/';
+import About from './Components/About';
+import Button from '../Global_Components/Buttons';
 import Navbar from '../Global_Components/Navbar';
 import Sidebar from '../Global_Components/Sidebar';
 import BackgroundPattern from '../Global_Components/BackgroundPattern';
 import linkData from '../utils/linkData';
+
 const Landing: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
 
@@ -12,17 +14,17 @@ const Landing: React.FC = () => {
     <div className="bg-orange-100">
       <header className="absolute inset-x-0 top-0 z-50">
         <Navbar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-        <Sidebar navigation={linkData} setMobileMenuOpen={setMobileMenuOpen} mobileMenuOpen={mobileMenuOpen} />
+        <Sidebar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       </header>
       <main className="relative isolate overflow-hidden">
         <BackgroundPattern />
         <section className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32 flex flex-col-reverse sm:flex-row">
           <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center order-1 sm:order-none">
-            <article className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl lg:-mt-40"> {/* Negative margin added */}
+            <article className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl lg:-mt-40">
               <h1 className="text-4xl font-bold tracking-tight text-teal-900 sm:text-6xl">
                 Where convenience meets <span className="text-teal-600">community</span>
               </h1>
-              <p className="relative mt-6 text-lg leading-relaxed text-gray-600 sm:max-w-md lg:max-w-none"> {/* Line height increased */}
+              <p className="relative mt-6 text-lg leading-relaxed text-gray-600 sm:max-w-md lg:max-w-none">
                 Discover, share, and navigate to nearby bathrooms with ease
               </p>
               <div className="mt-10 flex justify-center md:justify-start items-center gap-x-6">
@@ -63,6 +65,7 @@ const Landing: React.FC = () => {
             </figure>
           </div>
         </section>
+        <About />
       </main>
     </div>
   )
