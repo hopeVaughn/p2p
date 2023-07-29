@@ -4,8 +4,8 @@ import informed from '../../assets/informed.svg';
 const ContactForm: React.FC = () => {
 
   return (
-    <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
-      <section className="isolate bg-transparent px-6 py-24 sm:py-32 lg:px-8">
+    <div className="flex flex-col-reverse sm:flex-row items-start sm:justify-between">
+      <section className="isolate bg-transparent px-6 py-24 sm:py-32 lg:px-8 flex-1">
         <div
           className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
           aria-hidden="true"
@@ -54,7 +54,7 @@ const ContactForm: React.FC = () => {
           </div>
         </form>
       </section>
-      <div className="w-full sm:w-1/2 sm:flex sm:justify-center sm:items-center hidden">
+      <div className="w-full sm:mt-40 sm:w-1/2 sm:flex sm:justify-center sm:items-center hidden">
         <img
           src={informed}
           alt=""
