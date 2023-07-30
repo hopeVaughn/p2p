@@ -49,8 +49,8 @@ const ContactForm: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="mt-10">
-            <Button btnText='Lets Talk!' />
+          <div className="mt-10 w-full">
+            <Button variant="secondary" btnText='Lets Talk!' />
           </div>
         </form>
       </section>

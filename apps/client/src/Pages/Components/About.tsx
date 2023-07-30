@@ -1,6 +1,6 @@
 import React from 'react';
 import { snap_the_moment } from '../../assets';
-
+import Button from '../../Global_Components/Buttons';
 const About: React.FC = () => {
   return (
     <section className="mx-auto -mt-12 max-w-7xl px-6 sm:mt-0 lg:px-8 xl:-mt-8 mb-10 bg-transparent">

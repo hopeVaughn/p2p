@@ -3,6 +3,7 @@ import { destination, informed, world } from '../assets/';
 import About from './Components/About';
 import Faq from './Components/Faq';
 import ContactForm from './Components/Contact';
+import Footer from '../Global_Components/Footer';
 import Button from '../Global_Components/Buttons';
 import Navbar from '../Global_Components/Navbar';
 import Sidebar from '../Global_Components/Sidebar';
@@ -70,6 +71,7 @@ const Landing: React.FC = () => {
         <About />
         <Faq />
         <ContactForm />
+        <Footer />
       </main>
     </div>
   )
