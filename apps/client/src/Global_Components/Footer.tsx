@@ -16,10 +16,8 @@ type SocialNavigation = {
 const navigation: { main: MainNavigation[], social: SocialNavigation[] } = {
   main: [
     { name: 'About', href: '#' },
-    { name: 'Blog', href: '#' },
-    { name: 'Jobs', href: '#' },
-    { name: 'Press', href: '#' },
-    { name: 'Accessibility', href: '#' },
+    { name: 'FAQ', href: '#' },
+    { name: 'Contact', href: '#' },
     { name: 'Partners', href: '#' },
   ],
   social: [
@@ -60,7 +58,7 @@ const navigation: { main: MainNavigation[], social: SocialNavigation[] } = {
     },
     {
       name: 'GitHub',
-      href: '#',
+      href: 'https://github.com/hopeVaughn/p2p',
       icon: (props: React.SVGProps<SVGSVGElement>) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
