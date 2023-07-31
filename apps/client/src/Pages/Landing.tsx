@@ -27,9 +27,7 @@ const Landing: React.FC = () => {
     };
   }, []);
 
-
   return (
-
     <main className="relative bg-orange-100">
       <header ref={navbarRef} className="fixed inset-x-0 top-0 z-50">
         <Navbar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} scrolled={scrolled} navbarHeight={navbarHeight} />

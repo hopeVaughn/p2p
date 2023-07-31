@@ -5,8 +5,8 @@ function App() {
 
   return (
     <>
-      {/* <Landing /> */}
-      <Register />
+      <Landing />
+      {/* <Register /> */}
 
     </>
   );
