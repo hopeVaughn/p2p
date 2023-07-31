@@ -20,7 +20,8 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
     event.preventDefault();
     const targetElement = document.querySelector(href);
-    const elementPosition = targetElement?.getBoundingClientRect().top || 0;
+    const documentTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const elementPosition = targetElement ? targetElement.getBoundingClientRect().top + documentTop : 0;
     const offsetPosition = elementPosition - navbarHeight;
 
     window.scrollTo({
@@ -38,7 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
           </a>
         )}
       </div>
-      <div className="flex lg:hidden">
+      <div className={`flex lg:hidden ${mobileMenuOpen ? 'hidden' : ''}`}>
         <button
           type="button"
           className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-teal-900 hover:text-teal-700"
