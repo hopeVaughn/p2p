@@ -15,11 +15,12 @@ const Register: React.FC = () => {
 
   return (
     <main className="relative flex flex-col min-h-screen bg-orange-100">
+
+      <BackgroundPattern />
       <div className="absolute left-0 top-0 h-10 w-auto">
         <Logo />
       </div>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <BackgroundPattern />
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-20 text-center text-2xl leading-9 tracking-tight text-teal-900">
             {registered ? "Sign in to your account" : "Register for a new account"}

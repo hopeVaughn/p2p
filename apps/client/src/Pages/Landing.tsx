@@ -30,20 +30,20 @@ const Landing: React.FC = () => {
 
   return (
 
-    <div className="relative bg-orange-100">
+    <main className="relative bg-orange-100">
       <header ref={navbarRef} className="fixed inset-x-0 top-0 z-50">
         <Navbar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} scrolled={scrolled} navbarHeight={navbarHeight} />
         <Sidebar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       </header>
-      <main className="relative isolate overflow-hidden">
+      <section className="relative isolate overflow-hidden">
         <BackgroundPattern />
         <Hero mobileMenuOpen={mobileMenuOpen} id={'hero'} />
         <About id={'about'} />
         <Faq id={'faq'} />
         <ContactForm id={'contact'} />
         <Footer />
-      </main>
-    </div>
+      </section>
+    </main>
   )
 }
 
