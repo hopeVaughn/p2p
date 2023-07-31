@@ -7,9 +7,13 @@ interface FAQ {
   answer: string;
 }
 
-const FAQComponent: React.FC = () => {
+interface FAQProps {
+  id: string;
+}
+
+const FAQComponent: React.FC<FAQProps> = ({ id }) => {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40 bg-transparent">
+    <section id={id} className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40 bg-transparent">
       <header className="mx-auto max-w-4xl divide-y divide-gray-900/10">
         <h2 className="text-4xl text-center font-bold leading-10 tracking-tight text-teal-900">Frequently asked questions</h2>
       </header>

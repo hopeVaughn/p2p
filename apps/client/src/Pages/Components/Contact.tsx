@@ -1,10 +1,14 @@
 import React from 'react'
 import Button from '../../Global_Components/Buttons'
 import informed from '../../assets/informed.svg';
-const ContactForm: React.FC = () => {
+
+interface ContactFormProps {
+  id: string
+}
+const ContactForm: React.FC<ContactFormProps> = ({ id }) => {
 
   return (
-    <div className="flex items-start sm:justify-between">
+    <div id={id} className="flex items-start sm:justify-between">
       <section className="isolate bg-transparent px-6 py-24 sm:py-32 lg:px-8 flex-1">
         <div
           className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"

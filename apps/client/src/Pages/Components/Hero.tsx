@@ -4,12 +4,13 @@ import { destination, informed, world } from '../../assets';
 
 interface HeroProps {
   mobileMenuOpen: boolean
+  id: string
 }
 
-const Hero: React.FC<HeroProps> = ({ mobileMenuOpen }) => {
+const Hero: React.FC<HeroProps> = ({ mobileMenuOpen, id }) => {
 
   return (
-    <section className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32 flex flex-col-reverse sm:flex-row">
+    <section id={id} className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32 flex flex-col-reverse sm:flex-row">
       <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center order-1 sm:order-none">
         <article className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl lg:-mt-40">
           <h1 className="text-4xl font-bold tracking-tight text-teal-900 sm:text-6xl">

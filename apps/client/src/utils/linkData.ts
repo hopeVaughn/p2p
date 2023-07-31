@@ -1,8 +1,8 @@
 const navigation = [
-  { name: 'home', href: '#' },
-  { name: 'about', href: '#' },
-  { name: 'f.a.q', href: '#' },
-  { name: 'contact', href: '#' },
+  { name: 'home', href: '#hero' },
+  { name: 'about', href: '#about' },
+  { name: 'f.a.q', href: '#faq' },
+  { name: 'contact', href: '#contact' },
 ]
 
 export default navigation 

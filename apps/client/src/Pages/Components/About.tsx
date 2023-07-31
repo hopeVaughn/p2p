@@ -1,9 +1,13 @@
 import React from 'react';
 import { snap_the_moment } from '../../assets';
-import Button from '../../Global_Components/Buttons';
-const About: React.FC = () => {
+
+interface AboutProps {
+  id: string;
+}
+
+const About: React.FC<AboutProps> = ({ id }) => {
   return (
-    <section className="mx-auto -mt-12 max-w-7xl px-6 sm:mt-0 lg:px-8 xl:-mt-8 mb-10 bg-transparent">
+    <section id={id} className="mx-auto -mt-12 max-w-7xl px-6 sm:mt-0 lg:px-8 xl:-mt-8 mb-10 bg-transparent">
       <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
         <header>
           <h2 className="text-3xl font-bold tracking-tight text-teal-900 sm:text-6xl">About Us</h2>
