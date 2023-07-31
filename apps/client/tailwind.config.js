@@ -16,5 +16,5 @@ export default {
       }
     },
   },
-  plugins: ['tailwindcss/forms', 'tailwindcss/nesting'],
+  plugins: ['tailwindcss/forms', 'tailwindcss/nesting', 'tailwindcss/forms'],
 };
