@@ -88,7 +88,7 @@ const navigation: { main: MainNavigation[], social: SocialNavigation[] } = {
 const Footer: React.FC = () => {
   return (
     <footer className="bg-orange-300">
-      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-10 sm:py-12 lg:px-8">
+      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-4 sm:py-6 lg:px-8">
         <nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
           {navigation.main.map((item) => (
             <div key={item.name} className="pb-6">
@@ -98,7 +98,7 @@ const Footer: React.FC = () => {
             </div>
           ))}
         </nav>
-        <div className="mt-10 flex justify-center space-x-10">
+        <div className="mt-6 flex justify-center space-x-10">
           {navigation.social.map((item) => (
             <a key={item.name} href={item.href} className="text-teal-900 hover:text-teal-500">
               <span className="sr-only">{item.name}</span>
@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
             </a>
           ))}
         </div>
-        <p className="mt-10 text-center text-xs leading-5 text-gray-500">
+        <p className="mt-6 text-center text-xs leading-5 text-gray-500">
           &copy; 2023 Mother Monster Media, Inc. All rights reserved.
         </p>
       </div>
