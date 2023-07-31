@@ -14,9 +14,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <main className="relative flex flex-col min-h-screen bg-orange-100">
-
-      <BackgroundPattern />
+    <section className="relative flex flex-col min-h-screen bg-orange-100">
       <div className="absolute left-0 top-0 h-10 w-auto">
         <Logo />
       </div>
@@ -83,7 +81,7 @@ const Register: React.FC = () => {
         </div>
       </div>
       <Footer />
-    </main>
+    </section>
   )
 }
 
