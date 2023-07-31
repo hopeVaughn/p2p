@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import Logo from '../Global_Components/Logo';
 import Button from '../Global_Components/Buttons';
@@ -12,10 +12,11 @@ interface NavbarProps {
   navigation: NavigationItem[];
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
+  scrolled: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen }) => (
-  <nav className="flex mx-auto items-center justify-between p-6 mr-0 lg:px-8" aria-label="Global">
+const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen, scrolled }) => (
+  <nav className={`flex mx-auto items-center justify-between p-6 mr-0 lg:px-8 ${scrolled && !mobileMenuOpen ? 'bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-30 border border-gray-100 shadow-lg' : ''}`} aria-label="Global">
     <div className="flex lg:flex-1">
       {!mobileMenuOpen && (
         <a href="#" className="-m-1.5 p-1.5 mr-auto">
@@ -42,7 +43,10 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
       ))}
     </div>
     <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-      <Button btnText='Sign In' />
+      <div className="flex justify-between items-center space-x-4">
+        <Button btnText='Sign Up' />
+        <Button btnText='Sign In' />
+      </div>
     </div>
   </nav>
 )

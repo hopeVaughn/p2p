@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Hero from './Components/Hero';
 import About from './Components/About';
 import Faq from './Components/Faq';
@@ -11,11 +11,25 @@ import linkData from '../utils/linkData';
 
 const Landing: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
+  const [scrolled, setScrolled] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
 
   return (
     <div className="bg-orange-100">
-      <header className="absolute inset-x-0 top-0 z-50">
-        <Navbar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+      <header className="fixed inset-x-0 top-0 z-50">
+        <Navbar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} scrolled={scrolled} />
         <Sidebar navigation={linkData} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       </header>
       <main className="relative isolate overflow-hidden">

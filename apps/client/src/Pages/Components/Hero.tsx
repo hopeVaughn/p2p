@@ -20,7 +20,9 @@ const Hero: React.FC<HeroProps> = ({ mobileMenuOpen }) => {
           </p>
           <div className="mt-10 flex justify-center md:justify-start items-center gap-x-6">
             {!mobileMenuOpen && (
-              <Button btnText='Sign Up' />
+              <div className="grow">
+                <Button btnText='Sign Up For Free!' />
+              </div>
             )}
           </div>
         </article>
