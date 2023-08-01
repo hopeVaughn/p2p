@@ -88,16 +88,17 @@ const navigation: { main: MainNavigation[], social: SocialNavigation[] } = {
 const Footer: React.FC = () => {
   return (
     <footer className="bg-orange-300">
-      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-4 sm:py-6 lg:px-8">
-        <nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
+      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-4 sm:py-4 lg:px-8">
+        <nav className="flex flex-wrap justify-around sm:-mb-6 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
           {navigation.main.map((item) => (
-            <div key={item.name} className="pb-6">
+            <div key={item.name} className="w-1/2 sm:w-auto pb-6">
               <a href={item.href} className="text-sm leading-6 text-teal-900 hover:text-teal-500">
                 {item.name}
               </a>
             </div>
           ))}
         </nav>
+
         <div className="mt-6 flex justify-center space-x-10">
           {navigation.social.map((item) => (
             <a key={item.name} href={item.href} className="text-teal-900 hover:text-teal-500">
