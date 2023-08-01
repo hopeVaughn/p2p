@@ -9,8 +9,6 @@ const Error: React.FC = () => {
       <p className='text-4xl md:py-16 text-teal-900 text-center w-full'>We're working on it!
         <a href="#" className='pl-4 text-3xl text-teal-600 text-center w-full'>Go Back</a>
       </p>
-      <div className="w-full md:px-0">
-      </div>
     </main>
   )
 }
