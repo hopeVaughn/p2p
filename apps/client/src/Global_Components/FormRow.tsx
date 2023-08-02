@@ -4,7 +4,7 @@ interface FormRowProps {
   id: string;
   name: string;
   type: string;
-  autoComplete: string;
+  autoComplete?: string;
   required?: boolean;
   labelText: string;
   placeholder?: string;

@@ -12,11 +12,11 @@ interface NavbarProps {
   navigation: NavigationItem[];
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
-  scrolled: boolean;
-  navbarHeight: number;
+  scrolled?: boolean;
+  navbarHeight?: number;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen, scrolled, navbarHeight }) => {
+const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen, scrolled, navbarHeight = 0 }) => {
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
     event.preventDefault();
     const targetElement = document.querySelector(href);
