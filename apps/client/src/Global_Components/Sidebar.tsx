@@ -9,9 +9,10 @@ interface SidebarProps {
   navigation: { name: string; href: string; }[];
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   mobileMenuOpen: boolean;
+  buttons: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ navigation, setMobileMenuOpen, mobileMenuOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ navigation, setMobileMenuOpen, mobileMenuOpen, buttons }) => {
   return (
     <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
       <div className="fixed inset-0 z-50" />
@@ -43,10 +44,12 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, setMobileMenuOpen, mobile
                 </a>
               ))}
             </div>
-            <div className="py-6 flex justify-between items-center space-x-4">
-              <Button btnText='Sign Up' />
-              <Button btnText='Sign In' />
-            </div>
+            {buttons ? (
+              <div className="py-6 flex justify-between items-center space-x-4">
+                <Button btnText='Sign Up' />
+                <Button btnText='Sign In' />
+              </div>
+            ) : null}
           </div>
         </div>
       </Dialog.Panel>

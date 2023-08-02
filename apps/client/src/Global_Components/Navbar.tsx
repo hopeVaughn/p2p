@@ -14,9 +14,10 @@ interface NavbarProps {
   setMobileMenuOpen: (open: boolean) => void;
   scrolled?: boolean;
   navbarHeight?: number;
+  buttons: boolean
 }
 
-const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen, scrolled, navbarHeight = 0 }) => {
+const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen, scrolled, navbarHeight = 0, buttons }) => {
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
     event.preventDefault();
     const targetElement = document.querySelector(href);
@@ -61,12 +62,14 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
           </a>
         ))}
       </div>
-      <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-        <div className="flex justify-between items-center space-x-4">
-          <Button btnText='Sign Up' />
-          <Button btnText='Sign In' />
+      {buttons ? (
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <div className="flex justify-between items-center space-x-4">
+            <Button btnText='Sign Up' />
+            <Button btnText='Sign In' />
+          </div>
         </div>
-      </div>
+      ) : null}
     </nav>
   )
 

@@ -5,4 +5,10 @@ const navigation = [
   { name: 'contact', href: '#contact' },
 ]
 
-export default navigation 
+const user_navigation = [
+  { name: 'search', href: '#' },
+  { name: 'profile', href: '#' },
+  { name: 'add', href: '/faq' },
+]
+
+export { navigation, user_navigation }
