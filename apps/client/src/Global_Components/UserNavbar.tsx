@@ -1,7 +1,7 @@
 import React from 'react'
 import { AiOutlineUser, AiOutlineSearch, AiOutlinePlus } from 'react-icons/ai'
 
-const MobileNavbar: React.FC = () => {
+const UserNavbar: React.FC = () => {
   return (
     <nav className="fixed bottom-0 flex justify-between items-center p-5 bg-gray-400 rounded-tl-3xl rounded-tr-3xl bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-30 border border-gray-100 shadow-lg w-full">
       <div className="w-1/3 flex justify-center">
@@ -23,4 +23,4 @@ const MobileNavbar: React.FC = () => {
   )
 }
 
-export default MobileNavbar
+export default UserNavbar

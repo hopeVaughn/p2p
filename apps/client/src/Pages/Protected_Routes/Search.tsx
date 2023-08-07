@@ -1,13 +1,15 @@
 import React from 'react'
 import FormRow from '../../Global_Components/FormRow'
 import { tourist_map } from '../../assets'
-import MobileNavbar from '../../Global_Components/MobileNavbar'
+import UserNavbar from '../../Global_Components/UserNavbar'
 
 const Search: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState<boolean>(false)
 
   return (
     <main className='relative bg-orange-100 min-h-screen flex flex-col items-center justify-between'>
+      <header className='pt-10'>
+        <h2 className="text-3xl tracking-tight text-teal-900 sm:text-6xl">Search for a Bathroom Near You</h2>
+      </header>
       <section className="flex-grow flex flex-col items-center justify-center px-6 py-10">
         <form className="w-full max-w-md" action="">
           <FormRow labelText='Search' id='search' name='search' type='text' />
@@ -17,7 +19,7 @@ const Search: React.FC = () => {
         </div>
       </section>
       <footer className="w-full">
-        <MobileNavbar />
+        <UserNavbar />
       </footer>
     </main>
   )
