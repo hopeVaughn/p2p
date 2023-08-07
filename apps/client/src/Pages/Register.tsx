@@ -18,15 +18,18 @@ const Register: React.FC = () => {
       <div className="absolute left-0 top-0 h-10 w-auto">
         <Logo />
       </div>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <section className="relative isolate overflow-hidden">
+        <BackgroundPattern />
+      </section>
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 z-10">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-20 text-center text-2xl leading-9 tracking-tight text-teal-900">
+          <h2 className="mt-20 text-center text-2xl leading-9 tracking-tight text-teal-900 z-10">
             {registered ? "Sign in to your account" : "Register for a new account"}
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6 z-10" action="#" method="POST">
             <FormRow
               id="email"
               name="email"
@@ -80,7 +83,9 @@ const Register: React.FC = () => {
           </p>
         </div>
       </div>
-      <Footer />
+      <div className="z-10">
+        <Footer />
+      </div>
     </section>
   )
 }
