@@ -8,7 +8,7 @@ const Search: React.FC = () => {
   return (
     <main className='relative bg-orange-100 min-h-screen flex flex-col items-center justify-between'>
       <header className='pt-10'>
-        <h2 className="text-3xl tracking-tight text-teal-900 sm:text-6xl">Search for a Bathroom Near You</h2>
+        <h2 className="text-2xl tracking-tight text-teal-900 sm:text-6xl">Search for a Bathroom Near You</h2>
       </header>
       <section className="flex-grow flex flex-col items-center justify-center px-6 py-10">
         <form className="w-full max-w-md" action="">

@@ -11,13 +11,13 @@ function App() {
   return (
     <>
       {/* <Landing /> */}
-      {/* <Register /> */}
-      {/* <Error /> */}
-      {/* <PageNotFound /> */}
-      {/* <Search /> */}
       {/* <MobileNavbar /> */}
       {/* <FormRowSelect /> */}
-      <Profile />
+      <PageNotFound />
+      {/* <Error /> */}
+      {/* <Register /> */}
+      {/* <Search /> */}
+      {/* <Profile /> */}
     </>
   );
 }
