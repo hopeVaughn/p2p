@@ -3,6 +3,7 @@ import Register from "./Pages/Register";
 import Error from "./Pages/Error";
 import PageNotFound from "./Pages/PageNotFound";
 import Search from "./Pages/Protected_Routes/Search";
+import MobileNavbar from "./Global_Components/MobileNavbar";
 function App() {
 
   return (
@@ -12,6 +13,7 @@ function App() {
       {/* <Error /> */}
       {/* <PageNotFound /> */}
       <Search />
+      {/* <MobileNavbar /> */}
     </>
   );
 }
