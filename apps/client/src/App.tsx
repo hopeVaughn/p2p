@@ -5,6 +5,7 @@ import PageNotFound from "./Pages/PageNotFound";
 import Search from "./Pages/Protected_Routes/Search";
 import MobileNavbar from "./Global_Components/UserNavbar";
 import FormRowSelect from "./Global_Components/FormRowSelect";
+import Profile from "./Pages/Protected_Routes/Profile";
 function App() {
 
   return (
@@ -16,6 +17,7 @@ function App() {
       {/* <Search /> */}
       {/* <MobileNavbar /> */}
       {/* <FormRowSelect /> */}
+      <Profile />
     </>
   );
 }

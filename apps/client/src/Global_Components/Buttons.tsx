@@ -5,14 +5,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   btnText: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ variant = 'primary', btnText, ...props }) => {
+const Button: React.FC<ButtonProps> = ({ variant = 'primary', btnText, className = '', ...props }) => {
   const primaryStyles = 'button-blur-shadow bg-cyan-700 text-white text-lg py-2 px-4 rounded flex-shrink-0';
   const secondaryStyles = 'button-blur-shadow bg-cyan-700 text-white text-lg py-2 px-4 rounded flex-shrink-0 w-full';
 
   const buttonStyle = variant === 'primary' ? primaryStyles : secondaryStyles;
 
   return (
-    <button className={buttonStyle} {...props}>
+    <button className={`${buttonStyle} ${className}`} {...props}>
       {btnText}
     </button>
   );
