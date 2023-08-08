@@ -29,8 +29,9 @@ const Profile: React.FC = () => {
             name='confirmPassword'
             type='password'
           />
-          <Button btnText='Update' className='mt-4 mx-auto' />
+          <Button btnText='Update' className='w-full mt-4 mx-auto ' />
         </form>
+        <Button btnText='View All Your Pinned Bathrooms' className='w-full mt-12 mx-auto ' />
       </section>
       <footer className="w-full z-10">
         <UserNavbar />
