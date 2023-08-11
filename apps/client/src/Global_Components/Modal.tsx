@@ -3,8 +3,13 @@ import { Dialog, Transition } from '@headlessui/react';
 import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline';
 import Button from './Buttons';
 
-const Modal: React.FC = () => {
-  const [open, setOpen] = useState<boolean>(true);
+type ModalProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+
+const Modal: React.FC<ModalProps> = ({ open, setOpen }) => {
+
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -18,7 +23,7 @@ const Modal: React.FC = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">

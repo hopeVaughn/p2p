@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import BackgroundPattern from '../../Global_Components/BackgroundPattern'
 import UserNavbar from '../../Global_Components/UserNavbar'
 import FormRow from '../../Global_Components/FormRow'
 import Button from '../../Global_Components/Buttons'
+import Modal from '../../Global_Components/Modal'
 const Profile: React.FC = () => {
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <main className='relative bg-orange-100 min-h-screen flex flex-col items-center justify-between'>
       <header className='pt-10 z-10'>
@@ -31,7 +34,11 @@ const Profile: React.FC = () => {
           />
           <Button btnText='Update' className='w-full mt-4 mx-auto ' />
         </form>
-        <Button btnText='View All Your Pinned Bathrooms' className='w-full mt-12 mx-auto ' />
+        <Button
+          btnText='View All Your Pinned Bathrooms'
+          className='w-full mt-12 mx-auto '
+          onClick={() => setOpen(true)} // Open the modal when the button is clicked
+        />
       </section>
       <footer className="w-full z-10">
         <UserNavbar />
@@ -39,8 +46,10 @@ const Profile: React.FC = () => {
       <section className="relative isolate overflow-hidden">
         <BackgroundPattern />
       </section>
+
+      {open && <Modal open={open} setOpen={setOpen} />} {/* Render the Modal component only if open is true */}
     </main>
   )
 }
 
-export default Profile
+export default Profile;

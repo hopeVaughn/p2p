@@ -18,8 +18,7 @@ function App() {
       {/* <Error /> */}
       {/* <Register /> */}
       {/* <Search /> */}
-      {/* <Profile /> */}
-      <Modal />
+      <Profile />
     </>
   );
 }
