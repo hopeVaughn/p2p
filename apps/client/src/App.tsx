@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Landing />,
     children: [
-      // Additional nested routes can be added here if required for the Landing page
+
     ]
   },
   {
