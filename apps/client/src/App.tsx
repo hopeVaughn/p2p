@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Landing, PageNotFound, Register } from './Pages';
 import { Profile, AddBathroom, Search } from './Pages/Protected_Routes';
 import { ProtectedRoute } from "./Pages/Components";
+import { AuthProvider } from "./utils/Context";
 // import { useAuth } from './utils/Context'; // Assuming you have some sort of Auth context
 
 const router = createBrowserRouter([
@@ -37,9 +38,10 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
-      {/* Any global components like Navbar can be added here */}
-      <RouterProvider router={router} />
-      {/* Any other global components or footers can be added here */}
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+
     </>
   );
 };
