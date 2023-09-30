@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { CreateRatingDto, UpdateRatingDto } from './dto/rating.dto';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RtGuard } from 'src/common/guards';
 
 @Controller('rating')
 export class RatingController {
-  constructor(private readonly ratingService: RatingService) {}
+  constructor (private readonly ratingService: RatingService) { }
 
   /**
    * Create a new rating.
@@ -22,7 +22,7 @@ export class RatingController {
    * @returns The created rating.
    */
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createRatingDto: CreateRatingDto) {
     return this.ratingService.create(createRatingDto);
@@ -35,7 +35,7 @@ export class RatingController {
    * @returns The updated rating.
    */
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() updateRatingDto: UpdateRatingDto) {
     const ratedById = updateRatingDto.ratedById;

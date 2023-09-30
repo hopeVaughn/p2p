@@ -10,14 +10,14 @@ import {
 } from '@nestjs/common';
 import { UserReportService } from './user-report.service';
 import { CreateUserReportDto } from './dto/user-report.dto';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RtGuard } from '../common/guards';
 
 // This controller handles HTTP requests related to user reports
 @Controller('user-report')
 // This controller requires authentication via JWT
-@UseGuards(JwtAuthGuard)
+@UseGuards(RtGuard)
 export class UserReportController {
-  constructor(private readonly userReportService: UserReportService) {}
+  constructor (private readonly userReportService: UserReportService) { }
 
   /**
    * Handles POST requests to create a new user report

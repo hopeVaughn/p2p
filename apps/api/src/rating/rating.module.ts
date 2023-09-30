@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { RatingController } from './rating.controller';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RtGuard } from '../common/guards';
 @Module({
   controllers: [RatingController],
-  providers: [RatingService, JwtAuthGuard],
+  providers: [RatingService, RtGuard],
 })
-export class RatingModule {}
+export class RatingModule { }

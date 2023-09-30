@@ -1,20 +1,14 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-/**
- * Data transfer object for authentication.
- */
 export class AuthDto {
-  /**
-   * Email of the user.
-   */
-  @IsEmail()
-  @IsNotEmpty()
-  readonly email: string;
 
-  /**
-   * Password of the user.
-   */
+  @IsEmail()
   @IsString()
   @IsNotEmpty()
-  readonly password: string;
+  email: string;
+
+  @IsNotEmpty() // adds form validation on the backend "ILLEGAL"
+  @IsString()
+  password: string;
+
 }

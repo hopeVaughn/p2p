@@ -28,13 +28,15 @@ import { UserRoleModule } from './user-role/user-role.module';
 import { UserReportModule } from './user-report/user-report.module';
 import { VerifyModule } from './verify/verify.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AtGuard } from './common/guards';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../..', 'client', 'dist'), // <-- path to the static files
+      rootPath: join(__dirname, '../..', 'client', 'dist'), // <-- path to the static files
     }),
     AuthModule,
     UserModule,
@@ -47,6 +49,11 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AtGuard,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule { }

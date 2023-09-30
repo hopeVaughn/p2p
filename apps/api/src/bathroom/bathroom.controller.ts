@@ -12,17 +12,17 @@ import {
 } from '@nestjs/common';
 import { BathroomService } from './bathroom.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
-import { GetUser } from '../auth/decorator';
+import { GetCurrentUserId } from '../common/decorators';
 import { User } from '@prisma/client';
 import { RatingService } from '../rating/rating.service';
+import { RtGuard } from 'src/common/guards';
 
 @Controller('bathroom')
 export class BathroomController {
-  constructor(
+  constructor (
     private readonly bathroomService: BathroomService,
     private ratingService: RatingService,
-  ) {}
+  ) { }
 
   /**
    * Create a new bathroom. This route is protected, and only authenticated users can access it.
@@ -30,7 +30,7 @@ export class BathroomController {
    * @returns The newly created bathroom
    */
   @Post('add_bathroom')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createBathroomDto: CreateBathroomDto) {
     const bathroom = await this.bathroomService.create(createBathroomDto);
@@ -69,7 +69,7 @@ export class BathroomController {
    * @returns The updated bathroom
    */
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
@@ -85,9 +85,9 @@ export class BathroomController {
    * @returns Nothing
    */
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string, @GetUser() user: User) {
+  async remove(@Param('id') id: string, @GetCurrentUserId() user: User) {
     return await this.bathroomService.remove(id, user.id);
   }
 }

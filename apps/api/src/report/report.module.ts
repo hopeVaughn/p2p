@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ReportController } from './report.controller';
 import { ReportService } from './report.service';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RtGuard } from '../common/guards';
 @Module({
   controllers: [ReportController],
-  providers: [ReportService, JwtAuthGuard],
+  providers: [ReportService, RtGuard],
 })
-export class ReportModule {}
+export class ReportModule { }

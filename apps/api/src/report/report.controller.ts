@@ -1,12 +1,12 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { CreateReportDto } from './dto/report.dto';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RtGuard } from 'src/common/guards';
 
 @Controller('report')
-@UseGuards(JwtAuthGuard)
+@UseGuards(RtGuard)
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor (private readonly reportService: ReportService) { }
 
   /**
    * Endpoint for creating a new report.

@@ -7,8 +7,8 @@ import {
   Param,
 } from '@nestjs/common';
 import { VerifyService } from './verify.service';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
-import { GetUser } from '../auth/decorator';
+import { RtGuard } from '../common/guards';
+import { GetCurrentUserId } from '../common/decorators';
 import { User } from '@prisma/client';
 
 /**
@@ -16,7 +16,7 @@ import { User } from '@prisma/client';
  */
 @Controller('verify')
 export class VerifyController {
-  constructor(private readonly verifyService: VerifyService) {}
+  constructor (private readonly verifyService: VerifyService) { }
 
   /**
    * Endpoint for verifying a bathroom.
@@ -25,9 +25,9 @@ export class VerifyController {
    * @returns The result of the verification.
    */
   @Post(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.CREATED)
-  async verify(@Param('id') bathroomId: string, @GetUser() user: User) {
+  async verify(@Param('id') bathroomId: string, @GetCurrentUserId() user: User) {
     return this.verifyService.verify(bathroomId, user.id);
   }
 }

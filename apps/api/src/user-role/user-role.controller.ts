@@ -7,16 +7,15 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guard/jwt.guard';
-import { UserRoleService } from './user-role.service';
-import { Roles } from './decorator';
+import { RtGuard } from '../common/guards';
+import { Roles } from '../common/decorators';
 import { RoleName } from '@prisma/client';
-import { RolesGuard } from './guard';
+import { RolesGuard } from '../common/guards';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(RtGuard, RolesGuard)
 @Controller('user-roles')
 export class UserRoleController {
-  constructor(private readonly userRoleService: UserRoleService) {}
+  constructor () { }
 
   /**
    * Assigns a role to a user.
@@ -24,14 +23,14 @@ export class UserRoleController {
    */
 
   @Patch('update')
-  @Roles('SUPER')
+  @Roles(RoleName.SUPER)
   @HttpCode(HttpStatus.OK)
   async changeRole(
     @Body('id') id: string,
     @Body('roleName') roleName: RoleName,
   ) {
     try {
-      await this.userRoleService.changeRole(id, roleName);
+      await this.changeRole(id, roleName);
     } catch (error) {
       if (error instanceof InternalServerErrorException) {
         throw error;

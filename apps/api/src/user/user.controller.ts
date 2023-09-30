@@ -1,13 +1,13 @@
 import { Controller, Get, UseGuards, Patch } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { GetUser } from '../auth/decorator/';
-import { JwtAuthGuard } from '../auth/guard';
+import { GetCurrentUser } from '../common/decorators';
+import { RtGuard } from '../common/guards';
 
-@UseGuards(JwtAuthGuard) // the parameter is the name of the strategy we defined in the JwtStrategy class and is by default 'jwt'. Here we use a guard to protect the route.
+@UseGuards(RtGuard) // the parameter is the name of the strategy we defined in the JwtStrategy class and is by default 'jwt'. Here we use a guard to protect the route.
 @Controller('users')
 export class UserController {
   @Get('me')
-  getMe(@GetUser() user: User, @GetUser('email') email: string) {
+  getMe(@GetCurrentUser() user: User, @GetCurrentUser('email') email: string) {
     return {
       id: user.id,
       email,
@@ -15,5 +15,5 @@ export class UserController {
   }
   @Patch()
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  editUser() {}
+  editUser() { }
 }
