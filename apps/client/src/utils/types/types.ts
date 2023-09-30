@@ -12,3 +12,12 @@ export type UserType = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type AuthContextType = {
+  user: UserType | null;
+  token: string;
+  signIn: (email: string, password: string) => void;
+  signUp: (username: string, password: string) => void;
+  logout: () => void;
+  refreshToken: () => void;
+};

@@ -1,14 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { UserType } from '../types';
-// 1. Create the context
-interface AuthContextType {
-  user: UserType | null;
-  token: string;
-  login: (username: string, password: string) => void;
-  logout: () => void;
-  refreshToken: () => void;
-}
+import { UserType, AuthContextType } from '../types';
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,11 +13,27 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);  // Replace with your user type and initial value
   const [token, setToken] = useState('');
+  const signUp = async (email: string, password: string) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/auth/signup', {
+        email,
+        password
+      });
+      if (response.data && response.data.accessToken) {
+        setToken(response.data.accessToken);
+        // You can also set the user here if the response contains user data
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      // Handle login error
+    }
+  };
 
-  const login = async (username: string, password: string) => {
+  const signIn = async (email: string, password: string) => {
     try {
       const response = await axios.post('http://localhost:3000/api/auth/login', {
-        username,
+        email,
         password
       });
 
@@ -48,10 +57,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/refresh-token');
+      const response = await axios.post('http://localhost:3000/api/auth/refresh');
 
-      if (response.data && response.data.accessToken) {
-        setToken(response.data.accessToken);
+      if (response.data && response.data.refreshToken) {
+        setToken(response.data.refreshToken);
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
@@ -60,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, refreshToken }}>
+    <AuthContext.Provider value={{ user, token, signUp, signIn, logout, refreshToken }}>
       {children}
     </AuthContext.Provider>
   );
