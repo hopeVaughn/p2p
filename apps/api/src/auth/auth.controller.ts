@@ -5,10 +5,11 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
-import { Tokens } from './types/';
 import { Public, GetCurrentUser, GetCurrentUserId } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 @Controller('auth')
@@ -19,33 +20,67 @@ export class AuthController {
   @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  signup(@Body() dto: AuthDto): Promise<Tokens> {
-    return this.authService.signUp(dto);
+  async signup(@Body() dto: AuthDto, @Res() response: Response): Promise<Response> {
+    const tokens = await this.authService.signUp(dto);
+
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    return response.send({ accessToken: tokens.accessToken });
   }
 
   // api/auth/signin
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  signin(@Body() dto: AuthDto): Promise<Tokens> {
-    return this.authService.signIn(dto);
+  async signin(@Body() dto: AuthDto, @Res() response: Response): Promise<Response> {
+    const tokens = await this.authService.signIn(dto);
+
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // set to true if in production
+      sameSite: 'strict'
+    });
+
+    // can either send the accessToken in the response body or as another cookie.
+    return response.send({ accessToken: tokens.accessToken });
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@GetCurrentUserId() userId: string): Promise<boolean> {
-    return this.authService.logout(userId);
+  async logout(@GetCurrentUserId() userId: string, @Res() response: Response): Promise<Response> {
+    await this.authService.logout(userId);
+
+    response.cookie('refreshToken', '', {
+      expires: new Date(0),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    return response.send({ message: 'Logged out successfully' });
   }
 
   @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refresh(
+  async refresh(
     @GetCurrentUserId() userId: string,
-    @GetCurrentUser('refreshToken')
-    refreshToken: string,
-  ): Promise<Tokens> {
-    return this.authService.refresh(userId, refreshToken);
+    @GetCurrentUser('refreshToken') oldRefreshToken: string,
+    @Res() response: Response
+  ): Promise<Response> {
+    const tokens = await this.authService.refresh(userId, oldRefreshToken);
+
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    return response.send({ accessToken: tokens.accessToken });
   }
 }

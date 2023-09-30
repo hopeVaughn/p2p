@@ -116,9 +116,23 @@ export class AuthService {
 
   // Create access and refresh tokens
   async getTokens(userId: string, email: string): Promise<Tokens> {
+    // Fetch the user's roles from the database
+    const userRoles = await this.prisma.userRole.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        role: true,
+      }
+    });
+
+    const roles = userRoles.map(ur => ur.role); // This will give you an array of roles
+
+    // Construct the payload
     const jwtPayload: JwtPayload = {
       sub: userId,
       email: email,
+      roles: roles,
     };
 
     const [at, rt] = await Promise.all([
