@@ -5,49 +5,50 @@ import { UserType, AuthContextType } from '../types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// 2. Create the provider
+
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);  // Replace with your user type and initial value
-  const [token, setToken] = useState('');
-  const signUp = async (email: string, password: string) => {
+  const [token, setToken] = useState<string>('');
+
+  const signUp = async (email: string, password: string): Promise<boolean> => {
+    console.log("Calling signUp");
     try {
       const response = await axios.post('http://localhost:3000/api/auth/signup', {
         email,
         password
       });
-      if (response.data && response.data.accessToken) {
+      if (response.data && response.data.refreshToken) {
         setToken(response.data.accessToken);
-        // You can also set the user here if the response contains user data
         setUser(response.data.user);
+        return true;
       }
     } catch (error) {
       console.error("Error during login:", error);
-      // Handle login error
     }
+    return false;
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string): Promise<boolean> => {
+    console.log("Calling signIn");
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      const response = await axios.post('http://localhost:3000/api/auth/signin', {
         email,
         password
       });
-
       if (response.data && response.data.accessToken) {
         setToken(response.data.accessToken);
-        // You can also set the user here if the response contains user data
         setUser(response.data.user);
+        return true;
       }
     } catch (error) {
       console.error("Error during login:", error);
-      // Handle login error
     }
+    return false;
   };
-
   const logout = () => {
     // Clear the token and user state
     setToken('');
@@ -68,8 +69,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const isAuthenticated = Boolean(user && token);
+
   return (
-    <AuthContext.Provider value={{ user, token, signUp, signIn, logout, refreshToken }}>
+    <AuthContext.Provider value={{ user, token, signUp, signIn, logout, refreshToken, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

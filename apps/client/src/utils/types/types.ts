@@ -16,8 +16,9 @@ export type UserType = {
 export type AuthContextType = {
   user: UserType | null;
   token: string;
-  signIn: (email: string, password: string) => void;
-  signUp: (username: string, password: string) => void;
+  signIn: (email: string, password: string) => Promise<boolean>;
+  signUp: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   refreshToken: () => void;
+  isAuthenticated: boolean;
 };

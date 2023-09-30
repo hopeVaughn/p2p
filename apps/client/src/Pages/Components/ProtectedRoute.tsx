@@ -1,11 +1,12 @@
 import Error from "../Error";
 import { ProtectedRouteProps } from "../../utils/types";
+import { useAuth } from "../../utils/Context";
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated } = useAuth(); // Replace with your actual auth logic
+  const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Error />;  // Redirect to Error page if not authenticated
+    return <Error />;
   }
 
   return <>{children}</>;

@@ -1,16 +1,46 @@
-import React, { useState } from "react"
-import BackgroundPattern from "../Global_Components/BackgroundPattern"
-import Logo from "../Global_Components/Logo"
-import Footer from "../Global_Components/Footer"
-import Button from "../Global_Components/Buttons"
-import FormRow from "../Global_Components/FormRow"
-
+import React, { useState, useRef } from "react";
+import { Logo, Footer, Button, FormRow, BackgroundPattern } from '../Global_Components';
+import { useAuth } from "../utils/Context";
+import { useNavigate } from 'react-router-dom';
 const Register: React.FC = () => {
-  const [registered, setRegistered] = useState<boolean>(true)
+  const [registered, setRegistered] = useState<boolean>(true);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const { signUp, signIn } = useAuth();
+  const navigate = useNavigate();
 
   const toggleRegistration = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     setRegistered(!registered);
+  };
+
+  const handleAction = async () => {
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Is registered:", registered);
+
+    if (email && password) {
+      let success = false;
+      if (registered) {
+        success = await signIn(email, password);
+      } else {
+        success = await signUp(email, password);
+      }
+
+      if (success) {
+        navigate('/search');
+      }
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    console.log("Form is submitting");
+
+    event.preventDefault();
+    handleAction();
   };
 
   return (
@@ -29,7 +59,7 @@ const Register: React.FC = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6 z-10" action="#" method="POST">
+          <form className="space-y-6 z-10" onSubmit={handleSubmit}>
             <FormRow
               id="email"
               name="email"
@@ -38,6 +68,7 @@ const Register: React.FC = () => {
               required
               labelText="Email address"
               placeholder=" Ex: email@email.com"
+              ref={emailRef}
             />
 
             <FormRow
@@ -48,6 +79,7 @@ const Register: React.FC = () => {
               required
               labelText="Password"
               placeholder=" * * * * * * * "
+              ref={passwordRef}
             />
 
             {!registered && (
@@ -59,11 +91,18 @@ const Register: React.FC = () => {
                 required
                 labelText="Confirm password"
                 placeholder=" * * * * * * * "
+                ref={passwordRef}
               />
             )}
 
             <div className="mt-10 w-full">
-              <Button variant="secondary" btnText={registered ? 'Sign In' : 'Sign Up'} />
+              <Button
+                variant="secondary"
+                btnText={registered ? 'Sign In' : 'Sign Up'}
+                type="submit"
+                onClick={() => console.log("Button clicked!")}
+              />
+
             </div>
           </form>
           <p className="mt-10 text-center text-sm text-teal-900">
@@ -87,7 +126,7 @@ const Register: React.FC = () => {
         <Footer />
       </div>
     </section>
-  )
-}
+  );
+};
 
 export default Register;

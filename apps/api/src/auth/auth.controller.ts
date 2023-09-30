@@ -28,7 +28,7 @@ export class AuthController {
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   signin(@Body() dto: AuthDto): Promise<Tokens> {
-    return this.authService.singIn(dto);
+    return this.authService.signIn(dto);
   }
 
   @Post('logout')
