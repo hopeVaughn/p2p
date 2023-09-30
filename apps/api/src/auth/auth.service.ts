@@ -35,6 +35,13 @@ export class AuthService {
       throw error;
     });
 
+    await this.prisma.userRole.create({
+      data: {
+        userId: user.id,
+        // role will default to RoleName.USER based on the Prisma schema
+      },
+    });
+
     // generate tokens
     const tokens = await this.getTokens(user.id, user.email);
     // update refresh token hash for user
