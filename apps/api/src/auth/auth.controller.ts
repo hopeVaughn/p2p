@@ -31,7 +31,10 @@ export class AuthController {
       sameSite: 'strict'
     });
 
-    return response.send({ accessToken: tokens.accessToken });
+    return response.send({
+      accessToken: tokens.accessToken,
+      refreshExpiry: tokens.expiry
+    });
   }
 
   // api/auth/signin
@@ -49,7 +52,10 @@ export class AuthController {
     });
 
     // can either send the accessToken in the response body or as another cookie.
-    return response.send({ accessToken: tokens.accessToken });
+    return response.send({
+      accessToken: tokens.accessToken,
+      refreshExpiry: tokens.expiry
+    });
   }
 
   @Post('logout')
@@ -87,6 +93,9 @@ export class AuthController {
       sameSite: 'strict'
     });
 
-    return response.send({ accessToken: tokens.accessToken });
+    return response.send({
+      accessToken: tokens.accessToken,
+      refreshExpiry: tokens.expiry
+    });
   }
 }

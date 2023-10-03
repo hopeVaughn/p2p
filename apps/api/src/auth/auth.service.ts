@@ -58,18 +58,18 @@ export class AuthService {
 
     // generate tokens
     const tokens = await this.getTokens(user.id, user.email);
-
+    const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
     // Create a new entry in the Token table for the hashed refresh token
     await this.prisma.token.create({
       data: {
         userId: user.id,
         token: await this.hashData(tokens.refreshToken),
-        expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+        expiry: expiryDate
       }
     });
 
     // return tokens
-    return tokens;
+    return { ...tokens, expiry: expiryDate };
   }
 
   // Sign In
@@ -107,17 +107,17 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.email);
     const hashedRt = await this.hashData(tokens.refreshToken);
     console.log("Hashed refresh token during signIn:", hashedRt);
-
+    const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
     // Create a new entry in the Token table for the hashed refresh token
     await this.prisma.token.create({
       data: {
         userId: user.id,
         token: hashedRt,
-        expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+        expiry: expiryDate
       }
     });
 
-    return tokens;
+    return { ...tokens, expiry: expiryDate };
   }
 
   // Log out
@@ -158,8 +158,8 @@ export class AuthService {
 
     // Handle the refresh token: delete the old and store the new
     await this.handleRefreshToken(userId, oldRefreshToken, tokens.refreshToken);
-
-    return tokens;
+    const expiryDate = await this.handleRefreshToken(userId, oldRefreshToken, tokens.refreshToken);
+    return { ...tokens, expiry: expiryDate };
   }
 
   // Helper functions
@@ -208,7 +208,7 @@ export class AuthService {
   }
 
   // Handle the refresh token: delete the old one and create a new one
-  async handleRefreshToken(userId: string, oldRt: string, newRt: string): Promise<void> {
+  async handleRefreshToken(userId: string, oldRt: string, newRt: string): Promise<Date> {
     if (oldRt) {
       // Extract the jti from the old refresh token
       const oldRtDecoded: any = this.jwtService.decode(oldRt);
@@ -226,16 +226,17 @@ export class AuthService {
     // Extract the jti from the new refresh token
     const newRtDecoded: any = this.jwtService.decode(newRt);
     const newJti = newRtDecoded.jti;
-
+    const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
     // Create a new entry for the new refresh token
     await this.prisma.token.create({
       data: {
         userId: userId,
         token: await argon.hash(newRt),
         jti: newJti,
-        expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+        expiry: expiryDate
       }
     });
+    return expiryDate;
   }
 
 

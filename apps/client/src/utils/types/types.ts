@@ -33,6 +33,7 @@ export type AuthAction =
 export type AuthContextType = {
   user: UserType | null;
   token: string;
+  isAuthenticated: boolean;
   dispatch: Dispatch<AuthAction>;
   signIn: (email: string, password: string) => Promise<boolean>;
   signUp: (username: string, password: string) => Promise<boolean>;
