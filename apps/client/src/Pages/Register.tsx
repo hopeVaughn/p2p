@@ -43,7 +43,7 @@ const Register: React.FC = () => {
       }
 
       if (success) {
-        navigate('/search');
+        navigate('/user/search');
       }
     }
   };

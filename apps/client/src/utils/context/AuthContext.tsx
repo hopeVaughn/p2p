@@ -4,11 +4,13 @@ import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from '../actions';
 import { AuthState } from '../types';
 import authReducer from '../reducer/authReducer';
+import { accessTokenExpired } from '../helpers';
+
 
 const initialState: AuthState = {
   user: null,
-  token: '',
-  isAuthenticated: false,
+  token: localStorage.getItem('accessToken') || '',
+  isAuthenticated: !accessTokenExpired(),
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
