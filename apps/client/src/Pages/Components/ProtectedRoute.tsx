@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Error from "../Error";
 import { useAuth } from "../../utils/hooks";
 import { accessTokenExpired, refreshTokenExpired, decodeAccessToken } from "../../utils/helpers";
 
-const ProtectedRoute: React.FC = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
+const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   const { isAuthenticated, refreshToken } = useAuth();
   const [loading, setLoading] = useState(true);
   const [userRoles, setUserRoles] = useState<string[]>([]);
