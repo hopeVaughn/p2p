@@ -69,9 +69,9 @@ model Bathroom {
 /// Verification of bathroom by user
 model Verification {
   id           String   @id @default(uuid()) @db.VarChar(36)
-  bathroom     Bathroom @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
+  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
   bathroomId   String
-  verifiedBy   User     @relation(fields: [verifiedById], references: [id], onDelete: Cascade)
+  verifiedBy   User     @relation(fields: [verifiedById], references: [id])
   verifiedById String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -80,9 +80,9 @@ model Verification {
 /// Rating of bathroom by user
 model Rating {
   id         String   @id @default(uuid()) @db.VarChar(36)
-  bathroom   Bathroom @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
+  bathroom   Bathroom @relation(fields: [bathroomId], references: [id])
   bathroomId String
-  ratedBy    User     @relation(fields: [ratedById], references: [id], onDelete: Cascade)
+  ratedBy    User     @relation(fields: [ratedById], references: [id])
   ratedById  String
   stars      Float
   createdAt  DateTime @default(now())
@@ -92,9 +92,9 @@ model Rating {
 /// Report of false bathroom location by another user
 model Report {
   id           String       @id @default(uuid()) @db.VarChar(36)
-  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
+  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
   bathroomId   String
-  reportedBy   User         @relation(fields: [reportedById], references: [id], onDelete: Cascade)
+  reportedBy   User         @relation(fields: [reportedById], references: [id])
   reportedById String
   reason       String
   userReports  UserReport[]
@@ -126,7 +126,7 @@ model UserReport {
 model Token {
   id     String   @id @default(uuid())
   userId String
-  user   User     @relation(fields: [userId], references: [id])
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   jti    String   @unique @default(uuid())
   token  String
   expiry DateTime
