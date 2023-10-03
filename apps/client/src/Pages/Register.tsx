@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react";
 import { Logo, Footer, Button, FormRow, BackgroundPattern } from '../Global_Components';
-import { useAuth } from "../utils/context";
+import { useAuth } from "../utils/hooks";
 import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [registered, setRegistered] = useState<boolean>(true);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { signUp, signIn } = useAuth();
+  const { signUp, dispatch.signIn } = useAuth();
   const navigate = useNavigate();
 
   const toggleRegistration = (event: React.MouseEvent<HTMLAnchorElement>) => {

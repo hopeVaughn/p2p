@@ -1,49 +1,58 @@
-import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
-import { UserType, AuthContextType, AuthProviderProps } from '../types';
+import React, { createContext, useReducer } from 'react';
+import { AuthContextType, AuthProviderProps } from '../types';
+import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
+import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from '../actions';
+import { AuthState } from '../types';
+import authReducer from '../reducer/authReducer';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const initialState: AuthState = {
+  user: null,
+  token: '',
+  isAuthenticated: false,
+};
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<UserType | null>(null);
-  const [token, setToken] = useState<string>(localStorage.getItem('accessToken') || '');
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-  // Sign In
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, initialState);
+
+  // Sign Up
   const signUp = async (email: string, password: string): Promise<boolean> => {
-    console.log("Calling signUp");
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/signup', {
-        email,
-        password
-      });
-      if (response.data && response.data.refreshToken) {
-        setToken(response.data.accessToken);
+      const response = await signUpAPI(email, password);
+      if (response.data && response.data.accessToken) {
+        dispatch({
+          type: SIGN_UP,
+          payload: {
+            user: response.data.user,
+            token: response.data.accessToken
+          }
+        });
         localStorage.setItem('accessToken', response.data.accessToken);
-        setUser(response.data.user);
         return true;
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during signup:", error);
     }
     return false;
   };
 
-  // Sign in
   const signIn = async (email: string, password: string): Promise<boolean> => {
-    console.log("Calling signIn");
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/signin', {
-        email,
-        password
-      });
+      const response = await signInAPI(email, password);
       if (response.data && response.data.accessToken) {
-        setToken(response.data.accessToken);
+        dispatch({
+          type: SIGN_IN,
+          payload: {
+            user: response.data.user,
+            token: response.data.accessToken
+          }
+        });
         localStorage.setItem('accessToken', response.data.accessToken);
-        setUser(response.data.user);
         return true;
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during signin:", error);
     }
     return false;
   };
@@ -51,9 +60,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Logout
   const logout = async () => {
     try {
-      await axios.post('http://localhost:3000/api/auth/logout');
-      setToken('');
-      setUser(null);
+      await logoutAPI();
+      dispatch({ type: LOGOUT });
       localStorage.removeItem('accessToken');
     } catch (error) {
       console.error("Error during logout:", error);
@@ -63,33 +71,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Refresh token
   const refreshToken = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/refresh');
+      const response = await refreshTokenAPI();
       if (response.data && response.data.accessToken) {
-        setToken(response.data.accessToken);
+        dispatch({
+          type: REFRESH,
+          payload: { token: response.data.accessToken }
+        });
         localStorage.setItem('accessToken', response.data.accessToken);
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
-      // Handle token refresh error. For instance, redirect to login page or notify the user.
     }
   };
 
-  const isAuthenticated = Boolean(user && token);
+  const isAuthenticated = Boolean(state.user && state.token);
 
   return (
-    <AuthContext.Provider value={{ user, token, signUp, signIn, logout, refreshToken, isAuthenticated }}>
+    <AuthContext.Provider value={{ state, dispatch, signUp, signIn, logout, refreshToken, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// 3. Create the custom hook
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-
-  return context;
-};
+export default AuthProvider;

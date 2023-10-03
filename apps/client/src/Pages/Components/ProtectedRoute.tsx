@@ -1,6 +1,6 @@
 import Error from "../Error";
 import { ProtectedRouteProps } from "../../utils/types";
-import { useAuth } from "../../utils/context";
+import { useAuth } from "../../utils/hooks";
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated } = useAuth();
