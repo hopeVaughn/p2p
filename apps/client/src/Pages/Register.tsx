@@ -5,8 +5,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [registered, setRegistered] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const clearPasswordError = () => {
+    setPasswordError(null);
+  };
   const { signUp, signIn } = useAuth();
   const navigate = useNavigate();
 
@@ -18,11 +24,16 @@ const Register: React.FC = () => {
   const handleAction = async () => {
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
+    const confirmPassword = confirmPasswordRef.current?.value;
 
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Is registered:", registered);
 
+    if (!registered && password !== confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
     if (email && password) {
       let success = false;
       if (registered) {
@@ -92,7 +103,9 @@ const Register: React.FC = () => {
                 required
                 labelText="Confirm password"
                 placeholder=" * * * * * * * "
-                ref={passwordRef}
+                ref={confirmPasswordRef}
+                errorMessage={passwordError}
+                onInputChange={clearPasswordError} // Pass down the passwordError here
               />
             )}
 

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Route, Routes } from "react-router-dom";
 import { Landing, PageNotFound, Register } from './Pages';
 import { Profile, AddBathroom, Search } from './Pages/Protected_Routes';
 import { ProtectedRoute } from "./Pages/Components";
@@ -8,26 +8,21 @@ import { AuthProvider } from "./utils/context";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Landing />,
-    children: [
-
-    ]
+    element: <Landing />
   },
   {
     path: "/register",
     element: <Register />
   },
   {
-    path: "/profile",
-    element: <ProtectedRoute><Profile /></ProtectedRoute>
-  },
-  {
-    path: "/addbathroom",
-    element: <ProtectedRoute><AddBathroom /></ProtectedRoute>
-  },
-  {
-    path: "/search",
-    element: <ProtectedRoute><Search /></ProtectedRoute>
+    path: "/user",
+    element: <ProtectedRoute>
+      <Routes>
+        <Route path="profile" element={<Profile />} />
+        <Route path="addbathroom" element={<AddBathroom />} />
+        <Route path="search" element={<Search />} />
+      </Routes>
+    </ProtectedRoute>
   },
   {
     path: "*",
@@ -35,14 +30,12 @@ const router = createBrowserRouter([
   }
 ]);
 
+
 const App = () => {
   return (
-    <>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-
-    </>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 };
 

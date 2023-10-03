@@ -1,9 +1,6 @@
-import React, { useState } from 'react'
-import BackgroundPattern from '../../Global_Components/BackgroundPattern'
-import UserNavbar from '../../Global_Components/UserNavbar'
-import FormRow from '../../Global_Components/FormRow'
-import Button from '../../Global_Components/Buttons'
-import Modal from '../../Global_Components/Modal'
+import React, { useState } from 'react';
+import { BackgroundPattern, UserNavbar, FormRow, Button, Modal } from '../../Global_Components';
+
 const Profile: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -49,7 +46,7 @@ const Profile: React.FC = () => {
 
       {open && <Modal open={open} setOpen={setOpen} />} {/* Render the Modal component only if open is true */}
     </main>
-  )
-}
+  );
+};
 
 export default Profile;
