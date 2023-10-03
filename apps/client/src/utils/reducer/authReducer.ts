@@ -9,21 +9,21 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
         ...state,
         user: action.payload.user,
         token: action.payload.token,
-        isAuthenticated: true,
+        isAuthenticated: action.payload.isAuthenticated,
       };
     case SIGN_UP:
       return {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
-        isAuthenticated: true,
+        isAuthenticated: action.payload.isAuthenticated,
       };
     case LOGOUT:
       return {
         ...state,
         user: null,
         token: '',
-        isAuthenticated: false,
+        isAuthenticated: action.payload.isAuthenticated,
       };
     case REFRESH:
       return {

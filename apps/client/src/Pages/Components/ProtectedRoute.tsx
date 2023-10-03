@@ -4,7 +4,6 @@ import { useAuth } from "../../utils/hooks";
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated } = useAuth();
-
   if (!isAuthenticated) {
     return <Error />;
   }

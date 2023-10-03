@@ -1,14 +1,14 @@
-import React from 'react'
+import React from 'react';
 import Button from '../../Global_Components/Buttons';
 import { destination, informed, world } from '../../assets';
-
+import { useNavigate } from 'react-router-dom';
 interface HeroProps {
-  mobileMenuOpen: boolean
-  id: string
+  mobileMenuOpen: boolean;
+  id: string;
 }
 
 const Hero: React.FC<HeroProps> = ({ mobileMenuOpen, id }) => {
-
+  const navigate = useNavigate();
   return (
     <section id={id} className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32 flex flex-col-reverse sm:flex-row">
       <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center order-1 sm:order-none">
@@ -22,7 +22,7 @@ const Hero: React.FC<HeroProps> = ({ mobileMenuOpen, id }) => {
           <div className="mt-10 flex justify-center md:justify-start items-center gap-x-6">
             {!mobileMenuOpen && (
               <div className="grow">
-                <Button btnText='Sign Up For Free!' />
+                <Button btnText='Sign Up For Free!' onClick={() => navigate('/register')} />
               </div>
             )}
           </div>
@@ -60,7 +60,7 @@ const Hero: React.FC<HeroProps> = ({ mobileMenuOpen, id }) => {
       </div>
     </section>
 
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

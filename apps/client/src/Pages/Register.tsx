@@ -4,7 +4,7 @@ import { useAuth } from "../utils/hooks";
 import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
-  const [registered, setRegistered] = useState<boolean>(true);
+  const [registered, setRegistered] = useState<boolean>(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const { signUp, signIn } = useAuth();

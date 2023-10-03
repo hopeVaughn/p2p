@@ -1,23 +1,12 @@
-import React from 'react'
-import { Bars3Icon } from '@heroicons/react/24/outline'
+import React from 'react';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 import Logo from '../Global_Components/Logo';
 import Button from '../Global_Components/Buttons';
-
-interface NavigationItem {
-  name: string
-  href: string
-}
-
-interface NavbarProps {
-  navigation: NavigationItem[];
-  mobileMenuOpen: boolean;
-  setMobileMenuOpen: (open: boolean) => void;
-  scrolled?: boolean;
-  navbarHeight?: number;
-  buttons: boolean
-}
+import { NavbarProps } from '../utils/types';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMenuOpen, scrolled, navbarHeight = 0, buttons }) => {
+  const navigate = useNavigate();
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
     event.preventDefault();
     const targetElement = document.querySelector(href);
@@ -65,14 +54,14 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, mobileMenuOpen, setMobileMe
       {buttons ? (
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div className="flex justify-between items-center space-x-4">
-            <Button btnText='Sign Up' />
-            <Button btnText='Sign In' />
+            <Button btnText='Sign Up' onClick={() => navigate('/register')} />
+            <Button btnText='Sign In' onClick={() => navigate('/register')} />
           </div>
         </div>
       ) : null}
     </nav>
-  )
+  );
 
-}
+};
 
-export default Navbar
+export default Navbar;

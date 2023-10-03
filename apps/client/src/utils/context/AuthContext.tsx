@@ -25,7 +25,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           type: SIGN_UP,
           payload: {
             user: response.data.user,
-            token: response.data.accessToken
+            token: response.data.accessToken,
+            isAuthenticated: true
           }
         });
         localStorage.setItem('accessToken', response.data.accessToken);
@@ -45,7 +46,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           type: SIGN_IN,
           payload: {
             user: response.data.user,
-            token: response.data.accessToken
+            token: response.data.accessToken,
+            isAuthenticated: true
           }
         });
         localStorage.setItem('accessToken', response.data.accessToken);
@@ -61,7 +63,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     try {
       await logoutAPI();
-      dispatch({ type: LOGOUT });
+      dispatch({ type: LOGOUT, payload: { isAuthenticated: false } });
       localStorage.removeItem('accessToken');
     } catch (error) {
       console.error("Error during logout:", error);
@@ -84,10 +86,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const isAuthenticated = Boolean(state.user && state.token);
 
   return (
-    <AuthContext.Provider value={{ ...state, dispatch, signUp, signIn, logout, refreshToken, isAuthenticated }}>
+    <AuthContext.Provider value={{ ...state, dispatch, signUp, signIn, logout, refreshToken }}>
       {children}
     </AuthContext.Provider>
   );
