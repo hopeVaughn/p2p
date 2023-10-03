@@ -6,6 +6,7 @@ import { Profile, AddBathroom, Search } from "./Pages/Protected_Routes";
 const routes = [
   {
     path: "/",
+    index: true,
     element: <Landing />
   },
   {
