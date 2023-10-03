@@ -55,3 +55,10 @@ export type NavbarProps = {
   navbarHeight?: number;
   buttons: boolean;
 };
+
+// JWT Decode type
+
+export type DecodedToken = {
+  exp?: number;
+  [key: string]: unknown;  // This allows for other properties in the token
+};

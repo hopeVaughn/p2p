@@ -30,6 +30,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
         return true;
       }
     } catch (error) {
@@ -51,6 +52,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
         return true;
       }
     } catch (error) {
@@ -65,6 +67,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await logoutAPI();
       dispatch({ type: LOGOUT, payload: { isAuthenticated: false } });
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshExpiry');
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -80,6 +83,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           payload: { token: response.data.accessToken }
         });
         localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
