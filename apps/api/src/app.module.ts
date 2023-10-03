@@ -29,7 +29,7 @@ import { UserReportModule } from './user-report/user-report.module';
 import { VerifyModule } from './verify/verify.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AtGuard } from './common/guards';
+import { AtGuard, RolesGuard } from './common/guards';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -53,6 +53,10 @@ import { AtGuard } from './common/guards';
     {
       provide: APP_GUARD,
       useClass: AtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

@@ -7,7 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api'); // <--- this line set the route prefix
   app.enableCors();
-  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,6 +14,7 @@ async function bootstrap() {
       skipMissingProperties: true,
     }),
   );
+  app.use(cookieParser());
   await app.listen(3000);
 }
 bootstrap();
