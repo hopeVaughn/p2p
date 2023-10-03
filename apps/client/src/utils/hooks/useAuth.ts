@@ -9,10 +9,7 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
 
-  const { state, isAuthenticated, dispatch } = context;
+  const { user, token, isAuthenticated, dispatch, signIn, signUp } = context;
 
-  // Destructure user and token from the state
-  const { user, token } = state;
-
-  return { user, token, isAuthenticated, dispatch };
+  return { user, token, isAuthenticated, dispatch, signIn, signUp };
 };

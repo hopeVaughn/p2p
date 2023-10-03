@@ -87,7 +87,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAuthenticated = Boolean(state.user && state.token);
 
   return (
-    <AuthContext.Provider value={{ state, dispatch, signUp, signIn, logout, refreshToken, isAuthenticated }}>
+    <AuthContext.Provider value={{ ...state, dispatch, signUp, signIn, logout, refreshToken, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

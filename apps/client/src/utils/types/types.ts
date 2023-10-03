@@ -31,7 +31,8 @@ export type AuthAction =
 
 
 export type AuthContextType = {
-  state: AuthState;
+  user: UserType | null;
+  token: string;
   isAuthenticated: boolean;
   dispatch: Dispatch<AuthAction>;
   signIn: (email: string, password: string) => Promise<boolean>;
@@ -39,4 +40,3 @@ export type AuthContextType = {
   logout: () => void;
   refreshToken: () => void;
 };
-

@@ -7,7 +7,7 @@ const Register: React.FC = () => {
   const [registered, setRegistered] = useState<boolean>(true);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { signUp, dispatch.signIn } = useAuth();
+  const { signUp, signIn } = useAuth();
   const navigate = useNavigate();
 
   const toggleRegistration = (event: React.MouseEvent<HTMLAnchorElement>) => {
