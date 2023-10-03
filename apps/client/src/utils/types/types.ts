@@ -22,3 +22,7 @@ export type AuthContextType = {
   refreshToken: () => void;
   isAuthenticated: boolean;
 };
+
+export type AuthProviderProps = {
+  children: ReactNode;
+};
