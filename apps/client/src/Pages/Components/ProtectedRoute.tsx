@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
 import Error from "../Error";
-import { ProtectedRouteProps } from "../../utils/types";
 import { useAuth } from "../../utils/hooks";
-import { accessTokenExpired, refreshTokenExpired } from "../../utils/helpers";
+import { accessTokenExpired, refreshTokenExpired, decodeAccessToken } from "../../utils/helpers";
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute: React.FC = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   const { isAuthenticated, refreshToken } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   useEffect(() => {
-    // This effect will check and refresh the token if necessary when the component mounts
+    const decodedToken = decodeAccessToken();
+    if (decodedToken && decodedToken.roles) {
+      setUserRoles(decodedToken.roles);
+    }
+  }, []);
+
+  useEffect(() => {
     const checkAndRefreshToken = async () => {
       if (accessTokenExpired()) {
         if (refreshTokenExpired()) {
-          // If refresh token is also expired, you can redirect to login or show an error
-          // For this example, we will just set loading to false to proceed
           setLoading(false);
         } else {
-          // If only access token is expired, try to refresh it
           await refreshToken();
           setLoading(false);
         }
@@ -30,14 +34,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }: ProtectedRo
   }, [refreshToken]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading spinner or similar while checking tokens
+    return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {
     return <Error />;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

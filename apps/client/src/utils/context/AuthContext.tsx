@@ -4,7 +4,7 @@ import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from '../actions';
 import { AuthState } from '../types';
 import authReducer from '../reducer/authReducer';
-import { accessTokenExpired } from '../helpers';
+import { accessTokenExpired, decodeAccessToken } from '../helpers';
 
 
 const initialState: AuthState = {
@@ -55,6 +55,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
         localStorage.setItem('accessToken', response.data.accessToken);
         localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
+        console.log("user:", decodeAccessToken());
+
         return true;
       }
     } catch (error) {

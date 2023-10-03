@@ -1,8 +1,8 @@
-import { ReactNode, Dispatch } from "react";
+import { ReactNode, ReactElement, Dispatch } from "react";
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from "../actions";
 
 export type ProtectedRouteProps = {
-  children: ReactNode;
+  children: ReactElement | null;
 };
 
 export type AuthProviderProps = {
@@ -61,4 +61,13 @@ export type NavbarProps = {
 export type DecodedToken = {
   exp?: number;
   [key: string]: unknown;  // This allows for other properties in the token
+};
+
+
+export type DecodedAccessToken = {
+  sub: string;
+  email: string;
+  roles: string[];
+  iat: number;
+  exp: number;
 };
