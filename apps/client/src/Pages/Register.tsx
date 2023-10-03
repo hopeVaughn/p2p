@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { Logo, Footer, Button, FormRow, BackgroundPattern } from '../Global_Components';
 import { useAuth } from "../utils/Context";
 import { useNavigate } from 'react-router-dom';
+
 const Register: React.FC = () => {
   const [registered, setRegistered] = useState<boolean>(true);
   const emailRef = useRef<HTMLInputElement>(null);

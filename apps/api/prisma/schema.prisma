@@ -7,16 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// User roles (e.g., admin, user, super)
+enum RoleName {
+  SUPER
+  ADMIN
+  USER
+}
+
+/// Bathroom Gender Options
+enum BathroomGender {
+  GENDERED
+  GENDER_NEUTRAL
+  BOTH
+}
+
+/// Bathroom Stall Types
+enum StallType {
+  SINGLE_STALL
+  CONNECTED
+}
+
 /// Registered users of the application
 model User {
   id                    String         @id @default(uuid()) @db.VarChar(36)
   email                 String         @unique
   password              String
-  hashedRt              String?
   bathrooms             Bathroom[]     @relation("createdBathrooms")
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
-  userRoles             UserRole[]
+  tokens                Token[]
+  roles                 UserRole[]
   verifiedVerifications Verification[]
   ratedRatings          Rating[]
   reportedReports       Report[]
@@ -103,22 +123,13 @@ model UserReport {
   updatedAt DateTime @updatedAt
 }
 
-/// User roles (e.g., admin, user, super)
-enum RoleName {
-  SUPER
-  ADMIN
-  USER
-}
+model Token {
+  id     String   @id @default(uuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id])
+  jti    String   @unique @default(uuid())
+  token  String
+  expiry DateTime
 
-/// Bathroom Gender Options
-enum BathroomGender {
-  GENDERED
-  GENDER_NEUTRAL
-  BOTH
-}
-
-/// Bathroom Stall Types
-enum StallType {
-  SINGLE_STALL
-  CONNECTED
+  @@map("tokens")
 }
