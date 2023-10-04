@@ -3,7 +3,7 @@ import { useAuth } from "../utils/hooks";
 import { useNavigate } from 'react-router-dom';
 
 export default function SignupRegister() {
-  const [registered, setRegistered] = useState<boolean>(false);
+  const [registered, setRegistered] = useState<boolean>(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
