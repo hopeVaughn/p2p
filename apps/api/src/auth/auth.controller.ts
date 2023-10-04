@@ -15,7 +15,9 @@ import { RtGuard } from '../common/guards';
 import { ConfigService } from '@nestjs/config';
 @Controller('auth')
 export class AuthController {
-  constructor (private authService: AuthService, private config: ConfigService) { }
+  constructor (
+    private authService: AuthService,
+    private config: ConfigService) { }
 
   // api/auth/signup
   @Public()
