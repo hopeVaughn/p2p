@@ -16,7 +16,7 @@ const faqs: FAQ[] = [
 
 export default function FAQSection() {
   return (
-    <section className="bg-white">
+    <section>
       <div className="mx-auto max-w-7xl px-6 py-24 sm:pt-32 lg:px-8 lg:py-40">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <aside className="lg:col-span-5">

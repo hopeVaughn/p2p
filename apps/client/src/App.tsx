@@ -10,7 +10,7 @@ const routes = [
     element: <Home />
   },
   {
-    path: "/register",
+    path: "/login",
     element: <SignupRegister />
   },
   {
