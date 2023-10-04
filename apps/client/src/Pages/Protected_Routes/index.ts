@@ -1,10 +1,3 @@
-import AddBathroom from "./AddBathroom";
-import Profile from "./Profile";
-import Search from "./Search";
-
-
-export {
-  AddBathroom,
-  Profile,
-  Search,
-};
+export { default as Search } from './Search';
+export { default as Profile } from './Profile';
+export { default as AddBathroom } from './AddBathroom';

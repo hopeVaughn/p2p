@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Error from "../Error";
+import { PageNotFound } from "..";
 import { useAuth } from "../../utils/hooks";
 import { accessTokenExpired, refreshTokenExpired, decodeAccessToken } from "../../utils/helpers";
 
@@ -38,7 +38,7 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   }
 
   if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {
-    return <Error />;
+    return <PageNotFound />;
   }
 
   return <Outlet />;
