@@ -238,7 +238,5 @@ export class AuthService {
     });
     return expiryDate;
   }
-
-
 }
 
