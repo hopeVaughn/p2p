@@ -29,24 +29,24 @@ const contacts: ContactInfo[] = [
   },
 ];
 
-const locations: ContactInfo[] = [
-  {
-    title: 'Los Angeles',
-    address: ['4556 Brendan Ferry', 'Los Angeles, CA 90210'],
-  },
-  {
-    title: 'New York',
-    address: ['886 Walter Street', 'New York, NY 12345'],
-  },
-  {
-    title: 'Toronto',
-    address: ['7363 Cynthia Pass', 'Toronto, ON N3Y 4H8'],
-  },
-  {
-    title: 'Chicago',
-    address: ['726 Mavis Island', 'Chicago, IL 60601'],
-  },
-];
+// const locations: ContactInfo[] = [
+//   {
+//     title: 'Los Angeles',
+//     address: ['4556 Brendan Ferry', 'Los Angeles, CA 90210'],
+//   },
+//   {
+//     title: 'New York',
+//     address: ['886 Walter Street', 'New York, NY 12345'],
+//   },
+//   {
+//     title: 'Toronto',
+//     address: ['7363 Cynthia Pass', 'Toronto, ON N3Y 4H8'],
+//   },
+//   {
+//     title: 'Chicago',
+//     address: ['726 Mavis Island', 'Chicago, IL 60601'],
+//   },
+// ];
 
 export default function ContactSection() {
   return (
@@ -86,7 +86,7 @@ export default function ContactSection() {
               ))}
             </div>
           </header>
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 pt-16 lg:grid-cols-3">
+          {/* <div className="grid grid-cols-1 gap-x-8 gap-y-10 pt-16 lg:grid-cols-3">
             <div>
               <h2 className="text-3xl font-bold tracking-tight text-gray-900">Locations</h2>
               <p className="mt-4 leading-7 text-gray-600">
@@ -105,7 +105,7 @@ export default function ContactSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </article>
       </div>
     </section>
