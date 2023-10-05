@@ -74,7 +74,7 @@ export class AuthController {
     return response.send({ message: 'Logged out successfully' });
   }
 
-  @Public()
+
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
