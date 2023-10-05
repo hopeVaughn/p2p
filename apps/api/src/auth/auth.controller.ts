@@ -35,7 +35,7 @@ export class AuthController {
 
     return response.send({
       accessToken: tokens.accessToken,
-      refreshExpiry: tokens.expiry
+      refreshExpiry: tokens.accessExpiry
     });
   }
 
@@ -56,7 +56,7 @@ export class AuthController {
     // can either send the accessToken in the response body or as another cookie.
     return response.send({
       accessToken: tokens.accessToken,
-      refreshExpiry: tokens.expiry
+      refreshExpiry: tokens.accessExpiry
     });
   }
 
@@ -97,7 +97,7 @@ export class AuthController {
 
     return response.send({
       accessToken: tokens.accessToken,
-      refreshExpiry: tokens.expiry
+      refreshExpiry: tokens.accessExpiry
     });
   }
 }

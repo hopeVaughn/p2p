@@ -69,7 +69,7 @@ export class AuthService {
     });
 
     // return tokens
-    return { ...tokens, expiry: expiryDate };
+    return { ...tokens };
   }
 
   // Sign In
@@ -117,7 +117,7 @@ export class AuthService {
       }
     });
 
-    return { ...tokens, expiry: expiryDate };
+    return { ...tokens };
   }
 
   // Log out
@@ -158,8 +158,7 @@ export class AuthService {
 
     // Handle the refresh token: delete the old and store the new
     await this.handleRefreshToken(userId, oldRefreshToken, tokens.refreshToken);
-    const expiryDate = await this.handleRefreshToken(userId, oldRefreshToken, tokens.refreshToken);
-    return { ...tokens, expiry: expiryDate };
+    return { ...tokens };
   }
 
   // Helper functions
@@ -201,14 +200,18 @@ export class AuthService {
         expiresIn: '7d',
       })
     ]);
+
+    // generate expiry date for front end comparison
+    const accessTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
     return {
       accessToken: at,
       refreshToken: rt,
+      accessExpiry: accessTokenExpiry
     };
   }
 
   // Handle the refresh token: delete the old one and create a new one
-  async handleRefreshToken(userId: string, oldRt: string, newRt: string): Promise<Date> {
+  async handleRefreshToken(userId: string, oldRt: string, newRt: string): Promise<void> {
     if (oldRt) {
       // Extract the jti from the old refresh token
       const oldRtDecoded: any = this.jwtService.decode(oldRt);
@@ -236,7 +239,6 @@ export class AuthService {
         expiry: expiryDate
       }
     });
-    return expiryDate;
   }
 }
 
