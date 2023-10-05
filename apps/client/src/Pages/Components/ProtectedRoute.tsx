@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { PageNotFound } from "..";
 import { useAuth } from "../../utils/hooks";
-import { accessTokenExpired, refreshTokenExpired, decodeAccessToken } from "../../utils/helpers";
+import { accessTokenExpired, decodeAccessToken } from "../../utils/helpers";
 
 const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   const { isAuthenticated, refreshToken } = useAuth();
@@ -19,12 +19,9 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   useEffect(() => {
     const checkAndRefreshToken = async () => {
       if (accessTokenExpired()) {
-        if (refreshTokenExpired()) {
-          setLoading(false);
-        } else {
-          await refreshToken();
-          setLoading(false);
-        }
+        setLoading(true);
+        await refreshToken();
+        setLoading(false);
       } else {
         setLoading(false);
       }

@@ -13,15 +13,6 @@ export function accessTokenExpired(): boolean {
   return typeof decodedToken.exp !== "undefined" && decodedToken.exp < now;
 }
 
-export function refreshTokenExpired(): boolean {
-  const refreshExpiry = sessionStorage.getItem('refreshExpiry');
-
-  if (!refreshExpiry) return true;  // If there's no expiry date, assume it's expired
-
-  const now = new Date();
-  return new Date(refreshExpiry) < now;
-}
-
 export function decodeAccessToken(): DecodedAccessToken | null {
   const token = sessionStorage.getItem('accessToken');
   if (!token) return null;
