@@ -202,12 +202,9 @@ export class AuthService {
       })
     ]);
 
-    // generate expiry date for front end comparison
-    const accessTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
     return {
       accessToken: at,
       refreshToken: rt,
-      accessExpiry: accessTokenExpiry
     };
   }
 
