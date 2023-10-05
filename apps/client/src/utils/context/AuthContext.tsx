@@ -32,7 +32,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
-        sessionStorage.setItem('refreshExpiry', response.data.refreshExpiry);
         return true;
       }
     } catch (error) {
@@ -54,7 +53,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
-        sessionStorage.setItem('refreshExpiry', response.data.refreshExpiry);
         console.log("user:", decodeAccessToken());
 
         return true;
@@ -87,7 +85,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           payload: { token: response.data.accessToken }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
-        sessionStorage.setItem('refreshExpiry', response.data.refreshExpiry);
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
