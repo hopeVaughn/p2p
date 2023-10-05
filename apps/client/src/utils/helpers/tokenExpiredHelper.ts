@@ -3,7 +3,7 @@ import { DecodedToken, DecodedAccessToken } from '../types';
 
 
 export function accessTokenExpired(): boolean {
-  const token = localStorage.getItem('accessToken');
+  const token = sessionStorage.getItem('accessToken');
 
   if (!token) return true;  // If there's no token, assume it's expired
 
@@ -14,7 +14,7 @@ export function accessTokenExpired(): boolean {
 }
 
 export function refreshTokenExpired(): boolean {
-  const refreshExpiry = localStorage.getItem('refreshExpiry');
+  const refreshExpiry = sessionStorage.getItem('refreshExpiry');
 
   if (!refreshExpiry) return true;  // If there's no expiry date, assume it's expired
 
@@ -23,7 +23,7 @@ export function refreshTokenExpired(): boolean {
 }
 
 export function decodeAccessToken(): DecodedAccessToken | null {
-  const token = localStorage.getItem('accessToken');
+  const token = sessionStorage.getItem('accessToken');
   if (!token) return null;
 
   try {
