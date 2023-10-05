@@ -69,7 +69,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await logoutAPI();
       dispatch({ type: LOGOUT, payload: { isAuthenticated: false } });
       sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('refreshExpiry');
     } catch (error) {
       console.error("Error during logout:", error);
     }
