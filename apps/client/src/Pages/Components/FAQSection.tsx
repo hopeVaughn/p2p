@@ -23,7 +23,7 @@ export default function FAQSection() {
             <h2 className="text-2xl font-bold leading-10 tracking-tight text-gray-900">Frequently asked questions</h2>
             <p className="mt-4 text-base leading-7 text-gray-600">
               Can’t find the answer you’re looking for? Reach out to our{' '}
-              <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+              <a href="#" className="font-semibold text-cyan-600 hover:text-cyan-500">
                 customer support
               </a>{' '}
               team.
