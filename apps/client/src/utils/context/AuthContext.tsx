@@ -9,7 +9,7 @@ import { accessTokenExpired, decodeAccessToken } from '../helpers';
 
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('accessToken') || '',
+  token: sessionStorage.getItem('accessToken') || '',
   isAuthenticated: !accessTokenExpired(),
 };
 
@@ -31,8 +31,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             isAuthenticated: true
           }
         });
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
+        sessionStorage.setItem('accessToken', response.data.accessToken);
+        sessionStorage.setItem('refreshExpiry', response.data.refreshExpiry);
         return true;
       }
     } catch (error) {
@@ -53,8 +53,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             isAuthenticated: true
           }
         });
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
+        sessionStorage.setItem('accessToken', response.data.accessToken);
+        sessionStorage.setItem('refreshExpiry', response.data.refreshExpiry);
         console.log("user:", decodeAccessToken());
 
         return true;
@@ -70,8 +70,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await logoutAPI();
       dispatch({ type: LOGOUT, payload: { isAuthenticated: false } });
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshExpiry');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshExpiry');
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -86,8 +86,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           type: REFRESH,
           payload: { token: response.data.accessToken }
         });
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshExpiry', response.data.refreshExpiry);
+        sessionStorage.setItem('accessToken', response.data.accessToken);
+        sessionStorage.setItem('refreshExpiry', response.data.refreshExpiry);
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
