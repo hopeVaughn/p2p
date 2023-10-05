@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function SignupRegister() {
   const [registered, setRegistered] = useState<boolean>(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
