@@ -7,5 +7,6 @@ export { default as FooterSection } from './FooterSection';
 export { default as ProtectedRoute } from './ProtectedRoute';
 export { default as TestimonialSection } from './TestimonialSection';
 export { default as Logo } from './Logo';
-export { default as NavBar } from './NavBar'
+export { default as NavBar } from './NavBar';
+export { default as Dashboard } from './Dashboard'
 

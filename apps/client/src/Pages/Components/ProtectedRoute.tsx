@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { PageNotFound } from "..";
 import { useAuth } from "../../utils/hooks";
 import { accessTokenExpired, decodeAccessToken } from "../../utils/helpers";
-
+import Dashboard from './Dashboard';
 const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   const { isAuthenticated, refreshToken } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,11 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
     return <PageNotFound />;
   }
 
-  return <Outlet />;
+  return (
+    <Dashboard>
+      <Outlet />
+    </Dashboard>
+  );
 };
 
 export default ProtectedRoute;
