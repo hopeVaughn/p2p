@@ -9,27 +9,27 @@ interface Feature {
 }
 const features: Feature[] = [
   {
-    name: 'Push to deploy',
+    name: 'Share Local Data',
     description:
-      'Morbi viverra dui mi arcu sed. Tellus semper adipiscing suspendisse semper morbi. Odio urna massa nunc massa.',
+      'Share you bathroom data with the community so they can see where potties are located in the area and how they rate.',
     icon: CloudArrowUpIcon,
   },
   {
     name: 'SSL certificates',
     description:
-      'Sit quis amet rutrum tellus ullamcorper ultricies libero dolor eget. Sem sodales gravida quam turpis enim lacus amet.',
+      'Our shared data is deployed on a secure host ensuring that all your data lives behind a Secure Socket Layer Certificate.',
     icon: LockClosedIcon,
   },
   {
-    name: 'Simple queues',
+    name: 'Updated and Verified Locations',
     description:
-      'Quisque est vel vulputate cursus. Risus proin diam nunc commodo. Lobortis auctor congue commodo diam neque.',
+      'Our data set is continually being updated and verified so that our known locations continue to grow along with our community',
     icon: ArrowPathIcon,
   },
   {
     name: 'Advanced security',
     description:
-      'Arcu egestas dolor vel iaculis in ipsum mauris. Tincidunt mattis aliquet hac quis. Id hac maecenas ac donec pharetra eget.',
+      'We ask for very basic information to sign up and sign in. We store your information behind advanced security encryption and authentication processes',
     icon: FingerPrintIcon,
   },
 ];
@@ -39,13 +39,12 @@ export default function FeatureSection() {
     <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <header className="mx-auto max-w-2xl lg:text-center">
-          <h2 className="text-base font-semibold leading-7 text-cyan-600">Deploy faster</h2>
+          <h2 className="text-base font-semibold leading-7 text-cyan-600">Trust the Place You Pee</h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Everything you need to deploy your app
+            Locate the closest and best reviewed potties
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Quis tellus eget adipiscing convallis sit sit eget aliquet quis. Suspendisse eget egestas a elementum
-            pulvinar et feugiat blandit at. In mi viverra elit nunc.
+            At Mother Monster, our mission is to empower individuals with real-time, community-sourced mapping solutions to locate bathrooms, fostering a more comfortable and accessible world.
           </p>
         </header>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">

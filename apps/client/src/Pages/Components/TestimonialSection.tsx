@@ -1,18 +1,17 @@
 const featuredTestimonial = {
-  body: 'Integer id nunc sit semper purus. Bibendum at lacus ut arcu blandit montes vitae auctor libero. Hac condimentum dignissim nibh vulputate ut nunc. Amet nibh orci mi venenatis blandit vel et proin. Non hendrerit in vel ac diam.',
+  body: 'I really love finding a cozy place that reflects my needs, where I can relax and take a pee',
   author: {
     name: 'Brenna Goyette',
     handle: 'brennagoyette',
     imageUrl:
       'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80',
-    logoUrl: 'https://tailwindui.com/img/logos/savvycal-logo-gray-900.svg',
   },
 };
 const testimonials = [
   [
     [
       {
-        body: 'Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.',
+        body: 'Way better than a bush! Would highly recommend!',
         author: {
           name: 'Leslie Alexander',
           handle: 'lesliealexander',
@@ -24,7 +23,7 @@ const testimonials = [
     ],
     [
       {
-        body: 'Aut reprehenderit voluptatem eum asperiores beatae id. Iure molestiae ipsam ut officia rem nulla blanditiis.',
+        body: 'I was gonna go behind this building over there but I though, nah, I better use Place to Pee. So I did. Then I found a place to Pee!',
         author: {
           name: 'Lindsay Walton',
           handle: 'lindsaywalton',
@@ -38,7 +37,7 @@ const testimonials = [
   [
     [
       {
-        body: 'Voluptas quos itaque ipsam in voluptatem est. Iste eos blanditiis repudiandae. Earum deserunt enim molestiae ipsum perferendis recusandae saepe corrupti.',
+        body: 'This app does exactly what it claims to do. It literally only exists to help us find a place to pee... ',
         author: {
           name: 'Tom Cook',
           handle: 'tomcook',
@@ -50,7 +49,7 @@ const testimonials = [
     ],
     [
       {
-        body: 'Molestias ea earum quos nostrum doloremque sed. Quaerat quasi aut velit incidunt excepturi rerum voluptatem minus harum.',
+        body: 'I wear my sunglasses at night so this really helps me not fall over in a dark bush. Thanks Place to Pee!',
         author: {
           name: 'Leonard Krasner',
           handle: 'leonardkrasner',
@@ -98,7 +97,7 @@ export default function TestimonialSection() {
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-lg font-semibold leading-8 tracking-tight text-cyan-600">Testimonials</h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            We have worked with thousands of amazing people
+            We have helped thousands of amazing people!
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
@@ -116,7 +115,6 @@ export default function TestimonialSection() {
                 <div className="font-semibold">{featuredTestimonial.author.name}</div>
                 <div className="text-gray-600">{`@${featuredTestimonial.author.handle}`}</div>
               </div>
-              <img className="h-10 w-auto flex-none" src={featuredTestimonial.author.logoUrl} alt="" />
             </figcaption>
           </figure>
           {testimonials.map((columnGroup, columnGroupIdx) => (
