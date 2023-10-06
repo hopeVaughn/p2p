@@ -229,14 +229,17 @@ export class AuthService {
 
   /*--------------------------------------------------------------------------- */
   /* Start of Helper Functions */
+
   /**
     * Hash data using argon2
     * @param data - Any data to be hashed using argon2
     * @returns 
     */
 
-  // hash data
+  // Helper function - hashData:
   async hashData(data: string) {
+    // Step 1: Use the argon2 library to hash the provided data.
+    // Step 2: Return the hashed data.
     return await argon.hash(data);
   }
 
@@ -248,8 +251,13 @@ export class AuthService {
    * @returns - Promise with access token and refresh token.
    */
 
+  // Helper function - getTokens:
   async getTokens(userId: string, email: string, jti?: string): Promise<Tokens> {
-    // Fetch the user's roles from the database
+    // Step 1: Fetch the roles associated with the provided user ID.
+    // Step 2: Construct the JWT payload with the user's ID, email,roles, and optionally the jti.
+    // Step 3: Generate an access token and a refresh token using the constructed payload.
+    // Step 4: Return the generated tokens.
+
     const userRoles = await this.prisma.userRole.findMany({
       where: {
         userId: userId,
@@ -293,7 +301,14 @@ export class AuthService {
    * @param newRt - The new refresh token.
    */
 
+  // Helper function - handleRefreshToken:
   async handleRefreshToken(userId: string, oldRt: string, newRt: string): Promise<void> {
+    // Step 1: If an old refresh token is provided, decode it to get the JWT ID.
+    // Step 2: Delete the old refresh token from the database using its JWT ID.
+    // Step 3: Decode the new refresh token to extract its JWT ID.
+    // Step 4: Hash the new refresh token.
+    // Step 5: Save the hashed refresh token with its JWT ID in the database.
+
     if (oldRt) {
       // Extract the jti from the old refresh token
       const oldRtDecoded: any = this.jwtService.decode(oldRt);
@@ -322,6 +337,7 @@ export class AuthService {
       }
     });
   }
+
   /* End of Helper Functions */
 }
 
