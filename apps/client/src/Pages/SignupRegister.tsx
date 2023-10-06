@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../utils/hooks";
 import { useNavigate } from 'react-router-dom';
 import { HeadLogo } from "./Components";
+import { useLocation } from "react-router-dom";
 export default function SignupRegister() {
+  const location = useLocation();
+  const fromSignUp = location.state?.fromSignUp as boolean;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [registered, setRegistered] = useState<boolean>(true);
+  const [registered, setRegistered] = useState<boolean>(fromSignUp ? false : true);
   const [validationError, setValidationError] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);

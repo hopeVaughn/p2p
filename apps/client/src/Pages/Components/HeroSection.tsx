@@ -37,6 +37,7 @@ const HeroSection = () => {
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
               to="/login"
+              state={{ fromSignUp: true }}
               className="rounded-md bg-cyan-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
             >
               Sign Up Now!
