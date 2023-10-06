@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "turbo": "^1.10.14"
+    "turbo": "^1.10.15"
   },
   "scripts": {
     "dev": "turbo run dev --no-daemon",
