@@ -32,6 +32,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
+        console.log("isAuthenticated:", state.isAuthenticated);
+
         return true;
       }
     } catch (error) {
@@ -53,6 +55,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
+        console.log("isAuthenticated:", state.isAuthenticated);
+
         console.log("user:", decodeAccessToken());
 
         return true;

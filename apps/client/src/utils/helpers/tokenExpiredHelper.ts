@@ -19,6 +19,8 @@ export function decodeAccessToken(): DecodedAccessToken | null {
 
   try {
     const decodedToken: DecodedAccessToken = jwtDecode(token);
+    console.log("Decoded access token:", decodedToken);
+
     return decodedToken;
   } catch (error) {
     console.error("Error decoding the token:", error);
