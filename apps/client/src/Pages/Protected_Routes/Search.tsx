@@ -35,7 +35,7 @@ export default function Search() {
   }
 
   return (
-    <div className="h-full w-full">
+    <div className="h-[65vh] w-full">
       <MapContainer
         center={location}
         zoom={13}
