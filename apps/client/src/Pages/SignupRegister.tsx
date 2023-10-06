@@ -3,39 +3,51 @@ import { useAuth } from "../utils/hooks";
 import { useNavigate } from 'react-router-dom';
 import { HeadLogo } from "./Components";
 export default function SignupRegister() {
-  const [registered, setRegistered] = useState<boolean>(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [loading, setLoading] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [registered, setRegistered] = useState<boolean>(true);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  const { signUp, signIn } = useAuth();
   const navigate = useNavigate();
+  const { signUp, signIn } = useAuth();
 
   const handleAction = async () => {
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
     const confirmPassword = confirmPasswordRef.current?.value;
 
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Is registered:", registered);
+    // Conditional rendering logical check to compare passwords for signUp
+    if (!registered && (password !== confirmPassword)) {
+      setPasswordError('Passwords must match before submitting');
 
-    if (!registered && password !== confirmPassword) {
-      setPasswordError("Passwords do not match.");
+      setTimeout(() => {
+        setPasswordError(null);
+      }, 3000);
       return;
     }
     if (email && password) {
-      let success = false;
+      let wasSuccessful = false;
       if (registered) {
-        success = await signIn(email, password);
+        setLoading(true);
+        wasSuccessful = await signIn(email, password);  // Use the signIn function
+        console.log("response object:", wasSuccessful);
+        setLoading(false);
       } else {
-        success = await signUp(email, password);
+        wasSuccessful = await signUp(email, password);
       }
 
-      if (success) {
-        navigate('/user/search');
+      if (wasSuccessful) {
+        navigate('/user/dashboard');
+      } else {
+        setValidationError("Invalid Credentials");
+
+        setTimeout(() => {
+          setValidationError(null);
+        }, 3000);
       }
     }
   };
@@ -61,7 +73,8 @@ export default function SignupRegister() {
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
+            <fieldset>
+              {validationError && <p className="text-red-900">{validationError}</p>}
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-cyan-900">
                 Email address
               </label>
@@ -76,8 +89,8 @@ export default function SignupRegister() {
                   className="block w-full rounded-md border-0 py-1.5 text-cyan-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
                 />
               </div>
-            </div>
-            <div>
+            </fieldset>
+            <fieldset>
               <div className="flex items-center justify-between">
                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                   Password
@@ -101,9 +114,9 @@ export default function SignupRegister() {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
                 />
               </div>
-            </div>
+            </fieldset>
             {!registered && (
-              <div>
+              <fieldset>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium leading-6 text-gray-900">
                   Confirm Password
                 </label>
@@ -116,8 +129,9 @@ export default function SignupRegister() {
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
                   />
+                  {passwordError && <p className='text-red-900'>{passwordError}</p>}
                 </div>
-              </div>
+              </fieldset>
             )}
             <div>
               <button
