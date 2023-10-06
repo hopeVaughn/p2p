@@ -32,6 +32,10 @@ export class AuthController {
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() dto: AuthDto, @Res() response: Response): Promise<Response> {
+    // Step 1: Call the signUp method from AuthService.
+    // Step 2: Check if the environment is local (development) or production.
+    // Step 3: Set a secure httpOnly cookie for the refresh token.
+    // Step 4: Send the access token in the response body.
     const tokens = await this.authService.signUp(dto);
 
     const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
@@ -56,6 +60,10 @@ export class AuthController {
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   async signin(@Body() dto: AuthDto, @Res() response: Response): Promise<Response> {
+    // Step 1: Call the signIn method from AuthService.
+    // Step 2: Check if the environment is local (development) or production.
+    // Step 3: Set a secure httpOnly cookie for the refresh token.
+    // Step 4: Send the access token in the response body.
     const tokens = await this.authService.signIn(dto);
 
     const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
@@ -80,6 +88,10 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@GetCurrentUserId() userId: string, @Res() response: Response): Promise<Response> {
+    // Step 1: Call the logout method from AuthService.
+    // Step 2: Check if the environment is local (development) or production.
+    // Step 3: Clear the refresh token by setting an empty cookie that is expired.
+    // Step 4: Send a success message in the response body.
     await this.authService.logout(userId);
 
     const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
@@ -106,6 +118,11 @@ export class AuthController {
     @GetCurrentUserId() userId: string,
     @Res() response: Response
   ): Promise<Response> {
+    // Step 1: Extract the old refresh token directly from the cookies.
+    // Step 2: Call the refresh method from AuthService.
+    // Step 3: Check if the environment is local (development) or production.
+    // Step 4: Set a secure httpOnly cookie for the new refresh token.
+    // Step 5: Send the new access token in the response body.
     const oldRefreshToken = response.req.cookies['refreshToken']; // Extract directly from the cookies
     console.log('Old refresh token:', oldRefreshToken);
 
