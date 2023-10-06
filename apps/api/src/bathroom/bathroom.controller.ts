@@ -29,8 +29,8 @@ export class BathroomController {
    * @param createBathroomDto - The DTO containing the data for the new bathroom
    * @returns The newly created bathroom
    */
-  @Post('add_bathroom')
   @UseGuards(RtGuard)
+  @Post('add_bathroom')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createBathroomDto: CreateBathroomDto) {
     const bathroom = await this.bathroomService.create(createBathroomDto);
@@ -84,8 +84,8 @@ export class BathroomController {
    * @param user - The authenticated user making the request
    * @returns Nothing
    */
-  @Delete(':id')
   @UseGuards(RtGuard)
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @GetCurrentUserId() user: User) {
     return await this.bathroomService.remove(id, user.id);
