@@ -6,8 +6,20 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Strategy } from 'passport-jwt';
 import { Request } from 'express';
 
+/**
+ * This class represents the RtStrategy used for Passport authentication.
+ * It extends the PassportStrategy class and uses the 'jwt-refresh' strategy.
+ * The class extracts the refreshToken from the cookie and validates it.
+ * If the validation is successful, the decoded payload is attached to the request for later use.
+ */
 @Injectable()
 export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+  /**
+   * Creates an instance of RtStrategy.
+   * @param {ConfigService} configService - The ConfigService instance.
+   * @param {JwtService} jwtService - The JwtService instance.
+   * @param {PrismaService} prismaService - The PrismaService instance.
+   */
   constructor (
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
@@ -19,7 +31,14 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
       passReqToCallback: true,
     });
   }
-  async validate(req: Request) {
+
+  /**
+   * Validates the refreshToken extracted from the cookie.
+   * @param {Request} req - The request object.
+   * @returns {Promise<boolean | object>} - Returns false if refreshToken is not found or invalid.
+   * Returns the decoded payload if refreshToken is valid.
+   */
+  async validate(req: Request): Promise<boolean | object> {
     console.log('Received cookies:', req.cookies);
     const refreshToken = req.cookies['refreshToken'];
 

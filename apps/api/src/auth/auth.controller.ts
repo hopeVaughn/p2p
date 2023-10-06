@@ -13,13 +13,21 @@ import { AuthDto } from './dto';
 import { Public, GetCurrentUserId } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { ConfigService } from '@nestjs/config';
+/**
+ * Controller for handling authentication related requests.
+ */
 @Controller('auth')
 export class AuthController {
   constructor (
     private authService: AuthService,
     private config: ConfigService) { }
 
-  // api/auth/signup
+  /**
+   * Endpoint for user signup.
+   * @param dto - The authentication data transfer object.
+   * @param response - The HTTP response object.
+   * @returns The HTTP response with access token and refresh token cookie.
+   */
   @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
@@ -38,7 +46,12 @@ export class AuthController {
     });
   }
 
-  // api/auth/signin
+  /**
+   * Endpoint for user signin.
+   * @param dto - The authentication data transfer object.
+   * @param response - The HTTP response object.
+   * @returns The HTTP response with access token and refresh token cookie.
+   */
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
@@ -58,6 +71,12 @@ export class AuthController {
     });
   }
 
+  /**
+   * Endpoint for user logout.
+   * @param userId - The user ID.
+   * @param response - The HTTP response object.
+   * @returns The HTTP response with empty refresh token cookie.
+   */
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@GetCurrentUserId() userId: string, @Res() response: Response): Promise<Response> {
@@ -74,7 +93,12 @@ export class AuthController {
     return response.send({ message: 'Logged out successfully' });
   }
 
-
+  /**
+   * Endpoint for refreshing access token.
+   * @param userId - The user ID.
+   * @param response - The HTTP response object.
+   * @returns The HTTP response with new access token and refresh token cookie.
+   */
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
