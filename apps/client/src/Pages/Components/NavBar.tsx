@@ -16,21 +16,38 @@ const navigation: NavItem[] = [
 ];
 
 export default function NavBar() {
+  const navRef = useRef<HTMLHeadingElement | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [showLogo, setShowLogo] = useState(true);
-  const [isScrolled, setIsScrolled] = useState(false); // Keep this state
 
-  const isScrolledRef = useRef(isScrolled); // Also keep this ref
+  // Upon NavBar component mount:
+
+  // Define function handleScroll:
+  // If navRef is attached to a DOM element:
+  // Check if user has scrolled using window.scrollY:
+  // If scrolled (window.scrollY > 0):
+  // Add blur effect to the navbar (using navRef to directly modify classes).
+  // Else:
+  // Remove blur effect from the navbar.
+
+  // Attach handleScroll function to the window's 'scroll' event.
+
+  // Set a cleanup function:
+  // Upon NavBar component dismount:
+  // Detach handleScroll from the window's 'scroll' event to prevent memory leaks.
+
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentlyScrolled = window.scrollY > 0;
-      if (currentlyScrolled !== isScrolledRef.current) {
-        isScrolledRef.current = currentlyScrolled;
-        setIsScrolled(currentlyScrolled); // Only update state if scroll status changed
+      if (navRef.current) {
+        const currentlyScrolled = window.scrollY > 0;
+        if (currentlyScrolled) {
+          navRef.current.classList.add('backdrop-blur-md', 'bg-white/30');
+        } else {
+          navRef.current.classList.remove('backdrop-blur-md', 'bg-white/30');
+        }
       }
     };
-
     window.addEventListener('scroll', handleScroll);
 
     return () => {
@@ -48,10 +65,8 @@ export default function NavBar() {
     setMobileMenuOpen(false);
   };
 
-  const navClass = isScrolledRef.current ? 'backdrop-blur-md bg-white/30' : '';
-
   return (
-    <header className={`sticky inset-x-0 top-0 z-50 ${navClass}`}>
+    <header ref={navRef} className="sticky inset-x-0 top-0 z-50">
       <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
         {showLogo && (
           <div className="flex lg:flex-1">

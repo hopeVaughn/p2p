@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 const HeroSection = () => {
 
   return (
@@ -34,12 +35,12 @@ const HeroSection = () => {
             Discover, share and navigate to nearby bathrooms with ease. Brought to you by fellow community members just like you who want to work together and make the world a better place to pee.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <a
-              href="#"
+            <Link
+              to="/login"
               className="rounded-md bg-cyan-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
             >
               Sign Up Now!
-            </a>
+            </Link>
           </div>
         </section>
       </section>
