@@ -8,5 +8,5 @@ export { default as TestimonialSection } from './TestimonialSection';
 export { default as Logo } from './Logo';
 export { default as NavBar } from './NavBar';
 export { default as Dashboard } from './Dashboard';
-export { default as HeadLogo } from './HeadLogo'
-
+export { default as HeadLogo } from './HeadLogo';
+export { default as MapComponent } from './MapComponent';

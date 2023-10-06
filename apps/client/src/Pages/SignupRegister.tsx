@@ -45,7 +45,7 @@ export default function SignupRegister() {
       }
 
       if (wasSuccessful) {
-        navigate('/user/search');
+        navigate('/dashboard');
       } else {
         setValidationError("Invalid Credentials");
 

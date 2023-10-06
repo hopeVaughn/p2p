@@ -2,7 +2,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./Pages/Components";
 import { AuthProvider } from "./utils/context";
 import { Home, PageNotFound, SignupRegister } from './Pages';
-import { Profile, AddBathroom, Search } from "./Pages/Protected_Routes";
+import { Profile } from "./Pages/Protected_Routes";
+
 const routes = [
   {
     path: "/",
@@ -14,21 +15,13 @@ const routes = [
     element: <SignupRegister />
   },
   {
-    path: "/user",
+    path: "/dashboard",
     element: <ProtectedRoute />,
     children: [
       {
         path: "profile",
         element: <Profile />
       },
-      {
-        path: "addbathroom",
-        element: <AddBathroom />
-      },
-      {
-        path: "search",
-        element: <Search />
-      }
     ]
   },
   {

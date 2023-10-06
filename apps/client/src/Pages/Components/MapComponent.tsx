@@ -4,6 +4,7 @@ import {
 } from 'react-leaflet';
 import L from 'leaflet';
 import CustomMarker from '../../assets/images/icon-location.svg';
+import 'leaflet/dist/leaflet.css';
 
 type ChangeViewProps = {
   center: [number, number];
@@ -35,7 +36,7 @@ export default function Search() {
   }
 
   return (
-    <div className="h-[65vh] w-full">
+    <div className="h-[75vh] w-full">
       <MapContainer
         center={location}
         zoom={13}
