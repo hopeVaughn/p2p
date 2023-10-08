@@ -10,10 +10,10 @@ import { RatingService } from '../rating/rating.service';
 
 @Injectable()
 export class BathroomService {
-  constructor(
+  constructor (
     private prisma: PrismaService,
     private ratingService: RatingService,
-  ) {}
+  ) { }
 
   /**
    * Check if the user is the creator of the bathroom
@@ -42,66 +42,32 @@ export class BathroomService {
    * @returns The created bathroom
    * @throws InternalServerErrorException if there is an error during bathroom creation
    */
-  async create(createBathroomDto: CreateBathroomDto) {
-    try {
-      const { createdBy, stars } = createBathroomDto;
+  async createWithLocation(createBathroomDto: CreateBathroomDto) {
+    const { lat, lng, ...rest } = createBathroomDto;
 
-      // Create the bathroom
-      const bathroom = await this.prisma.bathroom.create({
-        data: {
-          ...createBathroomDto,
-          createdBy: {
-            connect: {
-              id: createdBy,
-            },
-          },
-        },
-      });
+    const result = await this.prisma.$executeRaw`
+      INSERT INTO "Bathroom" ("createdById", "gender", "stallType", "wheelchairAccessible", "stars", "keyRequirement", "hoursOfOperation", "location", "address", "createdAt", "updatedAt")
+      VALUES (${createBathroomDto.createdBy}, ${createBathroomDto.gender}, ${createBathroomDto.stallType}, ${createBathroomDto.wheelchairAccessible}, ${createBathroomDto.stars}, ${createBathroomDto.keyRequirement}, ${createBathroomDto.hoursOfOperation}, ST_SetSRID(ST_Point(${lng}, ${lat}), 4326), ${createBathroomDto.address}, NOW(), NOW())
+      RETURNING *;
+    `;
+    console.log('Raw SQL Insert Result:', result);
 
-      // Create the initial rating for the bathroom
-      await this.ratingService.create({
-        bathroomId: bathroom.id,
-        ratedById: createdBy,
-        stars,
-      });
-
-      // Return the created bathroom
-      return bathroom;
-    } catch (error) {
-      // If there is an error, throw an InternalServerErrorException
-      throw new InternalServerErrorException(
-        `Error during bathroom creation: ${error.message}`,
-      );
-    }
+    return result;
   }
-
   /**
    * Find all bathrooms
    * @returns An array of all bathrooms with their verification count
    * @throws InternalServerErrorException if there is an error retrieving bathrooms
    */
-  async findAll() {
-    try {
-      // Find all bathrooms and include their verifications
-      const bathrooms = await this.prisma.bathroom.findMany({
-        include: {
-          verifications: true,
-        },
-      });
+  async findNearby(lat: number, lng: number, radius: number) {
+    const result = await this.prisma.$executeRaw`
+      SELECT * FROM "Bathroom"
+      WHERE ST_Distance(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)) < ${radius};
+    `;
 
-      // Map the bathrooms to include the verification count
-      return bathrooms.map((bathroom) => {
-        const { verifications, ...rest } = bathroom;
-        return {
-          ...rest,
-          verificationCount: verifications.length,
-        };
-      });
-    } catch (error) {
-      // If there is an error, throw an InternalServerErrorException
-      throw new InternalServerErrorException('Error retrieving bathrooms');
-    }
+    return result;
   }
+
 
   /**
    * Find a bathroom by id
@@ -139,26 +105,14 @@ export class BathroomService {
    * @throws NotFoundException if the bathroom is not found
    * @throws InternalServerErrorException if there is an error updating the bathroom
    */
-  async update(id: string, updateBathroomDto: UpdateBathroomDto) {
-    try {
-      // Find the bathroom by id
-      const bathroom = await this.prisma.bathroom.findUnique({ where: { id } });
+  async updateLocation(bathroomId: string, lat: number, lng: number) {
+    const result = await this.prisma.$executeRaw`
+      UPDATE "Bathroom"
+      SET location = ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
+      WHERE id = ${bathroomId};
+    `;
 
-      // If bathroom not found, throw a NotFoundException
-      if (!bathroom) throw new NotFoundException('Bathroom not found');
-
-      // Update the bathroom and return the updated bathroom
-      return await this.prisma.bathroom.update({
-        where: { id },
-        data: updateBathroomDto,
-      });
-    } catch (error) {
-      // If there is an error, throw an InternalServerErrorException or a NotFoundException
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException(
-        `Error during bathroom creation: ${error.message}`,
-      );
-    }
+    return result;
   }
 
   /**

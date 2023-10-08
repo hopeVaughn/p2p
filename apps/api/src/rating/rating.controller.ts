@@ -21,8 +21,8 @@ export class RatingController {
    * @param createRatingDto The data to create the rating.
    * @returns The created rating.
    */
-  @Post()
   @UseGuards(RtGuard)
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createRatingDto: CreateRatingDto) {
     return this.ratingService.create(createRatingDto);
@@ -34,8 +34,8 @@ export class RatingController {
    * @param updateRatingDto The data to update the rating.
    * @returns The updated rating.
    */
-  @Patch(':id')
   @UseGuards(RtGuard)
+  @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() updateRatingDto: UpdateRatingDto) {
     const ratedById = updateRatingDto.ratedById;

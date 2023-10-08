@@ -39,11 +39,11 @@ export class CreateBathroomDto {
 
   @IsNotEmpty()
   @IsNumber()
-  latitude: number;
+  lat: number;
 
   @IsNotEmpty()
   @IsNumber()
-  longitude: number;
+  lng: number;
 
   @IsNotEmpty()
   @IsString()
@@ -70,10 +70,10 @@ export class UpdateBathroomDto {
   hoursOfOperation?: string;
 
   @IsNumber()
-  latitude?: number;
+  lat?: number;
 
   @IsNumber()
-  longitude?: number;
+  lng?: number;
 
   @IsString()
   address?: string;

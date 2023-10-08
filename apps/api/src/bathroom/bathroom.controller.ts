@@ -33,10 +33,10 @@ export class BathroomController {
   @Post('add_bathroom')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createBathroomDto: CreateBathroomDto) {
-    const bathroom = await this.bathroomService.create(createBathroomDto);
+    const bathroom = await this.bathroomService.createWithLocation(createBathroomDto);
 
     // Update the average stars for the created bathroom
-    await this.ratingService.updateAverageStars(bathroom.id);
+    // await this.ratingService.updateAverageStars(bathroom.id);
 
     return bathroom;
   }
@@ -45,11 +45,11 @@ export class BathroomController {
    * Get a list of all bathrooms. This route is public.
    * @returns A list of all bathrooms
    */
-  @Get('all_bathrooms')
-  @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.bathroomService.findAll();
-  }
+  // @Get('all_bathrooms')
+  // @HttpCode(HttpStatus.OK)
+  // findAll() {
+  //   return this.bathroomService.findNearby();
+  // }
 
   /**
    * Get a specific bathroom by its ID. This route is public.
@@ -68,15 +68,15 @@ export class BathroomController {
    * @param updateBathroomDto - The DTO containing the updated data for the bathroom
    * @returns The updated bathroom
    */
-  @Patch(':id')
-  @UseGuards(RtGuard)
-  @HttpCode(HttpStatus.OK)
-  async update(
-    @Param('id') id: string,
-    @Body() updateBathroomDto: UpdateBathroomDto,
-  ) {
-    return await this.bathroomService.update(id, updateBathroomDto);
-  }
+  // @Patch(':id')
+  // @UseGuards(RtGuard)
+  // @HttpCode(HttpStatus.OK)
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() updateBathroomDto: UpdateBathroomDto,
+  // ) {
+  //   return await this.bathroomService.update(id, updateBathroomDto);
+  // }
 
   /**
    * Delete a specific bathroom. This route is protected, and only authenticated users can access it.
