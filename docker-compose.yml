@@ -12,10 +12,10 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: p2p
+      POSTGRES_DB: p2p_dev
     # Connect the container to the imagineers network
     networks:
-      - imagineers
+      - p2p-build
   # Define the test-db service
   test-db:
     # Use the postgres:15 image
@@ -27,10 +27,10 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: p2p
+      POSTGRES_DB: p2p_test
     # Connect the container to the imagineers network
     networks:
-      - imagineers
+      - p2p-build
 # Define the network that the containers will use to communicate
 networks:
-  imagineers:
+  p2p-build:
