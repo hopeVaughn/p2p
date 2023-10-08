@@ -54,10 +54,6 @@ import { AtGuard, RolesGuard } from './common/guards';
       provide: APP_GUARD,
       useClass: AtGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
   ],
 })
 export class AppModule { }

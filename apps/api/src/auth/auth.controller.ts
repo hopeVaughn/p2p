@@ -22,6 +22,7 @@ export class AuthController {
     private authService: AuthService,
     private config: ConfigService) { }
 
+
   /**
    * Endpoint for user signup.
    * @param dto - The authentication data transfer object.
@@ -85,6 +86,7 @@ export class AuthController {
    * @param response - The HTTP response object.
    * @returns The HTTP response with empty refresh token cookie.
    */
+  @UseGuards(RtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@GetCurrentUserId() userId: string, @Res() response: Response): Promise<Response> {
@@ -106,11 +108,12 @@ export class AuthController {
   }
 
   /**
-   * Endpoint for refreshing access token.
-   * @param userId - The user ID.
-   * @param response - The HTTP response object.
-   * @returns The HTTP response with new access token and refresh token cookie.
-   */
+    * Endpoint for refreshing access token.
+    * @param userId - The user ID.
+    * @param response - The HTTP response object.
+    * @returns The HTTP response with new access token and refresh token cookie.
+    */
+  @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -138,4 +141,5 @@ export class AuthController {
       accessToken: tokens.accessToken,
     });
   }
+
 }

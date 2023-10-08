@@ -192,7 +192,7 @@ export class AuthService {
         id: userId,
       },
     });
-    if (!user) throw new ForbiddenException('Access Denied');
+    if (!user) throw new ForbiddenException('Access Denied 01');
 
     // 2. Decode the old refresh token to get the JWT ID (jti).
     const oldRtDecoded: any = this.jwtService.decode(oldRefreshToken);
