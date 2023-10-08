@@ -1,6 +1,15 @@
 import MainLogo from "../../assets/HeadLogo.svg";
-export default function Logo() {
+type LogoProps = {
+  color?: string;
+  size?: number | string;
+};
+
+export default function Logo({ color = 'black', size = 'auto' }: LogoProps) {
   return (
-    <img src={MainLogo} alt="main societas logo" />
+    <img
+      src={MainLogo}
+      alt="mother monster head logo"
+      className={`h-${size} w-auto text-${color} fill-current`}
+    />
   );
 }

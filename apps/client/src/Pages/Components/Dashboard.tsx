@@ -2,8 +2,7 @@ import { Fragment, useMemo } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { MapComponent } from '.';
-
+import { MapComponent, HeadLogo } from '.';
 const user = {
   name: 'Tom Cook',
   email: 'tom@example.com',
@@ -49,11 +48,7 @@ export default function Dashboard() {
                     <div className="flex-shrink-0">
 
                       {/* Logo */}
-                      <img
-                        className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=cyan&shade=300"
-                        alt="Your Company"
-                      />
+                      <HeadLogo size={10} />
                     </div>
 
                     {/* Primary Navigation for Desktop */}

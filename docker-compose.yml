@@ -4,7 +4,7 @@ services:
   # Define the dev-db service
   dev-db:
     # Use the postgres:15 image
-    image: postgres:15
+    image: postgis/postgis:15-3.4
     # Map port 5432 in the container to port 5434 on the host
     ports:
       - 5434:5432
@@ -19,7 +19,7 @@ services:
   # Define the test-db service
   test-db:
     # Use the postgres:15 image
-    image: postgres:15
+    image: postgis/postgis:15-3.4
     # Map port 5432 in the container to port 5435 on the host
     ports:
       - 5435:5432

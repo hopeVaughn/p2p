@@ -1,10 +1,116 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+/// Registered users of the application
+model User {
+  id                    String         @id @default(uuid()) @db.VarChar(36)
+  email                 String         @unique
+  password              String
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  bathrooms             Bathroom[]     @relation("createdBathrooms")
+  ratedRatings          Rating[]
+  reportedReports       Report[]
+  userReports           UserReport[]
+  roles                 UserRole[]
+  verifiedVerifications Verification[]
+  tokens                Token[]
+}
+
+/// Public bathrooms added by users
+model Bathroom {
+  id                   String         @id @default(uuid()) @db.VarChar(36)
+  createdById          String?
+  gender               BathroomGender
+  stallType            StallType
+  wheelchairAccessible Boolean
+  stars                Float
+  keyRequirement       Boolean
+  hoursOfOperation     String
+  location             String
+  address              String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  createdBy            User?          @relation("createdBathrooms", fields: [createdById], references: [id])
+  ratings              Rating[]
+  reports              Report[]
+  verifications        Verification[]
+
+  @@index([location], map: "idx_bathroom_location")
+}
+
+/// Verification of bathroom by user
+model Verification {
+  id           String   @id @default(uuid()) @db.VarChar(36)
+  bathroomId   String
+  verifiedById String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
+  verifiedBy   User     @relation(fields: [verifiedById], references: [id])
+}
+
+/// Rating of bathroom by user
+model Rating {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  bathroomId String
+  ratedById  String
+  stars      Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  bathroom   Bathroom @relation(fields: [bathroomId], references: [id])
+  ratedBy    User     @relation(fields: [ratedById], references: [id])
+}
+
+/// Report of false bathroom location by another user
+model Report {
+  id           String       @id @default(uuid()) @db.VarChar(36)
+  bathroomId   String
+  reportedById String
+  reason       String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
+  reportedBy   User         @relation(fields: [reportedById], references: [id])
+  userReports  UserReport[]
+}
+
+/// Assignment of roles to users
+model UserRole {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      RoleName @default(USER)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserReport {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  userId    String
+  reportId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Token {
+  id     String   @id @default(uuid())
+  userId String
+  jti    String   @unique @default(uuid())
+  token  String
+  expiry DateTime
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tokens")
 }
 
 /// User roles (e.g., admin, user, super)
@@ -25,111 +131,4 @@ enum BathroomGender {
 enum StallType {
   SINGLE_STALL
   CONNECTED
-}
-
-/// Registered users of the application
-model User {
-  id                    String         @id @default(uuid()) @db.VarChar(36)
-  email                 String         @unique
-  password              String
-  bathrooms             Bathroom[]     @relation("createdBathrooms")
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
-  tokens                Token[]
-  roles                 UserRole[]
-  verifiedVerifications Verification[]
-  ratedRatings          Rating[]
-  reportedReports       Report[]
-  userReports           UserReport[]
-}
-
-/// Public bathrooms added by users
-model Bathroom {
-  id                   String         @id @default(uuid()) @db.VarChar(36)
-  createdBy            User?          @relation(fields: [createdById], references: [id], name: "createdBathrooms")
-  createdById          String?
-  gender               BathroomGender
-  stallType            StallType
-  wheelchairAccessible Boolean
-  stars                Float
-  keyRequirement       Boolean
-  hoursOfOperation     String
-  latitude             Float
-  longitude            Float
-  address              String
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-  ratings              Rating[]
-  reports              Report[]
-  verifications        Verification[]
-
-  @@index([latitude, longitude])
-}
-
-/// Verification of bathroom by user
-model Verification {
-  id           String   @id @default(uuid()) @db.VarChar(36)
-  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
-  bathroomId   String
-  verifiedBy   User     @relation(fields: [verifiedById], references: [id])
-  verifiedById String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-/// Rating of bathroom by user
-model Rating {
-  id         String   @id @default(uuid()) @db.VarChar(36)
-  bathroom   Bathroom @relation(fields: [bathroomId], references: [id])
-  bathroomId String
-  ratedBy    User     @relation(fields: [ratedById], references: [id])
-  ratedById  String
-  stars      Float
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-/// Report of false bathroom location by another user
-model Report {
-  id           String       @id @default(uuid()) @db.VarChar(36)
-  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
-  bathroomId   String
-  reportedBy   User         @relation(fields: [reportedById], references: [id])
-  reportedById String
-  reason       String
-  userReports  UserReport[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-}
-
-/// Assignment of roles to users
-model UserRole {
-  id        String   @id @default(uuid()) @db.VarChar(36)
-  role      RoleName @default(USER)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// UserReport model for reporting false information
-model UserReport {
-  id        String   @id @default(uuid()) @db.VarChar(36)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  reportId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Token {
-  id     String   @id @default(uuid())
-  userId String
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jti    String   @unique @default(uuid())
-  token  String
-  expiry DateTime
-
-  @@map("tokens")
 }
