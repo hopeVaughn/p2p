@@ -3,6 +3,11 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
+
+type DashboardProps = {
+  children: React.ReactElement | null;
+};
+
 const user = {
   name: 'Tom Cook',
   email: 'tom@example.com',
@@ -23,7 +28,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Dashboard() {
+export default function Dashboard({ children }: DashboardProps) {
   const activePage = useMemo(() => {
     const activeItem = navigation.find(item => item.current);
     return activeItem ? activeItem.name : "Dashboard";
