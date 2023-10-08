@@ -86,7 +86,7 @@ export class AuthController {
    * @param response - The HTTP response object.
    * @returns The HTTP response with empty refresh token cookie.
    */
-  @UseGuards(RtGuard)
+  // @UseGuards(RtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@GetCurrentUserId() userId: string, @Res() response: Response): Promise<Response> {
@@ -94,6 +94,8 @@ export class AuthController {
     // Step 2: Check if the environment is local (development) or production.
     // Step 3: Clear the refresh token by setting an empty cookie that is expired.
     // Step 4: Send a success message in the response body.
+    console.log('Logout userId: ', userId);
+
     await this.authService.logout(userId);
 
     const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
