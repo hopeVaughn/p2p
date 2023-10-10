@@ -1,25 +1,10 @@
 import React, { createContext, useReducer } from 'react';
 import { AuthContextType, AuthProviderProps } from '../types';
-import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
+import { useSignIn, useSignUp, useLogout, useRefreshToken } from '../api';
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from '../actions';
 import { AuthState } from '../types';
 import authReducer from '../reducer/authReducer';
-import { accessTokenExpired, decodeAccessToken } from '../helpers';
-import { createAPIInstance } from "../api/axiosDefault";
-
-// This function can be moved to a separate utility if needed
-async function refreshTokenOutside() {
-  try {
-    const response = await refreshTokenAPI();
-    if (response.data && response.data.accessToken) {
-      sessionStorage.setItem('accessToken', response.data.accessToken);
-      return response.data.accessToken; // Return the new token
-    }
-  } catch (error) {
-    console.error("Error during token refresh:", error);
-  }
-  return null; // Return null if the refresh fails
-}
+import { accessTokenExpired } from '../helpers';
 
 const initialState: AuthState = {
   user: null,
@@ -32,13 +17,14 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Create the API instance with the refreshToken function
-  const api = createAPIInstance(refreshTokenOutside);
+  const signUpMutation = useSignUp();
+  const signInMutation = useSignIn();
+  const logoutMutation = useLogout();
+  const refreshTokenMutation = useRefreshToken();
 
-  // Sign Up
-  const signUp = async (email: string, password: string): Promise<boolean> => {
+  const handleSignUp = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await signUpAPI(email, password);
+      const response = await signUpMutation.mutateAsync({ email, password });
       if (response.data && response.data.accessToken) {
         dispatch({
           type: SIGN_UP,
@@ -49,19 +35,17 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
-        console.log("isAuthenticated:", state.isAuthenticated);
-
         return true;
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      // Errors are being handled in the mutation itself
     }
-    return false;
+    return false; // Make sure to return false if not successful.
   };
 
-  const signIn = async (email: string, password: string): Promise<boolean> => {
+  const handleSignIn = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await signInAPI(email, password);
+      const response = await signInMutation.mutateAsync({ email, password });
       if (response.data && response.data.accessToken) {
         dispatch({
           type: SIGN_IN,
@@ -72,48 +56,54 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         });
         sessionStorage.setItem('accessToken', response.data.accessToken);
-        console.log("isAuthenticated:", state.isAuthenticated);
-
-        console.log("user:", decodeAccessToken());
-
         return true;
       }
     } catch (error) {
-      console.error("Error during signin:", error);
+      // Errors are being handled in the mutation itself
     }
-    return false;
+    return false; // Make sure to return false if not successful.
   };
 
-  // Logout
-  const logout = async () => {
+  const handleLogout = async () => {
     try {
-      await logoutAPI();
+      await logoutMutation.mutateAsync();
       dispatch({ type: LOGOUT, payload: { isAuthenticated: false } });
       sessionStorage.removeItem('accessToken');
     } catch (error) {
-      console.error("Error during logout:", error);
+      // Errors are being handled in the mutation itself
     }
   };
 
-  // Refresh token
-  const refreshToken = async () => {
+  const handleRefreshToken = async () => {
+    // eslint-disable-next-line no-useless-catch
     try {
-      const response = await refreshTokenAPI();
+      const response = await refreshTokenMutation.mutateAsync();
       if (response.data && response.data.accessToken) {
+        sessionStorage.setItem('accessToken', response.data.accessToken);
         dispatch({
           type: REFRESH,
           payload: { token: response.data.accessToken }
         });
-        sessionStorage.setItem('accessToken', response.data.accessToken);
       }
     } catch (error) {
-      console.error("Error during token refresh:", error);
+      // This is crucial to let React Query's retry mechanism know that the retry has failed.
+      throw error;
     }
   };
 
-
   return (
-    <AuthContext.Provider value={{ ...state, dispatch, signUp, signIn, logout, refreshToken }}>
+    <AuthContext.Provider value={{
+      ...state,
+      dispatch,
+      signUp: handleSignUp,
+      signIn: handleSignIn,
+      logout: handleLogout,
+      refreshToken: handleRefreshToken,
+      signUpMutation,
+      signInMutation,
+      logoutMutation,
+      refreshTokenMutation
+    }}>
       {children}
     </AuthContext.Provider>
   );

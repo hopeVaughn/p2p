@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement, Dispatch } from "react";
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from "../actions";
-
+import { UseMutationResult } from '@tanstack/react-query';
 export type ProtectedRouteProps = {
   children: ReactElement | null;
 };
@@ -36,9 +36,13 @@ export type AuthContextType = {
   isAuthenticated: boolean;
   dispatch: Dispatch<AuthAction>;
   signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (username: string, password: string) => Promise<boolean>;
+  signUp: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  refreshToken: () => void;
+  refreshToken: () => Promise<void>;
+  signUpMutation: UseMutationResult<unknown, unknown, { email: string, password: string; }, unknown>;
+  signInMutation: UseMutationResult<unknown, unknown, { email: string, password: string; }, unknown>;
+  logoutMutation: UseMutationResult<unknown, unknown, void, unknown>;
+  refreshTokenMutation: UseMutationResult<unknown, unknown, void, unknown>;
 };
 
 // Navbar Types

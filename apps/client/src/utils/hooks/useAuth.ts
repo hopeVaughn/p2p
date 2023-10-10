@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context";
 
-// Updated custom hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
 
@@ -9,7 +8,33 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
 
-  const { user, token, isAuthenticated, dispatch, signIn, signUp, refreshToken, logout } = context;
+  const {
+    user,
+    token,
+    isAuthenticated,
+    dispatch,
+    signIn,
+    signUp,
+    refreshToken,
+    logout,
+    signUpMutation,
+    signInMutation,
+    logoutMutation,
+    refreshTokenMutation
+  } = context;
 
-  return { user, token, isAuthenticated, dispatch, signIn, signUp, refreshToken, logout };
+  return {
+    user,
+    token,
+    isAuthenticated,
+    dispatch,
+    signIn,
+    signUp,
+    refreshToken,
+    logout,
+    signUpMutation,
+    signInMutation,
+    logoutMutation,
+    refreshTokenMutation
+  };
 };
