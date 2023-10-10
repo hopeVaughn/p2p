@@ -5,7 +5,21 @@ import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from '../actions';
 import { AuthState } from '../types';
 import authReducer from '../reducer/authReducer';
 import { accessTokenExpired, decodeAccessToken } from '../helpers';
+import { createAPIInstance } from "../api/axiosDefault";
 
+// This function can be moved to a separate utility if needed
+async function refreshTokenOutside() {
+  try {
+    const response = await refreshTokenAPI();
+    if (response.data && response.data.accessToken) {
+      sessionStorage.setItem('accessToken', response.data.accessToken);
+      return response.data.accessToken; // Return the new token
+    }
+  } catch (error) {
+    console.error("Error during token refresh:", error);
+  }
+  return null; // Return null if the refresh fails
+}
 
 const initialState: AuthState = {
   user: null,
@@ -17,6 +31,9 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+
+  // Create the API instance with the refreshToken function
+  const api = createAPIInstance(refreshTokenOutside);
 
   // Sign Up
   const signUp = async (email: string, password: string): Promise<boolean> => {
