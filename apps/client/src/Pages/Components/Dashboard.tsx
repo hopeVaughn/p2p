@@ -20,7 +20,7 @@ export default function Dashboard({ children }: DashboardProps) {
   const { logout } = useAuth();
   const userInfo = decodeAccessToken();
 
-  const handleLogout = async (e: Event) => {
+  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     await logout();
   };
@@ -152,7 +152,10 @@ export default function Dashboard({ children }: DashboardProps) {
                                       active ? 'bg-gray-100' : '',
                                       'block px-4 py-2 text-sm text-cyan-800'
                                     )}
-                                    onClick={item.action ? (e) => { e.preventDefault(); item.action(e); } : undefined}
+                                    onClick={item.action ? (e) => {
+                                      e.preventDefault();
+                                      item.action(e);
+                                    } : undefined}
                                   >
                                     {item.name}
                                   </a>
