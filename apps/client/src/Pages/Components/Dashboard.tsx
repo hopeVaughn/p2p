@@ -22,6 +22,7 @@ export default function Dashboard({ children }: DashboardProps) {
 
   const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     await logout();
     navigate('/');
   };
@@ -35,10 +36,11 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Search', href: '#', current: true },
     { name: 'Add Bathroom', href: '#', current: false },
   ];
+
   const userNavigation = [
     { name: 'Your Profile', href: '#' },
     { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#', action: handleLogout },
+    { name: 'Sign out', action: handleLogout },
   ];
 
 
@@ -163,6 +165,7 @@ export default function Dashboard({ children }: DashboardProps) {
                                 )}
                               </Menu.Item>
                             ))}
+
                           </Menu.Items>
                         </Transition>
                       </Menu>
@@ -225,12 +228,13 @@ export default function Dashboard({ children }: DashboardProps) {
                       <Disclosure.Button
                         key={item.name}
                         as="a"
-                        href={item.href}
                         className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-cyan-500 hover:bg-opacity-75"
+                        onClick={item.action}
                       >
                         {item.name}
                       </Disclosure.Button>
                     ))}
+
                   </div>
                 </div>
               </Disclosure.Panel>
