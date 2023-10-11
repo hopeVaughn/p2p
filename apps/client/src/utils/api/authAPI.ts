@@ -2,31 +2,31 @@ import api from './axiosDefault';
 
 const authBaseURL = 'auth/';
 
-type AuthCredentials = {
+export type AuthCredentials = {
   email: string;
   password: string;
 };
 
-type LogoutCredentials = {
+export type LogoutCredentials = {
   accessToken: string;
 };
 
-type AutResponse = {
+export type AuthResponse = {
   accessToken: string;
 };
 
-type LogoutResponse = {
+export type LogoutResponse = {
   message: string;
 };
 
 // API calls
-export const signUpAPI = async (data: AuthCredentials): Promise<AutResponse> => {
-  const response = await api.post<AutResponse>(`${authBaseURL}signup`, data);
+export const signUpAPI = async (data: AuthCredentials): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>(`${authBaseURL}signup`, data);
   return response.data;
 };
 
-export const signInAPI = async (data: AuthCredentials): Promise<AutResponse> => {
-  const response = await api.post<AutResponse>(`${authBaseURL}signin`, data);
+export const signInAPI = async (data: AuthCredentials): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>(`${authBaseURL}signin`, data);
   return response.data;
 };
 
@@ -35,7 +35,7 @@ export const logoutAPI = async (data: LogoutCredentials): Promise<LogoutResponse
   return response.data;
 };
 
-export const refreshTokenAPI = async (): Promise<AutResponse> => {
-  const response = await api.post<AutResponse>(`${authBaseURL}refresh`);
+export const refreshTokenAPI = async (): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>(`${authBaseURL}refresh`);
   return response.data;
 };
