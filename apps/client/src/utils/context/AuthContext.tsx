@@ -1,10 +1,11 @@
 import React, { createContext, useReducer } from 'react';
-import { AuthContextType, AuthProviderProps } from '../types';
-import { useSignIn, useSignUp, useLogout, useRefreshToken } from '../api';
+import { AuthContextType, AuthProviderProps, AuthResponseData, AuthState } from '../types';
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from '../actions';
-import { AuthState } from '../types';
 import authReducer from '../reducer/authReducer';
 import { accessTokenExpired } from '../helpers';
+import { toast } from 'react-toastify';
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const initialState: AuthState = {
   user: null,
@@ -12,97 +13,77 @@ const initialState: AuthState = {
   isAuthenticated: !accessTokenExpired(),
 };
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const signUpMutation = useSignUp();
-  const signInMutation = useSignIn();
-  const logoutMutation = useLogout();
-  const refreshTokenMutation = useRefreshToken();
+  const signUp = (data: AuthResponseData) => {
+    if (!data.user || !data.accessToken) {
+      toast.error('Data is missing'); // or handle the error in some other way
+      return;
+    }
 
-  const handleSignUp = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const response = await signUpMutation.mutateAsync({ email, password });
-      if (response.data && response.data.accessToken) {
-        dispatch({
-          type: SIGN_UP,
-          payload: {
-            user: response.data.user,
-            token: response.data.accessToken,
-            isAuthenticated: true
-          }
-        });
-        sessionStorage.setItem('accessToken', response.data.accessToken);
-        return true;
+    dispatch({
+      type: SIGN_UP,
+      payload: {
+        user: data.user,
+        token: data.accessToken,
+        isAuthenticated: true
       }
-    } catch (error) {
-      // Errors are being handled in the mutation itself
-    }
-    return false; // Make sure to return false if not successful.
+    });
+    sessionStorage.setItem('accessToken', data.accessToken);
+    toast.success('User registered');
   };
 
-  const handleSignIn = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const response = await signInMutation.mutateAsync({ email, password });
-      if (response.data && response.data.accessToken) {
-        dispatch({
-          type: SIGN_IN,
-          payload: {
-            user: response.data.user,
-            token: response.data.accessToken,
-            isAuthenticated: true
-          }
-        });
-        sessionStorage.setItem('accessToken', response.data.accessToken);
-        return true;
+  const signIn = (data: AuthResponseData) => {
+    if (!data.user || !data.accessToken) {
+      toast.error('Data is missing'); // or handle the error in some other way
+      return;
+    }
+
+    dispatch({
+      type: SIGN_IN,
+      payload: {
+        user: data.user,
+        token: data.accessToken,
+        isAuthenticated: true
       }
-    } catch (error) {
-      // Errors are being handled in the mutation itself
-    }
-    return false; // Make sure to return false if not successful.
+    });
+    sessionStorage.setItem('accessToken', data.accessToken);
+    toast.success('User logged in');
   };
 
-  const handleLogout = async () => {
-    try {
-      await logoutMutation.mutateAsync();
-      dispatch({ type: LOGOUT, payload: { isAuthenticated: false } });
-      sessionStorage.removeItem('accessToken');
-    } catch (error) {
-      // Errors are being handled in the mutation itself
-    }
+  const logout = () => {
+    dispatch({
+      type: LOGOUT,
+      payload: { isAuthenticated: false }
+    });
+    sessionStorage.removeItem('accessToken');
+    toast.success('User logged out');
   };
 
-  const handleRefreshToken = async () => {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const response = await refreshTokenMutation.mutateAsync();
-      if (response.data && response.data.accessToken) {
-        sessionStorage.setItem('accessToken', response.data.accessToken);
-        dispatch({
-          type: REFRESH,
-          payload: { token: response.data.accessToken }
-        });
-      }
-    } catch (error) {
-      // This is crucial to let React Query's retry mechanism know that the retry has failed.
-      throw error;
+  const refreshToken = (data: { accessToken?: string; }) => {
+    if (!data.accessToken) {
+      toast.error('Access token is missing');
+      return;
     }
+    sessionStorage.setItem('accessToken', data.accessToken);
+    dispatch({
+      type: REFRESH,
+      payload: { token: data.accessToken }
+    });
   };
+
+
+
 
   return (
     <AuthContext.Provider value={{
       ...state,
-      dispatch,
-      signUp: handleSignUp,
-      signIn: handleSignIn,
-      logout: handleLogout,
-      refreshToken: handleRefreshToken,
-      signUpMutation,
-      signInMutation,
-      logoutMutation,
-      refreshTokenMutation
+      signUp,
+      signIn,
+      logout,
+      refreshToken,
+
     }}>
       {children}
     </AuthContext.Provider>

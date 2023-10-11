@@ -1,57 +1,37 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../utils/hooks";
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation } from "react-router-dom";
 import { HeadLogo } from "./Components";
-import { useLocation } from "react-router-dom";
+import { useSignUp, useSignIn } from "../utils/hooks";
+import { toast } from "react-toastify";
+
 export default function SignupRegister() {
   const location = useLocation();
   const fromSignUp = location.state?.fromSignUp as boolean;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [loading, setLoading] = useState<boolean>(false);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [registered, setRegistered] = useState<boolean>(fromSignUp ? false : true);
-  const [validationError, setValidationError] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  const navigate = useNavigate();
-  const { signUp, signIn } = useAuth();
+  const { signUp } = useSignUp();
+  const { signIn } = useSignIn();
 
   const handleAction = async () => {
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
     const confirmPassword = confirmPasswordRef.current?.value;
 
-    // Conditional rendering logical check to compare passwords for signUp
-    if (!registered && (password !== confirmPassword)) {
-      setPasswordError('Passwords must match before submitting');
-
-      setTimeout(() => {
-        setPasswordError(null);
-      }, 3000);
-      return;
-    }
-    if (email && password) {
-      let wasSuccessful = false;
-      if (registered) {
-        setLoading(true);
-        wasSuccessful = await signIn(email, password);  // Use the signIn function
-        console.log("response object:", wasSuccessful);
-        setLoading(false);
-      } else {
-        wasSuccessful = await signUp(email, password);
+    if (!registered) {
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match");
+        return;  // Return early to prevent further execution
       }
+    }
 
-      if (wasSuccessful) {
-        navigate('/dashboard');
+    if (email && password) {
+      if (registered) {
+        signIn({ email, password });
       } else {
-        setValidationError("Invalid Credentials");
-
-        setTimeout(() => {
-          setValidationError(null);
-        }, 3000);
+        signUp({ email, password });
       }
     }
   };
@@ -82,7 +62,6 @@ export default function SignupRegister() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <fieldset>
-              {validationError && <p className="text-red-900 text-center">{validationError}</p>}
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-cyan-900">
                 Email address
               </label>
@@ -137,7 +116,6 @@ export default function SignupRegister() {
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
                   />
-                  {passwordError && <p className='text-red-900 text-center'>{passwordError}</p>}
                 </div>
               </fieldset>
             )}

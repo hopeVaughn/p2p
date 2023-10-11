@@ -3,26 +3,27 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
-import { useAuth } from '../../utils/hooks';
 import { decodeAccessToken } from '../../utils/helpers';
+import { useLogout } from '../../utils/hooks';
+import { useNavigate } from 'react-router-dom';
+
 type DashboardProps = {
   children: React.ReactNode;
 };
-
-
-
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
 export default function Dashboard({ children }: DashboardProps) {
-  const { logout } = useAuth();
+  const { logout } = useLogout();
+  const navigate = useNavigate();
   const userInfo = decodeAccessToken();
 
   const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     await logout();
+    navigate('/');
   };
 
   const user = {

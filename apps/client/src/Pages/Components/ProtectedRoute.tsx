@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { PageNotFound } from "..";
-import { useAuth } from "../../utils/hooks";
 import { accessTokenExpired, decodeAccessToken } from "../../utils/helpers";
 import { Dashboard } from '.';
+import { useRefreshToken } from '../../utils/hooks';
+
 const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
-  const { isAuthenticated, refreshToken } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const { refreshToken, isLoading: isRefreshing } = useRefreshToken();
   const [userRoles, setUserRoles] = useState<string[]>([]);
+  const isAuthenticated = Boolean(sessionStorage.getItem('accessToken'));
 
   useEffect(() => {
     const decodedToken = decodeAccessToken();
@@ -17,20 +18,12 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   }, []);
 
   useEffect(() => {
-    const checkAndRefreshToken = async () => {
-      if (accessTokenExpired()) {
-        setLoading(true);
-        await refreshToken();
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-    };
+    if (accessTokenExpired() && !isAuthenticated) {
+      refreshToken();
+    }
+  }, [refreshToken, isAuthenticated]);
 
-    checkAndRefreshToken();
-  }, [refreshToken]);
-
-  if (loading) {
+  if (isRefreshing) {
     return <div>Loading...</div>;
   }
 

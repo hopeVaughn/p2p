@@ -1,6 +1,5 @@
-import { ReactNode, ReactElement, Dispatch } from "react";
+import { ReactNode, ReactElement } from "react";
 import { SIGN_IN, SIGN_UP, REFRESH, LOGOUT } from "../actions";
-import { UseMutationResult } from '@tanstack/react-query';
 export type ProtectedRouteProps = {
   children: ReactElement | null;
 };
@@ -15,6 +14,10 @@ export type UserType = {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+};
+export type AuthResponseData = {
+  user?: UserType;
+  accessToken?: string;
 };
 
 export type AuthState = {
@@ -34,15 +37,18 @@ export type AuthContextType = {
   user: UserType | null;
   token: string;
   isAuthenticated: boolean;
-  dispatch: Dispatch<AuthAction>;
-  signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (email: string, password: string) => Promise<boolean>;
+  signIn: (data: AuthResponseData) => void;
+  signUp: (data: AuthResponseData) => void;
   logout: () => void;
-  refreshToken: () => Promise<void>;
-  signUpMutation: UseMutationResult<unknown, unknown, { email: string, password: string; }, unknown>;
-  signInMutation: UseMutationResult<unknown, unknown, { email: string, password: string; }, unknown>;
-  logoutMutation: UseMutationResult<unknown, unknown, void, unknown>;
-  refreshTokenMutation: UseMutationResult<unknown, unknown, void, unknown>;
+  refreshToken: (data: AuthResponseData) => void;
+};
+
+export type AxiosError = {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+  };
 };
 
 // Navbar Types
