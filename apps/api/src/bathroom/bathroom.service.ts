@@ -27,6 +27,9 @@ export class BathroomService {
     const bathroom = await this.prisma.bathroom.findUnique({
       where: { id: bathroomId },
     });
+    console.log('bathroom', bathroom);
+    console.log('userId', userId);
+
 
     // If bathroom not found, throw a NotFoundException
     if (!bathroom)
@@ -149,6 +152,9 @@ export class BathroomService {
    * @throws InternalServerErrorException if there is an error deleting the bathroom
    */
   async remove(id: string, userId: string) {
+    console.log('id', id);
+    console.log('userId', userId);
+
     // Check if the user is the creator of the bathroom
     const isCreator = await this.isCreator(userId, id);
 

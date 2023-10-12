@@ -13,7 +13,6 @@ import {
 import { BathroomService } from './bathroom.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { GetCurrentUserId } from '../common/decorators';
-import { User } from '@prisma/client';
 import { RatingService } from '../rating/rating.service';
 import { RtGuard } from 'src/common/guards';
 import { Public } from '../common/decorators/public.decorator';
@@ -89,10 +88,11 @@ export class BathroomController {
    * @param user - The authenticated user making the request
    * @returns Nothing
    */
+  @Public()
   @UseGuards(RtGuard)
-  @Delete(':id')
+  @Delete('delete_bathroom/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string, @GetCurrentUserId() user: User) {
-    return await this.bathroomService.remove(id, user.id);
+  async remove(@Param('id') id: string, @GetCurrentUserId() userId: string) {
+    return await this.bathroomService.remove(id, userId);
   }
 }
