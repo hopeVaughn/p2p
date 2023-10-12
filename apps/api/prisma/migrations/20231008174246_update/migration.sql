@@ -5,8 +5,10 @@
 
 */
 -- AlterTable
-ALTER TABLE "Bathroom" DROP COLUMN "location",
-ADD COLUMN     "location" JSONB NOT NULL;
+ALTER TABLE "Bathroom" DROP COLUMN "location";
+ALTER TABLE "Bathroom" ADD COLUMN "location" GEOMETRY(Point, 4326);
+
 
 -- CreateIndex
-CREATE INDEX "idx_bathroom_location" ON "Bathroom"("location");
+CREATE INDEX "idx_bathroom_location_gist" ON "Bathroom" USING GIST ("location");
+

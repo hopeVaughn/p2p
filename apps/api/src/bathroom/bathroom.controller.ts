@@ -16,6 +16,7 @@ import { GetCurrentUserId } from '../common/decorators';
 import { User } from '@prisma/client';
 import { RatingService } from '../rating/rating.service';
 import { RtGuard } from 'src/common/guards';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('bathroom')
 export class BathroomController {
@@ -29,6 +30,7 @@ export class BathroomController {
    * @param createBathroomDto - The DTO containing the data for the new bathroom
    * @returns The newly created bathroom
    */
+  @Public()
   @UseGuards(RtGuard)
   @Post('add_bathroom')
   @HttpCode(HttpStatus.CREATED)

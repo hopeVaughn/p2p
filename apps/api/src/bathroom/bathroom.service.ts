@@ -46,10 +46,11 @@ export class BathroomService {
     const { lat, lng, ...rest } = createBathroomDto;
 
     const result = await this.prisma.$executeRaw`
-      INSERT INTO "Bathroom" ("createdById", "gender", "stallType", "wheelchairAccessible", "stars", "keyRequirement", "hoursOfOperation", "location", "address", "createdAt", "updatedAt")
-      VALUES (${createBathroomDto.createdBy}, ${createBathroomDto.gender}, ${createBathroomDto.stallType}, ${createBathroomDto.wheelchairAccessible}, ${createBathroomDto.stars}, ${createBathroomDto.keyRequirement}, ${createBathroomDto.hoursOfOperation}, ST_SetSRID(ST_Point(${lng}, ${lat}), 4326), ${createBathroomDto.address}, NOW(), NOW())
-      RETURNING *;
-    `;
+    INSERT INTO "Bathroom" ("createdById", "gender", "stallType", "wheelchairAccessible", "stars", "keyRequirement", "hoursOfOperation", "location", "address")
+    VALUES (${createBathroomDto.createdBy}, ${createBathroomDto.gender}, ${createBathroomDto.stallType}, ${createBathroomDto.wheelchairAccessible}, ${createBathroomDto.stars}, ${createBathroomDto.keyRequirement}, ${createBathroomDto.hoursOfOperation}, ST_SetSRID(ST_Point(${lng}, ${lat}), 4326), ${createBathroomDto.address})
+    RETURNING *;
+  `;
+
     console.log('Raw SQL Insert Result:', result);
 
     return result;

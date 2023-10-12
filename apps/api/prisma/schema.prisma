@@ -35,7 +35,7 @@ model Bathroom {
   stars                Float
   keyRequirement       Boolean
   hoursOfOperation     String
-  location             Json
+  location             Bytes?
   address              String
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
