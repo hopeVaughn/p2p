@@ -204,7 +204,7 @@ export default function Dashboard({ children }: DashboardProps) {
                       key={item.name}
                       as="a"
                       href={item.href}
-                      onClick={() => handleNavigationClick(item.name)}  // <-- Add this line
+                      onClick={() => handleNavigationClick(item.name)}
                       className={classNames(
                         item.current
                           ? 'bg-cyan-700 text-white'
@@ -216,6 +216,37 @@ export default function Dashboard({ children }: DashboardProps) {
                       {item.name}
                     </Disclosure.Button>
                   ))}
+                </div>
+                {/* Profile options for mobile view */}
+                <div className="border-t border-cyan-700 pb-3 pt-4">
+                  <div className="flex items-center px-5">
+                    <div className="flex-shrink-0">
+                      <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-sm font-medium text-cyan-800">{user.email}</div>
+                    </div>
+                    <button
+                      type="button"
+                      className="relative ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-cyan-600 p-1 text-white hover:bg-cyan-500 hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cyan-600"
+                    >
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
+                  </div>
+                  <div className="mt-3 space-y-1 px-2">
+                    {userNavigation.map((item) => (
+                      <Disclosure.Button
+                        key={item.name}
+                        as="a"
+                        className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-cyan-500 hover:bg-opacity-75"
+                        onClick={item.action}
+                      >
+                        {item.name}
+                      </Disclosure.Button>
+                    ))}
+                  </div>
                 </div>
               </Disclosure.Panel>
             </Fragment>
@@ -237,6 +268,6 @@ export default function Dashboard({ children }: DashboardProps) {
           </div>
         </main>
       </div>
-    </Fragment>
+    </Fragment >
   );
 }
