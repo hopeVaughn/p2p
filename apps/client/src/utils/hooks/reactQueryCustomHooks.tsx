@@ -1,7 +1,8 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI } from '../api';
 
 type GenericAPIError = {
   response?: {
@@ -115,5 +116,65 @@ export const useRefreshToken = () => {
   return {
     refreshToken: mutation.mutate,
     isLoading: mutation.isLoading
+  };
+};
+
+// Bathroom API custom hooks
+
+// Create bathroom
+export const useCreateBathroom = () => {
+  const mutation = useMutation(createBathroomAPI, {
+    onSuccess: () => {
+      toast.success('Bathroom created successfully');
+    },
+    onError: (error: GenericAPIError) => {
+      const errorMessage = error?.response?.data?.msg || 'Error creating bathroom';
+      toast.error(errorMessage);
+    }
+  });
+
+  return {
+    createBathroom: mutation.mutate,
+    isLoading: mutation.isLoading,
+    createError: mutation.error
+  };
+};
+
+// Delete bathroom
+export const useDeleteBathroom = () => {
+  const mutation = useMutation(deleteBathroomAPI, {
+    onSuccess: () => {
+      toast.success('Bathroom deleted successfully');
+    },
+    onError: (error: GenericAPIError) => {
+      const errorMessage = error?.response?.data?.msg || 'Error deleting bathroom';
+      toast.error(errorMessage);
+    }
+  });
+
+  return {
+    deleteBathroom: mutation.mutate,
+    isLoading: mutation.isLoading,
+    deleteError: mutation.error
+  };
+};
+
+// Find all bathrooms near the user
+export const useFindAllBathrooms = (lat: number, lng: number, radius: number) => {
+  const query = useQuery(['bathrooms', lat, lng, radius], () => findAllBathroomsAPI(lat, lng, radius), {
+    onSuccess: () => {
+      toast.success('Bathrooms fetched successfully');
+    },
+    onError: (error: GenericAPIError) => {
+      const errorMessage = error?.response?.data?.msg || 'Error fetching bathrooms';
+      toast.error(errorMessage);
+    }
+  });
+
+  return {
+    bathrooms: query.data,
+    isLoading: query.isLoading,
+    error: query.error,
+    refetchBathrooms: query.refetch // For refetching data
   };
 };

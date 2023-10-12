@@ -29,8 +29,7 @@ export class BathroomController {
    * @param createBathroomDto - The DTO containing the data for the new bathroom
    * @returns The newly created bathroom
    */
-  @Public()
-  @UseGuards(RtGuard)
+
   @Post('add_bathroom')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createBathroomDto: CreateBathroomDto) {
@@ -46,8 +45,7 @@ export class BathroomController {
    * Get a list of all bathrooms. This route is public.
    * @returns A list of all bathrooms
    */
-  @Public()
-  @UseGuards(RtGuard)
+
   @Post('nearby')
   @HttpCode(HttpStatus.OK)
   findNearby(@Body('lat') lat: number, @Body('lng') lng: number, @Body('radius') radius: number) {

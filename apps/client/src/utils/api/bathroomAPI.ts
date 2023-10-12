@@ -28,5 +28,11 @@ export const createBathroomAPI = async (data: Bathroom) => {
 export const deleteBathroomAPI = async (id: string) => {
   const response = await api.delete(`${bathroomBaseURL}${id}`);
   return response.data;
-}
+};
 
+
+// Find all bathrooms near the user
+export const findAllBathroomsAPI = async (lat: number, lng: number, radius: number) => {
+  const response = await api.post(`${bathroomBaseURL}nearby`, { lat, lng, radius });
+  return response.data;
+};

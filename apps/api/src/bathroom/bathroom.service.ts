@@ -88,14 +88,14 @@ export class BathroomService {
    * @throws InternalServerErrorException if there is an error retrieving bathrooms
    */
   async findNearby(lat: number, lng: number, radius: number) {
-    const result = await this.prisma.$executeRaw`
-      SELECT * FROM "Bathroom"
+    const result = await this.prisma.$queryRaw`
+      SELECT id, ST_X(location) as latitude, ST_Y(location) as longitude FROM "Bathroom"
       WHERE ST_Distance(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)) < ${radius};
     `;
+    console.log('result', result);
 
     return result;
   }
-
 
   /**
    * Find a bathroom by id
