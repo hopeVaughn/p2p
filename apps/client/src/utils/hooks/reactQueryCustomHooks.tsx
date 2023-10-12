@@ -160,7 +160,7 @@ export const useDeleteBathroom = () => {
 };
 
 // Find all bathrooms near the user
-export const useFindAllBathrooms = (lat: number, lng: number, radius: number) => {
+export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
   const query = useQuery(['bathrooms', lat, lng, radius], () => findAllBathroomsAPI(lat, lng, radius), {
     onSuccess: () => {
       toast.success('Bathrooms fetched successfully');
@@ -168,7 +168,10 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number) =>
     onError: (error: GenericAPIError) => {
       const errorMessage = error?.response?.data?.msg || 'Error fetching bathrooms';
       toast.error(errorMessage);
-    }
+    },
+    enabled: shouldFetch,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false
   });
 
   return {

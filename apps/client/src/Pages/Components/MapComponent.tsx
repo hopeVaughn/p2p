@@ -40,13 +40,15 @@ const ChangeView: React.FC<ChangeViewProps> = ({ center, zoom }) => {
 
 export default function MapComponent() {
   const [location, setLocation] = useState<[number, number] | null>(null);
-  const radius = 500; // 500 meters
+  const radius = 2000; // 100 meters
+  const shouldFetch = Boolean(location);
 
   // Using the custom hook here to fetch bathrooms
   const { bathrooms, isLoading: bathroomsLoading } = useFindAllBathrooms(
     location ? location[0] : 0,
     location ? location[1] : 0,
-    radius
+    radius,
+    shouldFetch
   );
 
   useEffect(() => {
@@ -69,7 +71,8 @@ export default function MapComponent() {
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
-        <ChangeView center={location} zoom={13} />
+        {location && <ChangeView center={location} zoom={18} />}
+
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
@@ -83,7 +86,7 @@ export default function MapComponent() {
         {!bathroomsLoading && bathrooms?.map((bathroom) => (
           <Marker
             key={bathroom.id}
-            position={[bathroom.latitude, bathroom.longitude]}
+            position={[bathroom.longitude, bathroom.latitude]}
             icon={redMarker}
           >
             <Popup>
