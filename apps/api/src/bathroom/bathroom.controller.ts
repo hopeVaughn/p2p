@@ -47,17 +47,20 @@ export class BathroomController {
    * Get a list of all bathrooms. This route is public.
    * @returns A list of all bathrooms
    */
-  // @Get('all_bathrooms')
-  // @HttpCode(HttpStatus.OK)
-  // findAll() {
-  //   return this.bathroomService.findNearby();
-  // }
-
+  @Public()
+  @UseGuards(RtGuard)
+  @Post('nearby')
+  @HttpCode(HttpStatus.OK)
+  findNearby(@Body('lat') lat: number, @Body('lng') lng: number, @Body('radius') radius: number) {
+    return this.bathroomService.findNearby(lat, lng, radius);
+  }
   /**
    * Get a specific bathroom by its ID. This route is public.
    * @param id - The ID of the bathroom to retrieve
    * @returns The bathroom with the specified ID
    */
+  @Public()
+  @UseGuards(RtGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
@@ -70,16 +73,16 @@ export class BathroomController {
    * @param updateBathroomDto - The DTO containing the updated data for the bathroom
    * @returns The updated bathroom
    */
-  // @Patch(':id')
-  // @UseGuards(RtGuard)
-  // @HttpCode(HttpStatus.OK)
-  // async update(
-  //   @Param('id') id: string,
-  //   @Body() updateBathroomDto: UpdateBathroomDto,
-  // ) {
-  //   return await this.bathroomService.update(id, updateBathroomDto);
-  // }
-
+  @Patch('update_location/:id')
+  @UseGuards(RtGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateLocation(
+    @Param('id') id: string,
+    @Body('lat') lat: number,
+    @Body('lng') lng: number,
+  ) {
+    return await this.bathroomService.updateLocation(id, lat, lng);
+  }
   /**
    * Delete a specific bathroom. This route is protected, and only authenticated users can access it.
    * @param id - The ID of the bathroom to delete

@@ -1,5 +1,6 @@
 -- CreateExtension
 CREATE EXTENSION IF NOT EXISTS "postgis";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- CreateEnum
 CREATE TYPE "RoleName" AS ENUM ('SUPER', 'ADMIN', 'USER');
