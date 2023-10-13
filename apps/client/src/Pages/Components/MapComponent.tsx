@@ -116,7 +116,7 @@ const DraggablePinMarker: React.FC = () => {
   );
 };
 
-export default function MapComponent() {
+export default function MapComponent({ isAddBathroomMode }: { isAddBathroomMode: boolean; }) {
   const [location, setLocation] = useState<[number, number] | null>(null);
 
   useEffect(() => {
@@ -140,7 +140,7 @@ export default function MapComponent() {
         style={{ height: "100%", width: "100%" }}
       >
         <MapView location={location} />
-        <DraggablePinMarker />
+        {isAddBathroomMode && <DraggablePinMarker />}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ZoomControl position="bottomleft" />
       </MapContainer>

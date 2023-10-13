@@ -20,6 +20,8 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Search', href: '#', current: true },
     { name: 'Add Bathroom', href: '#', current: false },
   ]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isAddBathroomMode, setIsAddBathroomMode] = useState(false);
 
   const { logout } = useLogout();
   const navigate = useNavigate();
@@ -39,7 +41,10 @@ export default function Dashboard({ children }: DashboardProps) {
         current: item.name === clickedItemName
       }))
     );
+    // Set the isAddBathroomMode state based on the clicked item name
+    setIsAddBathroomMode(clickedItemName === 'Add Bathroom');
   };
+
   const user = {
     email: userInfo?.email,
     imageUrl:
@@ -264,7 +269,7 @@ export default function Dashboard({ children }: DashboardProps) {
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             {children}
-            <MapComponent />
+            <MapComponent isAddBathroomMode={isAddBathroomMode} />
           </div>
         </main>
       </div>
