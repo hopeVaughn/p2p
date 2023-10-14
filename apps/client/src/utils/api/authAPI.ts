@@ -37,5 +37,7 @@ export const logoutAPI = async (data: LogoutCredentials): Promise<LogoutResponse
 
 export const refreshTokenAPI = async (): Promise<AuthResponse> => {
   const response = await api.post<AuthResponse>(`${authBaseURL}refresh`);
+  console.log('refreshTokenAPI response: ', response);
+
   return response.data;
 };

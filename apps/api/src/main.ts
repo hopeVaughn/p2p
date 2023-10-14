@@ -6,11 +6,11 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api'); // <--- this line set the route prefix
-  app.enableCors(
-    // origin: 'http://localhost:YOUR_CLIENT_PORT',  // Update this to your client's URL
-    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    // credentials: true,  // This is important for cookies
-  );
+  app.use(cookieParser());
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,7 +18,6 @@ async function bootstrap() {
       skipMissingProperties: true,
     }),
   );
-  app.use(cookieParser());
   await app.listen(3000);
 }
 bootstrap();

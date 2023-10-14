@@ -3,9 +3,8 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
-import { decodeAccessToken } from '../../utils/helpers';
-import { useLogout } from '../../utils/hooks';
-import { useNavigate } from 'react-router-dom';
+import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
+import { useLogout, useRefreshToken } from '../../utils/hooks';
 
 type DashboardProps = {
   children: React.ReactNode;
@@ -21,17 +20,31 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Add Bathroom', current: false },
   ]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isAddBathroomMode, setIsAddBathroomMode] = useState(false);
+  const [isAddBathroomMode, setIsAddBathroomMode] = useState<boolean>(false);
 
   const { logout } = useLogout();
-  const navigate = useNavigate();
+  const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
 
   const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    await logout();
-    navigate('/');
+
+    const token = sessionStorage.getItem('accessToken');
+
+    // Check if there's an access token
+    if (!token || accessTokenExpired()) {
+      try {
+        await refreshToken();
+        const token = sessionStorage.getItem('accessToken');
+        logout(token as string);
+      } catch (error) {
+        console.error("Failed to refresh token:", error);
+      }
+    }
+    if (token) {
+      logout(token);
+    }
   };
 
   const handleNavigationClick = (clickedItemName: string) => {
