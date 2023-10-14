@@ -130,7 +130,7 @@ export default function MapComponent({ isAddBathroomMode }: { isAddBathroomMode:
   }
 
   return (
-    <div className="h-[75vh] w-full">
+    <div className="h-[85vh] w-full">
       <MapContainer
         center={location}
         zoom={13}

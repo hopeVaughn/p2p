@@ -1,4 +1,4 @@
-import { Fragment, useState, useMemo } from 'react';
+import { Fragment, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
@@ -17,8 +17,8 @@ function classNames(...classes: string[]) {
 
 export default function Dashboard({ children }: DashboardProps) {
   const [navigation, setNavigation] = useState([
-    { name: 'Search', href: '#', current: true },
-    { name: 'Add Bathroom', href: '#', current: false },
+    { name: 'Search', current: true },
+    { name: 'Add Bathroom', current: false },
   ]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAddBathroomMode, setIsAddBathroomMode] = useState(false);
@@ -27,7 +27,7 @@ export default function Dashboard({ children }: DashboardProps) {
   const navigate = useNavigate();
   const userInfo = decodeAccessToken();
 
-  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     await logout();
@@ -46,9 +46,7 @@ export default function Dashboard({ children }: DashboardProps) {
   };
 
   const user = {
-    email: userInfo?.email,
-    imageUrl:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    email: userInfo?.email
   };
 
   const userNavigation = [
@@ -56,15 +54,6 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Settings', href: '#' },
     { name: 'Sign out', action: handleLogout },
   ];
-
-
-
-  const activePage = useMemo(() => {
-    const activeItem = navigation.find(item => item.current);
-    return activeItem ? activeItem.name : "Dashboard";
-  }, [navigation]);
-
-
 
   return (
     <Fragment>
@@ -94,8 +83,7 @@ export default function Dashboard({ children }: DashboardProps) {
                         {navigation.map((item) => (
                           <a
                             key={item.name}
-                            href={item.href}
-                            onClick={() => handleNavigationClick(item.name)}  // <-- Add this line
+                            onClick={() => handleNavigationClick(item.name)}
                             className={classNames(
                               item.current
                                 ? 'bg-cyan-700 text-white'
@@ -148,7 +136,9 @@ export default function Dashboard({ children }: DashboardProps) {
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-cyan-600 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cyan-600">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                            <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-white">
+                              {user.email ? user.email[0].toUpperCase() : ''}
+                            </div>
                           </Menu.Button>
                         </div>
                         <Transition
@@ -207,8 +197,6 @@ export default function Dashboard({ children }: DashboardProps) {
                   {navigation.map((item) => (
                     <Disclosure.Button
                       key={item.name}
-                      as="a"
-                      href={item.href}
                       onClick={() => handleNavigationClick(item.name)}
                       className={classNames(
                         item.current
@@ -226,7 +214,10 @@ export default function Dashboard({ children }: DashboardProps) {
                 <div className="border-t border-cyan-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                      <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-cyan-800">
+                        {user.email ? user.email[0].toUpperCase() : ''}
+                      </div>
+
                     </div>
                     <div className="ml-3">
                       <div className="text-sm font-medium text-cyan-800">{user.email}</div>
@@ -244,7 +235,6 @@ export default function Dashboard({ children }: DashboardProps) {
                     {userNavigation.map((item) => (
                       <Disclosure.Button
                         key={item.name}
-                        as="a"
                         className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-cyan-500 hover:bg-opacity-75"
                         onClick={item.action}
                       >
@@ -257,13 +247,6 @@ export default function Dashboard({ children }: DashboardProps) {
             </Fragment>
           )}
         </Disclosure>
-
-        {/* Main Content Heading */}
-        <section className="bg-white shadow">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-cyan-800">{activePage}</h1>
-          </div>
-        </section>
 
         {/* Main Content */}
         <main>
