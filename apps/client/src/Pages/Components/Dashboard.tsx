@@ -21,7 +21,7 @@ export default function Dashboard({ children }: DashboardProps) {
   ]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAddBathroomMode, setIsAddBathroomMode] = useState<boolean>(false);
-
+  const [zoomLevel, setZoomLevel] = useState(16); // Default zoom level when the map initially loads
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
@@ -54,6 +54,12 @@ export default function Dashboard({ children }: DashboardProps) {
         current: item.name === clickedItemName
       }))
     );
+    // Adjust the zoom level
+    if (clickedItemName === 'Add Bathroom') {
+      setZoomLevel(18); // Zoom in more when adding a bathroom
+    } else if (clickedItemName === 'Search') {
+      setZoomLevel(16); // Default zoom level for search
+    }
     // Set the isAddBathroomMode state based on the clicked item name
     setIsAddBathroomMode(clickedItemName === 'Add Bathroom');
   };
@@ -265,7 +271,7 @@ export default function Dashboard({ children }: DashboardProps) {
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             {children}
-            <MapComponent isAddBathroomMode={isAddBathroomMode} />
+            <MapComponent isAddBathroomMode={isAddBathroomMode} zoomLevel={zoomLevel} />
           </div>
         </main>
       </div>

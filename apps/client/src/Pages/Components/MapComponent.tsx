@@ -45,8 +45,8 @@ const ChangeView: React.FC<ChangeViewProps> = ({ center, zoom }) => {
   return null;
 };
 
-const MapView: React.FC<{ location: [number, number]; }> = ({ location }) => {
-  const { bathrooms, isLoading: bathroomsLoading } = useFindAllBathrooms(
+const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
+  const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
     location[0],
     location[1],
     500, // radius
@@ -55,13 +55,13 @@ const MapView: React.FC<{ location: [number, number]; }> = ({ location }) => {
 
   return (
     <>
-      <ChangeView center={location} zoom={18} />
+      <ChangeView center={location} zoom={zoomLevel} />
 
       <Marker position={location} icon={blueMarker}>
         <Popup>You are here!</Popup>
       </Marker>
 
-      {!bathroomsLoading && bathrooms?.map((bathroom: CustomMarkerProps) => (
+      {!isLoadingFindAllBathrooms && bathrooms?.map((bathroom: CustomMarkerProps) => (
         <Marker
           key={bathroom.id}
           position={[bathroom.longitude, bathroom.latitude]}
@@ -116,7 +116,7 @@ const DraggablePinMarker: React.FC = () => {
   );
 };
 
-export default function MapComponent({ isAddBathroomMode }: { isAddBathroomMode: boolean; }) {
+export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBathroomMode: boolean; zoomLevel: number; }) {
   const [location, setLocation] = useState<[number, number] | null>(null);
 
   useEffect(() => {
@@ -133,13 +133,13 @@ export default function MapComponent({ isAddBathroomMode }: { isAddBathroomMode:
     <div className="h-[85vh] w-full">
       <MapContainer
         center={location}
-        zoom={13}
+        zoom={zoomLevel}  // Set the zoom level based on the prop
         zoomControl={false}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
-        <MapView location={location} />
+        <MapView location={location} zoomLevel={zoomLevel} />
         {isAddBathroomMode && <DraggablePinMarker />}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ZoomControl position="bottomleft" />
