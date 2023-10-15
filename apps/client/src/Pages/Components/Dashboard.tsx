@@ -5,6 +5,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
 import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
 import { useLogout, useRefreshToken } from '../../utils/hooks';
+import { useMapContext } from '../../utils/context/MapContextProvider';
 
 type DashboardProps = {
   children: React.ReactNode;
@@ -19,9 +20,10 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Search', current: true },
     { name: 'Add Bathroom', current: false },
   ]);
+  const { state, dispatch } = useMapContext();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isAddBathroomMode, setIsAddBathroomMode] = useState<boolean>(false);
-  const [zoomLevel, setZoomLevel] = useState(14); // Default zoom level when the map initially loads
+  const isAddBathroomMode = state.isAddBathroomMode;
+  const zoomLevel = state.zoomLevel;
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
@@ -55,12 +57,11 @@ export default function Dashboard({ children }: DashboardProps) {
     );
     // Adjust the zoom level
     if (clickedItemName === 'Add Bathroom') {
-      setZoomLevel(18); // Zoom in more when adding a bathroom
+      dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODE' });
+      dispatch({ type: 'SET_ZOOM_LEVEL', payload: 18 });
     } else if (clickedItemName === 'Search') {
-      setZoomLevel(16); // Default zoom level for search
+      dispatch({ type: 'SET_ZOOM_LEVEL', payload: 16 });
     }
-    // Set the isAddBathroomMode state based on the clicked item name
-    setIsAddBathroomMode(clickedItemName === 'Add Bathroom');
   };
 
   const user = {
