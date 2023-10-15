@@ -21,11 +21,10 @@ export default function Dashboard({ children }: DashboardProps) {
   ]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAddBathroomMode, setIsAddBathroomMode] = useState<boolean>(false);
-  const [zoomLevel, setZoomLevel] = useState(16); // Default zoom level when the map initially loads
+  const [zoomLevel, setZoomLevel] = useState(14); // Default zoom level when the map initially loads
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
-
   const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();

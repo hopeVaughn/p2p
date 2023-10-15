@@ -27,3 +27,10 @@ export function decodeAccessToken(): DecodedAccessToken | null {
     return null;
   }
 }
+
+export function getUserId(): string | null {
+  const decodedToken = decodeAccessToken();
+  if (!decodedToken) return null;
+
+  return decodedToken.sub;
+}

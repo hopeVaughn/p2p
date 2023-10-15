@@ -1,18 +1,57 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-
+import { useCreateBathroom } from '../../utils/hooks';
+import { getUserId } from '../../utils/helpers';
+import { BathroomGender, StallType } from '../../utils/api';
 
 type AddBathroomModalProps = {
   onClose: () => void;
+  coordinates: [number, number] | null;
 };
 
-export default function AddBathroomModal({ onClose }: AddBathroomModalProps) {
+export default function AddBathroomModal({ onClose, coordinates }: AddBathroomModalProps) {
   const [isOpen, setIsOpen] = useState(true); // Initially set to true for demonstration
+  const genderRef = useRef<HTMLSelectElement>(null);
+  const stallTypeRef = useRef<HTMLSelectElement>(null);
+  const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
+  const starsRef = useRef<HTMLInputElement>(null);
+  const keyRequirementRef = useRef<HTMLInputElement>(null);
+  const hoursOfOperationRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
+  const { createBathroom } = useCreateBathroom();
 
   const handleClose = () => {
     setIsOpen(false);
     onClose();
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const userId = getUserId();
+
+    // Check if coordinates are available
+    if (!coordinates) {
+      console.error("Coordinates not provided!");
+      return;
+    }
+
+    const payload = {
+      createdBy: userId,
+      gender: genderRef.current?.value as BathroomGender,
+      stallType: stallTypeRef.current?.value as StallType,
+      wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
+      stars: parseFloat(starsRef.current?.value || '5'),
+      keyRequirement: keyRequirementRef.current?.checked || false,
+      hoursOfOperation: hoursOfOperationRef.current?.value || "",
+      lat: coordinates[0], // Updated from the draggable marker.
+      lng: coordinates[1], // Updated from the draggable marker.
+      address: addressRef.current?.value || ""
+    };
+    // Call the API to submit the data
+    await createBathroom(payload);
+    onClose();
+  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
@@ -36,18 +75,49 @@ export default function AddBathroomModal({ onClose }: AddBathroomModalProps) {
               Add Bathroom
             </Dialog.Title>
             <div className="mt-2">
-              <form>
-                {/* Add form fields corresponding to bathroom details here */}
-                {/* Example: */}
+              <form onSubmit={handleSubmit}>
                 <label className="block mt-4">
                   Gender:
-                  <select className="mt-1 block w-full">
-                    <option>Gendered</option>
-                    <option>Unisex</option>
-                    {/* Add other options as needed */}
+                  <select ref={genderRef} defaultValue={BathroomGender.GENDERED} className="mt-1 block w-full">
+                    <option value={BathroomGender.GENDERED}>Gendered</option>
+                    <option value={BathroomGender.GENDER_NEUTRAL}>Gender Neutral</option>
+                    <option value={BathroomGender.BOTH}>BOTH</option>
                   </select>
                 </label>
-                {/* ... other form fields ... */}
+
+                <label className="block mt-4">
+                  Stall Type:
+                  <select ref={stallTypeRef} defaultValue={StallType.SINGLE_STALL} className="mt-1 block w-full">
+                    <option value={StallType.SINGLE_STALL}>Single Stall</option>
+                    <option value={StallType.CONNECTED}>Connected</option>
+                  </select>
+                </label>
+
+                <label className="block mt-4">
+                  Wheelchair Accessible:
+                  <input ref={wheelchairAccessibleRef} type="checkbox" className="ml-2" />
+                </label>
+
+                <label className="block mt-4">
+                  Stars:
+                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="5" className="mt-1 block w-full" />
+                </label>
+
+                <label className="block mt-4">
+                  Key Requirement:
+                  <input ref={keyRequirementRef} type="checkbox" className="ml-2" />
+                </label>
+
+                <label className="block mt-4">
+                  Hours of Operation:
+                  <input ref={hoursOfOperationRef} type="text" className="mt-1 block w-full" placeholder="e.g. 8:00 AM - 9:00 PM" />
+                </label>
+
+                <label className="block mt-4">
+                  Address:
+                  <input ref={addressRef} type="text" className="mt-1 block w-full" />
+                </label>
+
                 <div className="mt-4">
                   <button
                     type="submit"

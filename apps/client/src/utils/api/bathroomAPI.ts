@@ -2,9 +2,21 @@ import api from './axiosDefault';
 
 const bathroomBaseURL = 'bathroom/';
 
+export enum BathroomGender {
+  GENDERED = 'GENDERED',
+  GENDER_NEUTRAL = 'GENDER_NEUTRAL',
+  BOTH = 'BOTH'
+}
+
+export enum StallType {
+  SINGLE_STALL = 'SINGLE_STALL',
+  CONNECTED = 'CONNECTED',
+}
+
 export type Bathroom = {
-  createdBy: string;
-  gender: string;
+  createdBy: string | null;
+  gender: BathroomGender;
+  stallType: StallType;
   wheelchairAccessible: boolean;
   stars: number;
   keyRequirement: boolean;
