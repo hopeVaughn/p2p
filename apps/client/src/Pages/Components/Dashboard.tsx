@@ -20,10 +20,8 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Search', current: true },
     { name: 'Add Bathroom', current: false },
   ]);
-  const { state, dispatch } = useMapContext();
+  const { dispatch } = useMapContext();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const isAddBathroomMode = state.isAddBathroomMode;
-  const zoomLevel = state.zoomLevel;
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
@@ -271,7 +269,7 @@ export default function Dashboard({ children }: DashboardProps) {
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             {children}
-            <MapComponent isAddBathroomMode={isAddBathroomMode} zoomLevel={zoomLevel} />
+            <MapComponent />
           </div>
         </main>
       </div>

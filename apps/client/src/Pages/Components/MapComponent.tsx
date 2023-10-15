@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import {
   MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents,
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
+import { useMapContext, LocationPayload } from '../../utils/context/MapContextProvider';
 import 'leaflet/dist/leaflet.css';
 
 type ChangeViewProps = {
@@ -20,7 +21,7 @@ type CustomMarkerProps = {
 
 type DraggablePinMarkerProps = {
   setShowConfirmButton: React.Dispatch<React.SetStateAction<boolean>>;
-  setPinLocation: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+  setPinLocation: (location: LocationPayload) => void;
   pinLocation: [number, number] | null;
 };
 
@@ -126,46 +127,48 @@ const DraggablePinMarker = ({ setShowConfirmButton, setPinLocation, pinLocation 
 
 const MemoizedDraggablePinMarker = React.memo(DraggablePinMarker);
 
-export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBathroomMode: boolean; zoomLevel: number; }) {
-  const [location, setLocation] = useState<[number, number] | null>(null);
-  const [showConfirmButton, setShowConfirmButton] = useState(false);
-  const [isAddBathroomModalOpen, setIsAddBathroomModalOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pinLocation, setPinLocation] = useState<[number, number] | null>(null);
+export default function MapComponent() {
+  const { state, dispatch } = useMapContext(); // Use global context
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      setLocation([position.coords.latitude, position.coords.longitude]);
+      dispatch({ type: 'SET_LOCATION', payload: [position.coords.latitude, position.coords.longitude] });
     });
-  }, []);
+  }, [dispatch]);
 
-  if (!location) {
+  if (!state.location) {
     return <div>Loading map...</div>;
   }
 
   return (
     <div className="h-[85vh] w-full relative">
       <MapContainer
-        center={location}
-        zoom={zoomLevel}
+        center={state.location}
+        zoom={state.zoomLevel}
         zoomControl={false}
         scrollWheelZoom={true}
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
         <MemoizedMapView
-          location={location}
-          zoomLevel={zoomLevel}
+          location={state.location}
+          zoomLevel={state.zoomLevel}
         />
-        {isAddBathroomMode && <MemoizedDraggablePinMarker setShowConfirmButton={setShowConfirmButton} setPinLocation={setPinLocation} pinLocation={pinLocation} />}
+        {state.isAddBathroomMode && (
+          <MemoizedDraggablePinMarker
+            setShowConfirmButton={(value) => dispatch({ type: 'TOGGLE_CONFIRM_BUTTON', payload: value })}
+            setPinLocation={(location) => dispatch({ type: 'SET_PIN_LOCATION', payload: location })}
+            pinLocation={state.pinLocation}
+          />
+        )}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ZoomControl position="bottomleft" />
       </MapContainer>
 
-      {showConfirmButton && (
+      {state.showConfirmButton && (
         <div className="absolute top-4 right-4">
           <button
-            onClick={() => setIsAddBathroomModalOpen(true)}
+            onClick={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
             className="bg-cyan-700 text-white p-2 rounded"
           >
             Confirm Location
@@ -173,10 +176,10 @@ export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBa
         </div>
       )}
 
-      {isAddBathroomModalOpen && (
+      {state.isAddBathroomModalOpen && (
         <AddBathroomModal
-          onClose={() => setIsAddBathroomModalOpen(false)}
-          coordinates={pinLocation}
+          onClose={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
+          coordinates={state.pinLocation}
         />
       )}
     </div>

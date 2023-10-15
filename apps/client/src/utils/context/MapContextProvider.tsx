@@ -1,6 +1,6 @@
-import { createContext, useReducer, ReactNode, useContext } from 'react';
+import React, { createContext, useReducer, ReactNode, useContext } from 'react';
 
-type LocationPayload = [number, number] | null;
+export type LocationPayload = [number, number] | null;
 
 type MapState = {
   location: LocationPayload;
@@ -25,12 +25,13 @@ type ActionType =
   | { type: 'SET_LOCATION'; payload: LocationPayload; }
   | { type: 'SET_ZOOM_LEVEL'; payload: number; }
   | { type: 'TOGGLE_ADD_BATHROOM_MODE'; }
-  | { type: 'TOGGLE_CONFIRM_BUTTON'; }
+  | { type: 'TOGGLE_CONFIRM_BUTTON'; payload?: boolean | ((prevState: boolean) => boolean); }
   | { type: 'TOGGLE_ADD_BATHROOM_MODAL'; }
   | { type: 'SET_PIN_LOCATION'; payload: LocationPayload; };
 
+
 // Define reducer
-const mapReducer = (state: typeof initialState, action: ActionType) => {
+const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialState, action: ActionType) => {
   switch (action.type) {
     case 'SET_LOCATION':
       return { ...state, location: action.payload };
@@ -38,8 +39,11 @@ const mapReducer = (state: typeof initialState, action: ActionType) => {
       return { ...state, zoomLevel: action.payload };
     case 'TOGGLE_ADD_BATHROOM_MODE':
       return { ...state, isAddBathroomMode: !state.isAddBathroomMode };
-    case 'TOGGLE_CONFIRM_BUTTON':
-      return { ...state, showConfirmButton: !state.showConfirmButton };
+    case 'TOGGLE_CONFIRM_BUTTON': {
+      const newValue = action.payload !== undefined ? (typeof action.payload === 'function' ? action.payload(state.showConfirmButton) : action.payload) : !state.showConfirmButton;
+      return { ...state, showConfirmButton: newValue };
+    }
+
     case 'TOGGLE_ADD_BATHROOM_MODAL':
       return { ...state, isAddBathroomModalOpen: !state.isAddBathroomModalOpen };
     case 'SET_PIN_LOCATION':
@@ -61,7 +65,7 @@ type MapContextProviderProps = {
 };
 
 const MapContextProvider: React.FC<MapContextProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(mapReducer, initialState);
+  const [state, dispatch] = useReducer<React.Reducer<MapState, ActionType>>(mapReducer, initialState);
 
   return (
     <MapContext.Provider value={{ state, dispatch }}>
