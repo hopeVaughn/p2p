@@ -63,11 +63,9 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   return (
     <>
       <ChangeView center={location} zoom={zoomLevel} />
-
       <Marker position={location} icon={blueMarker}>
         <Popup>You are here!</Popup>
       </Marker>
-
       {!isLoadingFindAllBathrooms && bathrooms?.map((bathroom: CustomMarkerProps) => (
         <Marker
           key={bathroom.id}
@@ -80,13 +78,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     </>
   );
 };
-
 const MemoizedMapView = React.memo(MapView);
 
 const DraggablePinMarker = ({ setShowConfirmButton }: DraggablePinMarkerProps) => {
   const [pinLocation, setPinLocation] = useState<[number, number] | null>(null);
   const markerRef = useRef<LeafletMarker | null>(null);
-
 
   // useMapEvents hook to listen for the click event on the map
   useMapEvents({
@@ -143,7 +139,7 @@ export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBa
   }
 
   return (
-    <div className="h-[85vh] w-full relative"> {/* Adding relative here to position child elements absolutely */}
+    <div className="h-[85vh] w-full relative">
       <MapContainer
         center={location}
         zoom={zoomLevel}
@@ -152,17 +148,20 @@ export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBa
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
-        <MemoizedMapView location={location} zoomLevel={zoomLevel} />
+        <MemoizedMapView
+          location={location}
+          zoomLevel={zoomLevel}
+        />
         {isAddBathroomMode && <MemoizedDraggablePinMarker setShowConfirmButton={setShowConfirmButton} />}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ZoomControl position="bottomleft" />
       </MapContainer>
 
       {showConfirmButton && (
-        <div className="absolute bottom-4 right-4">
+        <div className="absolute top-4 right-4">
           <button
             onClick={() => setIsAddBathroomModalOpen(true)}
-            className="bg-blue-600 text-white p-2 rounded"
+            className="bg-cyan-700 text-white p-2 rounded"
           >
             Confirm Location
           </button>
