@@ -21,7 +21,6 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Add Bathroom', current: false },
   ]);
   const { dispatch } = useMapContext();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
@@ -269,7 +268,7 @@ export default function Dashboard({ children }: DashboardProps) {
 
         {/* Main Content */}
         <main>
-          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto max-auto py-6 sm:px-6 lg:px-8">
             {children}
             <MapComponent />
           </div>
