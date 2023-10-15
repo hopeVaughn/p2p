@@ -59,9 +59,9 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     500, // radius
     Boolean(location)
   );
-
   return (
     <>
+      {isLoadingFindAllBathrooms && <div>Loading...</div>}
       <ChangeView center={location} zoom={zoomLevel} />
       <Marker position={location} icon={blueMarker}>
         <Popup>You are here!</Popup>
