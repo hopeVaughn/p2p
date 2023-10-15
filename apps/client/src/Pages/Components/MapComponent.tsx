@@ -129,12 +129,27 @@ const MemoizedDraggablePinMarker = React.memo(DraggablePinMarker);
 
 export default function MapComponent() {
   const { state, dispatch } = useMapContext(); // Use global context
-
+  const LOAD_ZOOM = 10;
+  const SEARCH_ZOOM = 15;
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       dispatch({ type: 'SET_LOCATION', payload: [position.coords.latitude, position.coords.longitude] });
+
+      // Check if the initial zoom animation has not been performed yet
+      if (!state.hasInitialZoomed) {
+        // Perform the initial zoom animation
+        dispatch({ type: 'SET_ZOOM_LEVEL', payload: LOAD_ZOOM });
+
+        // Set a timeout to zoom to SEARCH_ZOOM after a delay (e.g., 2 seconds)
+        setTimeout(() => {
+          dispatch({ type: 'SET_ZOOM_LEVEL', payload: SEARCH_ZOOM });
+
+          // Update the state to indicate that the initial zoom has been completed
+          dispatch({ type: 'SET_HAS_INITIAL_ZOOMED', payload: true });
+        }, 2000); // Adjust the delay as needed
+      }
     });
-  }, [dispatch]);
+  }, [dispatch, state.hasInitialZoomed]);
 
   if (!state.location) {
     return <div>Loading map...</div>;
