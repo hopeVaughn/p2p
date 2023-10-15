@@ -3,6 +3,7 @@ import {
   MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents,
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
+import { AddBathroomModal } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
 import 'leaflet/dist/leaflet.css';
 
@@ -16,6 +17,11 @@ type CustomMarkerProps = {
   longitude: number;
   latitude: number;
 };
+
+type DraggablePinMarkerProps = {
+  setShowConfirmButton: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 
 const customBlueMarkerSVG = `
 data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
@@ -38,6 +44,7 @@ const redMarker = new L.Icon({
   iconUrl: customRedMarkerSVG,
   iconSize: [35, 45],
 });
+
 
 const ChangeView: React.FC<ChangeViewProps> = ({ center, zoom }) => {
   const map = useMap();
@@ -74,14 +81,18 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   );
 };
 
-const DraggablePinMarker: React.FC = () => {
+const MemoizedMapView = React.memo(MapView);
+
+const DraggablePinMarker = ({ setShowConfirmButton }: DraggablePinMarkerProps) => {
   const [pinLocation, setPinLocation] = useState<[number, number] | null>(null);
   const markerRef = useRef<LeafletMarker | null>(null);
+
 
   // useMapEvents hook to listen for the click event on the map
   useMapEvents({
     click: (e) => {
       setPinLocation([e.latlng.lat, e.latlng.lng]);
+      setShowConfirmButton(true);
     }
   });
 
@@ -92,9 +103,8 @@ const DraggablePinMarker: React.FC = () => {
         if (marker != null) {
           const { lat, lng } = marker.getLatLng();
           setPinLocation([lat, lng]);
-
-          // log the updated position of the marker
           console.log("Updated Pin Coordinates:", [lat, lng]);
+          setShowConfirmButton(true);  // Show the "Confirm Location" button after dragging
         }
       }
     }),
@@ -115,9 +125,12 @@ const DraggablePinMarker: React.FC = () => {
     </Marker>
   );
 };
+const MemoizedDraggablePinMarker = React.memo(DraggablePinMarker);
 
 export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBathroomMode: boolean; zoomLevel: number; }) {
   const [location, setLocation] = useState<[number, number] | null>(null);
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
+  const [isAddBathroomModalOpen, setIsAddBathroomModalOpen] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -130,20 +143,38 @@ export default function MapComponent({ isAddBathroomMode, zoomLevel }: { isAddBa
   }
 
   return (
-    <div className="h-[85vh] w-full">
+    <div className="h-[85vh] w-full relative"> {/* Adding relative here to position child elements absolutely */}
       <MapContainer
         center={location}
-        zoom={zoomLevel}  // Set the zoom level based on the prop
+        zoom={zoomLevel}
         zoomControl={false}
         scrollWheelZoom={true}
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
-        <MapView location={location} zoomLevel={zoomLevel} />
-        {isAddBathroomMode && <DraggablePinMarker />}
+        <MemoizedMapView location={location} zoomLevel={zoomLevel} />
+        {isAddBathroomMode && <MemoizedDraggablePinMarker setShowConfirmButton={setShowConfirmButton} />}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ZoomControl position="bottomleft" />
       </MapContainer>
+
+      {showConfirmButton && (
+        <div className="absolute bottom-4 right-4">
+          <button
+            onClick={() => setIsAddBathroomModalOpen(true)}
+            className="bg-blue-600 text-white p-2 rounded"
+          >
+            Confirm Location
+          </button>
+        </div>
+      )}
+
+      {isAddBathroomModalOpen && (
+        <AddBathroomModal
+          onClose={() => setIsAddBathroomModalOpen(false)}
+        // ... any other necessary props for the modal 
+        />
+      )}
     </div>
   );
 }
