@@ -180,13 +180,19 @@ export default function MapComponent() {
         <ZoomControl position="bottomleft" />
       </MapContainer>
 
-      {state.showConfirmButton && (
-        <div className="absolute top-4 right-4">
+      {state.isAddBathroomMode && (
+        <div className="absolute top-4 right-4 flex flex-col space-y-2">
           <button
             onClick={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
             className="bg-cyan-700 text-white p-2 rounded"
           >
             Confirm Location
+          </button>
+          <button
+            onClick={() => dispatch({ type: 'REMOVE_PIN' })}
+            className="bg-red-700 text-white p-2 rounded"
+          >
+            Remove Pin
           </button>
         </div>
       )}
@@ -194,7 +200,7 @@ export default function MapComponent() {
       {state.isAddBathroomModalOpen && (
         <AddBathroomModal
           onClose={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
-          coordinates={state.pinLocation}
+          coordinates={state.pinLocation as [number, number]}
         />
       )}
     </div>

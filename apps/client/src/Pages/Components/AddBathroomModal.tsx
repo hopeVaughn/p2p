@@ -6,7 +6,7 @@ import { BathroomGender, StallType } from '../../utils/api';
 
 type AddBathroomModalProps = {
   onClose: () => void;
-  coordinates: [number, number] | null;
+  coordinates: [number, number];
 };
 
 export default function AddBathroomModal({ onClose, coordinates }: AddBathroomModalProps) {
@@ -21,24 +21,35 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
   const addressRef = useRef<HTMLInputElement>(null);
   const { createBathroom } = useCreateBathroom();
 
-  const handleClose = () => {
+  const handleCloseAndReset = () => {
+    // Close the modal
     setIsOpen(false);
     onClose();
+
+    // Reset all refs
+    if (genderRef.current) genderRef.current.value = '';
+    if (stallTypeRef.current) stallTypeRef.current.value = '';
+    if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = false;
+    if (starsRef.current) starsRef.current.value = '';
+    if (keyRequirementRef.current) keyRequirementRef.current.checked = false;
+    if (openTimeRef.current) openTimeRef.current.value = '';
+    if (closeTimeRef.current) closeTimeRef.current.value = '';
+    if (addressRef.current) addressRef.current.value = '';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = getUserId();
-
-    // Check if coordinates are available
-    if (!coordinates) {
-      console.error("Coordinates not provided!");
-      return;
-    }
     // Capture the values from the time spinner
     const openTime = openTimeRef.current?.value || "";
     const closeTime = closeTimeRef.current?.value || "";
     const hoursOfOperation = `${openTime} - ${closeTime}`;
+    // Check if coordinates are available
+    if (!userId) {
+      console.error("Coordinates not provided!");
+      return;
+    }
+
 
     const payload = {
       createdBy: userId,
@@ -62,7 +73,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={handleClose}
+        onClose={handleCloseAndReset}
       >
         <div className="p-4 min-h-screen px-4 text-center">
           <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
@@ -79,11 +90,17 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
             >
               Add Bathroom
             </Dialog.Title>
+            <button
+              onClick={handleCloseAndReset}
+              className="absolute top-0 right-0 p-4 text-3xl font-bold text-cyan-800 hover:text-gray-700"
+            >
+              &times;
+            </button>
             <div className="bg-orange-100 p-4 mt-2">
               <form onSubmit={handleSubmit}>
                 <label className="block mt-4">
                   Gender:
-                  <select ref={genderRef} defaultValue={BathroomGender.GENDERED} className="mt-1 block w-full p-2 border rounded-md">
+                  <select ref={genderRef} defaultValue={BathroomGender.GENDERED} required className="mt-1 block w-full p-2 border rounded-md">
                     <option value={BathroomGender.GENDERED}>Gendered</option>
                     <option value={BathroomGender.GENDER_NEUTRAL}>Gender Neutral</option>
                     <option value={BathroomGender.BOTH}>BOTH</option>
@@ -92,7 +109,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
 
                 <label className="block mt-4">
                   Stall Type:
-                  <select ref={stallTypeRef} defaultValue={StallType.SINGLE_STALL} className="mt-1 block w-full p-2 border rounded-md">
+                  <select ref={stallTypeRef} defaultValue={StallType.SINGLE_STALL} required className="mt-1 block w-full p-2 border rounded-md">
                     <option value={StallType.SINGLE_STALL}>Single Stall</option>
                     <option value={StallType.CONNECTED}>Connected</option>
                   </select>
@@ -100,17 +117,17 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
 
                 <label className="block mt-4">
                   Wheelchair Accessible:
-                  <input ref={wheelchairAccessibleRef} type="checkbox" className="ml-2 p-1 border rounded-md" />
+                  <input ref={wheelchairAccessibleRef} type="checkbox" required className="ml-2 p-1 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
                   Stars:
-                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="5" className="mt-1 block w-full p-2 border rounded-md" />
+                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
                   Key Requirement:
-                  <input ref={keyRequirementRef} type="checkbox" className="ml-2 p-1 border rounded-md" />
+                  <input ref={keyRequirementRef} type="checkbox" required className="ml-2 p-1 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
@@ -123,7 +140,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
 
                 <label className="block mt-4">
                   Address:
-                  <input ref={addressRef} type="text" className="mt-1 block w-full p-2 border rounded-md" />
+                  <input ref={addressRef} type="text" required className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
                 <div className="bg-orange-100 p-4 mt-4">

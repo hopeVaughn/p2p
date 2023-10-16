@@ -6,7 +6,6 @@ type MapState = {
   location: LocationPayload;
   zoomLevel: number;
   isAddBathroomMode: boolean;
-  showConfirmButton: boolean;
   isAddBathroomModalOpen: boolean;
   pinLocation: LocationPayload;
   hasInitialZoomed: boolean;
@@ -16,7 +15,6 @@ const initialState: MapState = {
   location: null,
   zoomLevel: 15,
   isAddBathroomMode: false,
-  showConfirmButton: false,
   isAddBathroomModalOpen: false,
   pinLocation: null,
   hasInitialZoomed: false,
@@ -30,8 +28,8 @@ type ActionType =
   | { type: 'TOGGLE_CONFIRM_BUTTON'; payload?: boolean | ((prevState: boolean) => boolean); }
   | { type: 'TOGGLE_ADD_BATHROOM_MODAL'; }
   | { type: 'SET_PIN_LOCATION'; payload: LocationPayload; }
-  | { type: 'SET_HAS_INITIAL_ZOOMED'; payload: boolean; };
-
+  | { type: 'SET_HAS_INITIAL_ZOOMED'; payload: boolean; }
+  | { type: 'REMOVE_PIN'; };
 
 // Define reducer
 const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialState, action: ActionType) => {
@@ -42,16 +40,15 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, zoomLevel: action.payload };
     case 'TOGGLE_ADD_BATHROOM_MODE':
       return { ...state, isAddBathroomMode: !state.isAddBathroomMode };
-    case 'TOGGLE_CONFIRM_BUTTON': {
-      const newValue = action.payload !== undefined ? (typeof action.payload === 'function' ? action.payload(state.showConfirmButton) : action.payload) : !state.showConfirmButton;
-      return { ...state, showConfirmButton: newValue };
-    }
+
     case 'TOGGLE_ADD_BATHROOM_MODAL':
       return { ...state, isAddBathroomModalOpen: !state.isAddBathroomModalOpen };
     case 'SET_PIN_LOCATION':
       return { ...state, pinLocation: action.payload };
     case 'SET_HAS_INITIAL_ZOOMED':
       return { ...state, hasInitialZoomed: action.payload }; // Update the state with the new value
+    case 'REMOVE_PIN':
+      return { ...state, pinLocation: null };
     default:
       return state;
   }
