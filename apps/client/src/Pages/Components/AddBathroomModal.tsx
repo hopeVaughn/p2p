@@ -16,7 +16,8 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
   const starsRef = useRef<HTMLInputElement>(null);
   const keyRequirementRef = useRef<HTMLInputElement>(null);
-  const hoursOfOperationRef = useRef<HTMLInputElement>(null);
+  const openTimeRef = useRef<HTMLInputElement>(null);
+  const closeTimeRef = useRef<HTMLInputElement>(null);
   const addressRef = useRef<HTMLInputElement>(null);
   const { createBathroom } = useCreateBathroom();
 
@@ -34,6 +35,10 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
       console.error("Coordinates not provided!");
       return;
     }
+    // Capture the values from the time spinner
+    const openTime = openTimeRef.current?.value || "";
+    const closeTime = closeTimeRef.current?.value || "";
+    const hoursOfOperation = `${openTime} - ${closeTime}`;
 
     const payload = {
       createdBy: userId,
@@ -42,7 +47,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
       wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
       stars: parseFloat(starsRef.current?.value || '5'),
       keyRequirement: keyRequirementRef.current?.checked || false,
-      hoursOfOperation: hoursOfOperationRef.current?.value || "",
+      hoursOfOperation: hoursOfOperation,
       lat: coordinates[0], // Updated from the draggable marker.
       lng: coordinates[1], // Updated from the draggable marker.
       address: addressRef.current?.value || ""
@@ -110,7 +115,10 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
 
                 <label className="block mt-4">
                   Hours of Operation:
-                  <input ref={hoursOfOperationRef} type="text" className="mt-1 block w-full p-2 border rounded-md" placeholder="e.g. 8:00 AM - 9:00 PM" />
+                  <div className="flex space-x-4">
+                    <input ref={openTimeRef} type="time" className="w-1/2 p-2 border rounded-md" />
+                    <input ref={closeTimeRef} type="time" className="w-1/2 p-2 border rounded-md" />
+                  </div>
                 </label>
 
                 <label className="block mt-4">
