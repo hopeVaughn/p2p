@@ -59,7 +59,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={handleClose}
       >
-        <div className="min-h-screen px-4 text-center">
+        <div className="p-4 min-h-screen px-4 text-center">
           <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
           <span
             className="inline-block h-screen align-middle"
@@ -67,18 +67,18 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
           >
             &#8203;
           </span>
-          <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+          <div className="p-4 inline-block w-full max-w-md my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
             <Dialog.Title
               as="h3"
-              className="text-lg font-medium leading-6 text-gray-900"
+              className="text-lg font-medium leading-6 text-gray-900 text-center"
             >
               Add Bathroom
             </Dialog.Title>
-            <div className="mt-2">
+            <div className="bg-orange-100 p-4 mt-2">
               <form onSubmit={handleSubmit}>
                 <label className="block mt-4">
                   Gender:
-                  <select ref={genderRef} defaultValue={BathroomGender.GENDERED} className="mt-1 block w-full">
+                  <select ref={genderRef} defaultValue={BathroomGender.GENDERED} className="mt-1 block w-full p-2 border rounded-md">
                     <option value={BathroomGender.GENDERED}>Gendered</option>
                     <option value={BathroomGender.GENDER_NEUTRAL}>Gender Neutral</option>
                     <option value={BathroomGender.BOTH}>BOTH</option>
@@ -87,7 +87,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
 
                 <label className="block mt-4">
                   Stall Type:
-                  <select ref={stallTypeRef} defaultValue={StallType.SINGLE_STALL} className="mt-1 block w-full">
+                  <select ref={stallTypeRef} defaultValue={StallType.SINGLE_STALL} className="mt-1 block w-full p-2 border rounded-md">
                     <option value={StallType.SINGLE_STALL}>Single Stall</option>
                     <option value={StallType.CONNECTED}>Connected</option>
                   </select>
@@ -95,33 +95,33 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
 
                 <label className="block mt-4">
                   Wheelchair Accessible:
-                  <input ref={wheelchairAccessibleRef} type="checkbox" className="ml-2" />
+                  <input ref={wheelchairAccessibleRef} type="checkbox" className="ml-2 p-1 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
                   Stars:
-                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="5" className="mt-1 block w-full" />
+                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="5" className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
                   Key Requirement:
-                  <input ref={keyRequirementRef} type="checkbox" className="ml-2" />
+                  <input ref={keyRequirementRef} type="checkbox" className="ml-2 p-1 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
                   Hours of Operation:
-                  <input ref={hoursOfOperationRef} type="text" className="mt-1 block w-full" placeholder="e.g. 8:00 AM - 9:00 PM" />
+                  <input ref={hoursOfOperationRef} type="text" className="mt-1 block w-full p-2 border rounded-md" placeholder="e.g. 8:00 AM - 9:00 PM" />
                 </label>
 
                 <label className="block mt-4">
                   Address:
-                  <input ref={addressRef} type="text" className="mt-1 block w-full" />
+                  <input ref={addressRef} type="text" className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
-                <div className="mt-4">
+                <div className="bg-orange-100 p-4 mt-4">
                   <button
                     type="submit"
-                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-cyan-700 border border-transparent rounded-md hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
+                    className="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-cyan-700 border border-transparent rounded-md hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
                   >
                     Add
                   </button>
