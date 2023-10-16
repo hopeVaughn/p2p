@@ -20,7 +20,7 @@ type CustomMarkerProps = {
 };
 
 type DraggablePinMarkerProps = {
-  setShowConfirmButton: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmButton: React.Dispatch<React.SetStateAction<boolean>>;
   setPinLocation: (location: LocationPayload) => void;
   pinLocation: [number, number] | null;
 };
@@ -83,14 +83,14 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
 };
 const MemoizedMapView = React.memo(MapView);
 
-const DraggablePinMarker = ({ setShowConfirmButton, setPinLocation, pinLocation }: DraggablePinMarkerProps) => {
+const DraggablePinMarker = ({ setConfirmButton, setPinLocation, pinLocation }: DraggablePinMarkerProps) => {
   const markerRef = useRef<LeafletMarker | null>(null);
 
   useMapEvents({
     click: (e) => {
       const newLocation: [number, number] = [e.latlng.lat, e.latlng.lng];
       setPinLocation(newLocation);
-      setShowConfirmButton(true);
+      setConfirmButton(true);
     }
   });
 
@@ -102,8 +102,8 @@ const DraggablePinMarker = ({ setShowConfirmButton, setPinLocation, pinLocation 
           const { lat, lng } = marker.getLatLng();
           const newLocation: [number, number] = [lat, lng];
           setPinLocation(newLocation);
+          setConfirmButton(true);
           console.log("Updated Pin Coordinates:", newLocation);
-          setShowConfirmButton(true);
         }
       }
     }),
@@ -171,7 +171,7 @@ export default function MapComponent() {
         />
         {state.isAddBathroomMode && (
           <MemoizedDraggablePinMarker
-            setShowConfirmButton={(value) => dispatch({ type: 'TOGGLE_CONFIRM_BUTTON', payload: value })}
+            setConfirmButton={(value) => dispatch({ type: 'SET_CONFIRM_BUTTON', payload: value })}
             setPinLocation={(location) => dispatch({ type: 'SET_PIN_LOCATION', payload: location })}
             pinLocation={state.pinLocation}
           />
@@ -182,15 +182,18 @@ export default function MapComponent() {
 
       {state.isAddBathroomMode && (
         <div className="absolute top-4 right-4 flex flex-col space-y-2">
+
           <button
             onClick={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
             className="bg-cyan-700 text-white p-2 rounded"
+            disabled={!state.confirmButton}
           >
             Confirm Location
           </button>
           <button
             onClick={() => dispatch({ type: 'REMOVE_PIN' })}
             className="bg-red-700 text-white p-2 rounded"
+            disabled={!state.confirmButton}
           >
             Remove Pin
           </button>

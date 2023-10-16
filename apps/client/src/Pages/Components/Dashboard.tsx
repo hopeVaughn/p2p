@@ -56,10 +56,9 @@ export default function Dashboard({ children }: DashboardProps) {
     if (clickedItemName === 'Add Bathroom') {
       dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODE' });
       dispatch({ type: 'SET_ZOOM_LEVEL', payload: 18 });
-      dispatch({ type: 'TOGGLE_CONFIRM_BUTTON', payload: true });
     } else if (clickedItemName === 'Search') {
       dispatch({ type: 'SET_ZOOM_LEVEL', payload: 16 });
-      dispatch({ type: 'TOGGLE_CONFIRM_BUTTON', payload: false });
+      dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODE' });
     }
   };
 
