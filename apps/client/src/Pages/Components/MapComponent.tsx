@@ -3,7 +3,7 @@ import {
   MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents,
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
-import { AddBathroomModal } from '../Components';
+import { AddBathroomModal, LoadingSpinner } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
 import { useMapContext, LocationPayload } from '../../utils/context/MapContextProvider';
 import {
@@ -58,7 +58,7 @@ const redMarker = new L.Icon({
 });
 
 
-const ChangeView: React.FC<ChangeViewProps> = ({ center, zoom }) => {
+const ChangeView = ({ center, zoom }: ChangeViewProps) => {
   const map = useMap();
   map.flyTo(center, zoom, { duration: 2 });
   return null;
@@ -161,7 +161,9 @@ export default function MapComponent() {
   }, [dispatch, state.hasInitialZoomed]);
 
   if (!state.location) {
-    return <div>Loading map...</div>;
+    return (
+      <LoadingSpinner />
+    );
   }
 
   return (

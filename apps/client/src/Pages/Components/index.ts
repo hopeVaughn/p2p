@@ -11,3 +11,4 @@ export { default as Dashboard } from './Dashboard';
 export { default as HeadLogo } from './HeadLogo';
 export { default as MapComponent } from './MapComponent';
 export { default as AddBathroomModal } from './AddBathroomModal';
+export { default as LoadingSpinner } from './LoadingSpinner';
