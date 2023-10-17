@@ -4,15 +4,7 @@ import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI } from '../api';
 
-type GenericAPIError = {
-  response?: {
-    data?: {
-      msg?: string;
-      [key: string]: unknown; // This allows for other properties in the data object.
-    };
-  };
-  [key: string]: unknown; // This allows for other properties in the error object.
-};
+// Auth API custom hooks
 
 // type AuthCredentials = {
 //   email: string;
@@ -35,11 +27,11 @@ export const useSignUp = () => {
     mutationFn: signUpAPI,
     onSuccess: (data: AutResponse) => {
       sessionStorage.setItem('accessToken', data.accessToken);
-      toast.success('User registered');
+      toast.success("You've been signed up successfully!");
       navigate('/dashboard');
     },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Error during signup';
+    onError: () => {
+      const errorMessage = signUpError instanceof Error ? signUpError.message : 'Error fetching bathrooms';
       toast.error(errorMessage);
     }
   });
@@ -55,15 +47,19 @@ export const useSignUp = () => {
 export const useSignIn = () => {
   const navigate = useNavigate();
 
-  const { mutateAsync: signIn, status, error: signInError } = useMutation({
+  const {
+    mutateAsync: signIn,
+    status,
+    error: signInError
+  } = useMutation({
     mutationFn: signInAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
       toast.success('Welcome Back!');
       navigate('/dashboard');
     },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Invalid Credentials';
+    onError: () => {
+      const errorMessage = signInError instanceof Error ? signInError.message : 'Error fetching bathrooms';
       toast.error(errorMessage);
     }
   });
@@ -80,7 +76,7 @@ export const useSignIn = () => {
 export const useLogout = () => {
   const navigate = useNavigate();
 
-  const { mutateAsync: logout, status } = useMutation({
+  const { mutateAsync: logout, status, error: logOutError } = useMutation({
     mutationFn: logoutAPI,
     onSuccess: () => {
       sessionStorage.removeItem('accessToken');
@@ -88,8 +84,8 @@ export const useLogout = () => {
       navigate('/');
       // Additional invalidations if needed
     },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Error during logout';
+    onError: () => {
+      const errorMessage = logOutError instanceof Error ? logOutError.message : 'Error fetching bathrooms';
       toast.error(errorMessage);
     }
   });
@@ -110,15 +106,15 @@ export const useRefreshToken = () => {
   const {
     mutateAsync: refreshToken,
     status,
-    error
+    error: refreshTokenError
   } = useMutation({
     mutationFn: refreshTokenAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
-      toast.success('Token refreshed');
+      // toast.success('Token refreshed');
     },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Error refreshing token';
+    onError: () => {
+      const errorMessage = refreshTokenError instanceof Error ? refreshTokenError.message : 'Error fetching bathrooms';
       toast.error(errorMessage);
     }
   });
@@ -126,7 +122,7 @@ export const useRefreshToken = () => {
   return {
     refreshToken,
     isLoading: status === 'pending',
-    error
+    refreshTokenError
   };
 };
 
@@ -144,8 +140,8 @@ export const useCreateBathroom = () => {
     onSuccess: () => {
       toast.success('Bathroom created successfully');
     },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Error creating bathroom';
+    onError: () => {
+      const errorMessage = createError instanceof Error ? createError.message : 'Error fetching bathrooms';
       toast.error(errorMessage);
     }
   });
@@ -168,8 +164,8 @@ export const useDeleteBathroom = () => {
     onSuccess: () => {
       toast.success('Bathroom deleted successfully');
     },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Error deleting bathroom';
+    onError: () => {
+      const errorMessage = deleteError instanceof Error ? deleteError.message : 'Error fetching bathrooms';
       toast.error(errorMessage);
     }
   });
@@ -199,9 +195,9 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
   });
 
   // Side effects based on query status and error
-  if (status === 'success') {
-    toast.success('Bathrooms fetched successfully');
-  }
+  // if (status === 'success') {
+  //   toast.success('Bathrooms fetched successfully');
+  // }
   if (status === 'error') {
     // Ensure error is an instance of Error for safety
     const errorMessage = errorFindAllBathrooms instanceof Error ? errorFindAllBathrooms.message : 'Error fetching bathrooms';

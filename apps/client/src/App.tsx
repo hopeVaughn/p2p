@@ -35,7 +35,7 @@ const router = createBrowserRouter(routes);
 const App = () => {
   return (
     <>
-      <ToastContainer position="top-center" />
+      <ToastContainer position="bottom-right" />
       <RouterProvider router={router} />
     </>
   );
