@@ -1,5 +1,14 @@
 import React, { createContext, useReducer, ReactNode, useContext } from 'react';
-
+import {
+  SET_LOCATION,
+  SET_ZOOM_LEVEL,
+  TOGGLE_ADD_BATHROOM_MODE,
+  TOGGLE_ADD_BATHROOM_MODAL,
+  SET_PIN_LOCATION,
+  SET_HAS_INITIAL_ZOOMED,
+  REMOVE_PIN,
+  SET_CONFIRM_BUTTON
+} from '../actions';
 export type LocationPayload = [number, number] | null;
 
 type MapState = {
@@ -24,38 +33,40 @@ const initialState: MapState = {
 
 // Define action types
 type ActionType =
-  | { type: 'SET_LOCATION'; payload: LocationPayload; }
-  | { type: 'SET_ZOOM_LEVEL'; payload: number; }
-  | { type: 'TOGGLE_ADD_BATHROOM_MODE'; }
-  | { type: 'TOGGLE_ADD_BATHROOM_MODAL'; }
-  | { type: 'SET_PIN_LOCATION'; payload: LocationPayload; }
-  | { type: 'SET_HAS_INITIAL_ZOOMED'; payload: boolean; }
-  | { type: 'REMOVE_PIN'; }
-  | { type: 'SET_CONFIRM_BUTTON'; payload?: boolean | ((prevState: boolean) => boolean); };
+  | { type: typeof SET_LOCATION; payload: LocationPayload; }
+  | { type: typeof SET_ZOOM_LEVEL; payload: number; }
+  | { type: typeof TOGGLE_ADD_BATHROOM_MODE; }
+  | { type: typeof TOGGLE_ADD_BATHROOM_MODAL; }
+  | { type: typeof SET_PIN_LOCATION; payload: LocationPayload; }
+  | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
+  | { type: typeof REMOVE_PIN; }
+  | { type: typeof SET_CONFIRM_BUTTON; payload?: boolean | ((prevState: boolean) => boolean); };
+
 
 // Define reducer
 const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialState, action: ActionType) => {
   switch (action.type) {
-    case 'SET_LOCATION':
+    case SET_LOCATION:
       return { ...state, location: action.payload };
-    case 'SET_ZOOM_LEVEL':
+    case SET_ZOOM_LEVEL:
       return { ...state, zoomLevel: action.payload };
-    case 'TOGGLE_ADD_BATHROOM_MODE':
+    case TOGGLE_ADD_BATHROOM_MODE:
       return { ...state, isAddBathroomMode: !state.isAddBathroomMode };
-    case 'TOGGLE_ADD_BATHROOM_MODAL':
+    case TOGGLE_ADD_BATHROOM_MODAL:
       return { ...state, isAddBathroomModalOpen: !state.isAddBathroomModalOpen };
-    case 'SET_PIN_LOCATION':
+    case SET_PIN_LOCATION:
       return { ...state, pinLocation: action.payload };
-    case 'SET_HAS_INITIAL_ZOOMED':
-      return { ...state, hasInitialZoomed: action.payload }; // Update the state with the new value
-    case 'REMOVE_PIN':
+    case SET_HAS_INITIAL_ZOOMED:
+      return { ...state, hasInitialZoomed: action.payload };
+    case REMOVE_PIN:
       return { ...state, pinLocation: null, confirmButton: false };
-    case 'SET_CONFIRM_BUTTON':
+    case SET_CONFIRM_BUTTON:
       return { ...state, confirmButton: !state.confirmButton };
     default:
       return state;
   }
 };
+
 
 // Define context
 const MapContext = createContext<{

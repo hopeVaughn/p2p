@@ -6,6 +6,15 @@ import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
 import { useMapContext, LocationPayload } from '../../utils/context/MapContextProvider';
+import {
+  SET_LOCATION,
+  SET_ZOOM_LEVEL,
+  TOGGLE_ADD_BATHROOM_MODAL,
+  SET_PIN_LOCATION,
+  SET_HAS_INITIAL_ZOOMED,
+  REMOVE_PIN,
+  SET_CONFIRM_BUTTON
+} from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 
 type ChangeViewProps = {
@@ -133,19 +142,19 @@ export default function MapComponent() {
   const SEARCH_ZOOM = 15;
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      dispatch({ type: 'SET_LOCATION', payload: [position.coords.latitude, position.coords.longitude] });
+      dispatch({ type: SET_LOCATION, payload: [position.coords.latitude, position.coords.longitude] });
 
       // Check if the initial zoom animation has not been performed yet
       if (!state.hasInitialZoomed) {
         // Perform the initial zoom animation
-        dispatch({ type: 'SET_ZOOM_LEVEL', payload: LOAD_ZOOM });
+        dispatch({ type: SET_ZOOM_LEVEL, payload: LOAD_ZOOM });
 
         // Set a timeout to zoom to SEARCH_ZOOM after a delay (e.g., 2 seconds)
         setTimeout(() => {
-          dispatch({ type: 'SET_ZOOM_LEVEL', payload: SEARCH_ZOOM });
+          dispatch({ type: SET_ZOOM_LEVEL, payload: SEARCH_ZOOM });
 
           // Update the state to indicate that the initial zoom has been completed
-          dispatch({ type: 'SET_HAS_INITIAL_ZOOMED', payload: true });
+          dispatch({ type: SET_HAS_INITIAL_ZOOMED, payload: true });
         }, 500); // Adjust the delay as needed
       }
     });
@@ -171,8 +180,8 @@ export default function MapComponent() {
         />
         {state.isAddBathroomMode && (
           <MemoizedDraggablePinMarker
-            setConfirmButton={(value) => dispatch({ type: 'SET_CONFIRM_BUTTON', payload: value })}
-            setPinLocation={(location) => dispatch({ type: 'SET_PIN_LOCATION', payload: location })}
+            setConfirmButton={(value) => dispatch({ type: SET_CONFIRM_BUTTON, payload: value })}
+            setPinLocation={(location) => dispatch({ type: SET_PIN_LOCATION, payload: location })}
             pinLocation={state.pinLocation}
           />
         )}
@@ -184,14 +193,14 @@ export default function MapComponent() {
         <div className="absolute top-4 right-4 flex flex-col space-y-2">
 
           <button
-            onClick={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
+            onClick={() => dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL })}
             className="bg-cyan-700 text-white p-2 rounded"
             disabled={!state.confirmButton}
           >
             Confirm Location
           </button>
           <button
-            onClick={() => dispatch({ type: 'REMOVE_PIN' })}
+            onClick={() => dispatch({ type: REMOVE_PIN })}
             className="bg-red-700 text-white p-2 rounded"
             disabled={!state.confirmButton}
           >
@@ -202,7 +211,7 @@ export default function MapComponent() {
 
       {state.isAddBathroomModalOpen && (
         <AddBathroomModal
-          onClose={() => dispatch({ type: 'TOGGLE_ADD_BATHROOM_MODAL' })}
+          onClose={() => dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL })}
           coordinates={state.pinLocation as [number, number]}
         />
       )}
