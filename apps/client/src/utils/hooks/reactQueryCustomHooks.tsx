@@ -27,7 +27,12 @@ type AutResponse = {
 export const useSignUp = () => {
   const navigate = useNavigate();
 
-  const { mutateAsync: signUp, isLoading: signUpLoading, error: signUpError } = useMutation(signUpAPI, {
+  const {
+    mutateAsync: signUp,
+    status,
+    error: signUpError
+  } = useMutation({
+    mutationFn: signUpAPI,
     onSuccess: (data: AutResponse) => {
       sessionStorage.setItem('accessToken', data.accessToken);
       toast.success('User registered');
@@ -41,17 +46,17 @@ export const useSignUp = () => {
 
   return {
     signUp,
-    signUpLoading,
+    signUpLoading: status === 'pending',
     signUpError
   };
 };
 
 
-
 export const useSignIn = () => {
   const navigate = useNavigate();
 
-  const { mutateAsync: signIn, isLoading, error: signInError } = useMutation(signInAPI, {
+  const { mutateAsync: signIn, status, error: signInError } = useMutation({
+    mutationFn: signInAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
       toast.success('Welcome Back!');
@@ -65,17 +70,18 @@ export const useSignIn = () => {
 
   return {
     signIn,
-    isLoading,
+    isLoading: status === 'pending',
     signInError
   };
 };
 
 
+
 export const useLogout = () => {
-  // const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { mutateAsync: logout, isLoading } = useMutation(logoutAPI, {
+  const { mutateAsync: logout, status } = useMutation({
+    mutationFn: logoutAPI,
     onSuccess: () => {
       sessionStorage.removeItem('accessToken');
       toast.success('Logged out successfully');
@@ -94,13 +100,19 @@ export const useLogout = () => {
         logout({ accessToken });
       }
     },
-    isLoading,
+    isLoading: status === 'pending',
   };
 };
 
 
+
 export const useRefreshToken = () => {
-  const { mutateAsync: refreshToken, isLoading } = useMutation(refreshTokenAPI, {
+  const {
+    mutateAsync: refreshToken,
+    status,
+    error
+  } = useMutation({
+    mutationFn: refreshTokenAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
       toast.success('Token refreshed');
@@ -113,7 +125,8 @@ export const useRefreshToken = () => {
 
   return {
     refreshToken,
-    isLoading
+    isLoading: status === 'pending',
+    error
   };
 };
 
@@ -122,8 +135,12 @@ export const useRefreshToken = () => {
 
 // Create bathroom
 export const useCreateBathroom = () => {
-
-  const { mutateAsync: createBathroom, isLoading: isLoadingCreateBathroom, error: createError } = useMutation(createBathroomAPI, {
+  const {
+    mutateAsync: createBathroom,
+    status,
+    error: createError
+  } = useMutation({
+    mutationFn: createBathroomAPI,
     onSuccess: () => {
       toast.success('Bathroom created successfully');
     },
@@ -135,15 +152,19 @@ export const useCreateBathroom = () => {
 
   return {
     createBathroom,
-    isLoadingCreateBathroom,
+    isLoadingCreateBathroom: status === 'pending',
     createError
   };
 };
 
 // Delete bathroom
 export const useDeleteBathroom = () => {
-
-  const { mutateAsync: deleteBathroom, isLoading, error: deleteError } = useMutation(deleteBathroomAPI, {
+  const {
+    mutateAsync: deleteBathroom,
+    status,
+    error: deleteError
+  } = useMutation({
+    mutationFn: deleteBathroomAPI,
     onSuccess: () => {
       toast.success('Bathroom deleted successfully');
     },
@@ -154,8 +175,8 @@ export const useDeleteBathroom = () => {
   });
 
   return {
-    deleteBathroom,  // now this is an asynchronous function
-    isLoading,
+    deleteBathroom,
+    isLoading: status === 'pending',
     deleteError
   };
 };
@@ -165,21 +186,27 @@ export const useDeleteBathroom = () => {
 export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
   const {
     data: bathrooms,
-    isLoading: isLoadingFindAllBathrooms,
+    status,
     error: errorFindAllBathrooms,
-    refetch: refetchBathrooms
-  } = useQuery(['bathrooms', lat, lng, radius], () => findAllBathroomsAPI(lat, lng, radius), {
-    onSuccess: () => {
-      toast.success('Bathrooms fetched successfully');
-    },
-    onError: (error: GenericAPIError) => {
-      const errorMessage = error?.response?.data?.msg || 'Error fetching bathrooms';
-      toast.error(errorMessage);
-    },
+    refetch: refetchBathrooms,
+    isFetching: isLoadingFindAllBathrooms
+  } = useQuery({
+    queryKey: ['bathrooms', lat, lng, radius],
+    queryFn: () => findAllBathroomsAPI(lat, lng, radius),
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false
   });
+
+  // Side effects based on query status and error
+  if (status === 'success') {
+    toast.success('Bathrooms fetched successfully');
+  }
+  if (status === 'error') {
+    // Ensure error is an instance of Error for safety
+    const errorMessage = errorFindAllBathrooms instanceof Error ? errorFindAllBathrooms.message : 'Error fetching bathrooms';
+    toast.error(errorMessage);
+  }
 
   return {
     bathrooms,
@@ -188,3 +215,4 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
     refetchBathrooms
   };
 };
+

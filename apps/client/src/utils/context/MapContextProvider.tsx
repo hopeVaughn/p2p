@@ -49,7 +49,7 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
     case 'SET_HAS_INITIAL_ZOOMED':
       return { ...state, hasInitialZoomed: action.payload }; // Update the state with the new value
     case 'REMOVE_PIN':
-      return { ...state, pinLocation: null };
+      return { ...state, pinLocation: null, confirmButton: false };
     case 'SET_CONFIRM_BUTTON':
       return { ...state, confirmButton: !state.confirmButton };
     default:
