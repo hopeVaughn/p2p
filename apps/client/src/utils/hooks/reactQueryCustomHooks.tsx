@@ -4,18 +4,16 @@ import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI } from '../api';
 
-// Auth API custom hooks
-
-// type AuthCredentials = {
-//   email: string;
-//   password: string;
-// };
 
 type AutResponse = {
   accessToken: string;
 };
 
+// Auth API custom hooks
+
 // Custom React Query Hooks
+
+// Sign Up
 export const useSignUp = () => {
   const navigate = useNavigate();
 
@@ -43,7 +41,7 @@ export const useSignUp = () => {
   };
 };
 
-
+// Sign In
 export const useSignIn = () => {
   const navigate = useNavigate();
 
@@ -72,7 +70,7 @@ export const useSignIn = () => {
 };
 
 
-
+// Logout
 export const useLogout = () => {
   const navigate = useNavigate();
 
@@ -100,8 +98,7 @@ export const useLogout = () => {
   };
 };
 
-
-
+// Refresh Token
 export const useRefreshToken = () => {
   const {
     mutateAsync: refreshToken,
@@ -199,7 +196,6 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
   //   toast.success('Bathrooms fetched successfully');
   // }
   if (status === 'error') {
-    // Ensure error is an instance of Error for safety
     const errorMessage = errorFindAllBathrooms instanceof Error ? errorFindAllBathrooms.message : 'Error fetching bathrooms';
     toast.error(errorMessage);
   }
