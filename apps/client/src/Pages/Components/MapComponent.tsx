@@ -71,6 +71,10 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     500, // radius
     Boolean(location)
   );
+  console.log(bathrooms);
+  const handleMarkerClick = (id: React.Key | null | undefined) => {
+    console.log("Clicked on bathroom with ID:", id);
+  };
   return (
     <>
       {isLoadingFindAllBathrooms && <div>Loading...</div>}
@@ -83,8 +87,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           key={bathroom.id}
           position={[bathroom.longitude, bathroom.latitude]}
           icon={redMarker}
+          eventHandlers={{
+            click: () => handleMarkerClick(bathroom.id)
+          }}
         >
-          <Popup>Here we are!</Popup>
+          <Popup></Popup>
         </Marker>
       ))}
     </>

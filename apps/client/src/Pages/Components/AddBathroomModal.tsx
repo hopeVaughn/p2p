@@ -3,6 +3,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
+import { useMapContext } from '../../utils/context/MapContextProvider';
+import { TOGGLE_ADD_BATHROOM_MODE } from '../../utils/actions';
+
 
 type AddBathroomModalProps = {
   onClose: () => void;
@@ -10,7 +13,7 @@ type AddBathroomModalProps = {
 };
 
 export default function AddBathroomModal({ onClose, coordinates }: AddBathroomModalProps) {
-  const [isOpen, setIsOpen] = useState(true); // Initially set to true for demonstration
+  const [isOpen, setIsOpen] = useState(true);
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
@@ -20,7 +23,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
   const closeTimeRef = useRef<HTMLInputElement>(null);
   const addressRef = useRef<HTMLInputElement>(null);
   const { createBathroom } = useCreateBathroom();
-
+  const { dispatch } = useMapContext();
   const handleCloseAndReset = () => {
     // Close the modal
     setIsOpen(false);
@@ -44,12 +47,12 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
     const openTime = openTimeRef.current?.value || "";
     const closeTime = closeTimeRef.current?.value || "";
     const hoursOfOperation = `${openTime} - ${closeTime}`;
+
     // Check if coordinates are available
     if (!userId) {
       console.error("Coordinates not provided!");
       return;
     }
-
 
     const payload = {
       createdBy: userId,
@@ -65,6 +68,9 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
     };
     // Call the API to submit the data
     await createBathroom(payload);
+    // Exit the "Add Bathroom" mode
+    dispatch({ type: TOGGLE_ADD_BATHROOM_MODE });
+    // Close the modal
     onClose();
   };
 

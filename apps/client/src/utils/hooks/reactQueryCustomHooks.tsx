@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI } from '../api';
 
 
 type AutResponse = {
@@ -191,10 +191,6 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
     refetchOnReconnect: false
   });
 
-  // Side effects based on query status and error
-  // if (status === 'success') {
-  //   toast.success('Bathrooms fetched successfully');
-  // }
   if (status === 'error') {
     const errorMessage = errorFindAllBathrooms instanceof Error ? errorFindAllBathrooms.message : 'Error fetching bathrooms';
     toast.error(errorMessage);
@@ -207,4 +203,32 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
     refetchBathrooms
   };
 };
+
+// Find a specific bathroom by its ID
+export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => {
+  const {
+    data: bathroom,
+    status,
+    error: errorFindBathroomById,
+    refetch: refetchBathroom
+  } = useQuery({
+    queryKey: ['bathroom', id],
+    queryFn: () => findBathroomByIdAPI(id),
+    enabled: shouldFetch,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false
+  });
+
+  if (status === 'error') {
+    const errorMessage = errorFindBathroomById instanceof Error ? errorFindBathroomById.message : 'Error fetching bathroom details';
+    toast.error(errorMessage);
+  }
+
+  return {
+    bathroom,
+    refetchBathroom,
+    errorFindBathroomById
+  };
+};
+
 

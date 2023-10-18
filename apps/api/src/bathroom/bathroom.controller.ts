@@ -60,7 +60,7 @@ export class BathroomController {
   @UseGuards(RtGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
+  findOne(@Body('id') id: string) {
     return this.bathroomService.findOne(id);
   }
 
