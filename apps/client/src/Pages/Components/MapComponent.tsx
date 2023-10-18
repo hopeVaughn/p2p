@@ -67,7 +67,6 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 const BathroomDetails = ({ bathroomId }: CustomMarkerPopupProps) => {
   const { bathroom, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(bathroomId, true);
-  console.log("bathroom", bathroom);
 
   if (isLoadingFindBathroomById) {
     return <LoadingSpinner />;
@@ -77,15 +76,24 @@ const BathroomDetails = ({ bathroomId }: CustomMarkerPopupProps) => {
     return <div>Error fetching bathroom: {errorFindBathroomById.message}</div>;
   }
 
-  // Adjust based on your API's response structure
+  if (!bathroom || typeof bathroom !== 'object') {
+    return <div>Error: Bathroom data is not available or invalid.</div>;
+  }
+
+  // Render the properties conditionally
   return (
     <div>
-      {/* <h3>{bathroom.name}</h3>
-      <p>{bathroom.description}</p> */}
-      {/* Add more details as required */}
+      {bathroom.gender && <p>Gender: {bathroom.gender}</p>}
+      {bathroom.stallType && <p>Stall Type: {bathroom.stallType}</p>}
+      {bathroom.wheelchairAccessible && <p>Accessible: {bathroom.wheelchairAccessible ? "Wheelchair Accessible" : "Not Wheelchair Accessible"}</p>}
+      {bathroom.hoursOfOperation && <p>Hours of Operation: {bathroom.hoursOfOperation}</p>}
+      {bathroom.keyRequirement && <p>Key Requirement: {bathroom.keyRequirement ? "Yes" : "No"}</p>}
+      {bathroom.stars && <p>Rating: {bathroom.stars} Stars</p>}
+      {bathroom.address && <p>Location Notes: {bathroom.address}</p>}
     </div>
   );
 };
+
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
   const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
@@ -113,9 +121,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
             click: () => handleMarkerClick(bathroom.id)
           }}
         >
-          <Popup
-          // bathroomId={bathroom.id}
-          >
+          <Popup>
             <BathroomDetails bathroomId={bathroom.id as string} />
           </Popup>
         </Marker>
