@@ -90,7 +90,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           }}
         >
           <Popup>
-
+            <div className="flex flex-col space-y-2">
+              <div className="text-lg font-semibold">{bathroom.id}</div>
+              <div className="text-sm">{bathroom.longitude}</div>
+              <div className="text-sm">{bathroom.latitude}</div>
+            </div>
           </Popup>
         </Marker>
       ))}
