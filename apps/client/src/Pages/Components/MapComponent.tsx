@@ -32,10 +32,6 @@ type DraggablePinMarkerProps = {
   pinLocation: [number, number] | null;
 };
 
-type CustomMarkerPopupProps = {
-  bathroomId: string;
-};
-
 const customBlueMarkerSVG = `
 data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
     <path fill="%2300F" fill-rule="evenodd" d="M39.263 7.673c8.897 8.812 8.966 23.168.153 32.065l-.153.153L23 56 6.737 39.89C-2.16 31.079-2.23 16.723 6.584 7.826l.153-.152c9.007-8.922 23.52-8.922 32.526 0zM23 14.435c-5.211 0-9.436 4.185-9.436 9.347S17.79 33.128 23 33.128s9.436-4.184 9.436-9.346S28.21 14.435 23 14.435z"/>
@@ -65,36 +61,6 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
   return null;
 };
 
-const BathroomDetails = ({ bathroomId }: CustomMarkerPopupProps) => {
-  const { bathroom, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(bathroomId, true);
-
-  if (isLoadingFindBathroomById) {
-    return <LoadingSpinner />;
-  }
-
-  if (errorFindBathroomById) {
-    return <div>Error fetching bathroom: {errorFindBathroomById.message}</div>;
-  }
-
-  if (!bathroom || typeof bathroom !== 'object') {
-    return <div>Error: Bathroom data is not available or invalid.</div>;
-  }
-
-  // Render the properties conditionally
-  return (
-    <div>
-      {bathroom.gender && <p>Gender: {bathroom.gender}</p>}
-      {bathroom.stallType && <p>Stall Type: {bathroom.stallType}</p>}
-      {bathroom.wheelchairAccessible && <p>Accessible: {bathroom.wheelchairAccessible ? "Wheelchair Accessible" : "Not Wheelchair Accessible"}</p>}
-      {bathroom.hoursOfOperation && <p>Hours of Operation: {bathroom.hoursOfOperation}</p>}
-      {bathroom.keyRequirement && <p>Key Requirement: {bathroom.keyRequirement ? "Yes" : "No"}</p>}
-      {bathroom.stars && <p>Rating: {bathroom.stars} Stars</p>}
-      {bathroom.address && <p>Location Notes: {bathroom.address}</p>}
-    </div>
-  );
-};
-
-
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
   const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
     location[0],
@@ -102,9 +68,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     500, // radius
     Boolean(location)
   );
+
   const handleMarkerClick = (id: React.Key | null | undefined) => {
     console.log("Clicked on bathroom with ID:", id);
   };
+
   return (
     <>
       {isLoadingFindAllBathrooms && <LoadingSpinner />}
@@ -122,7 +90,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           }}
         >
           <Popup>
-            <BathroomDetails bathroomId={bathroom.id as string} />
+
           </Popup>
         </Marker>
       ))}
