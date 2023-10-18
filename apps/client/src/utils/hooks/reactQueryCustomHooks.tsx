@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
@@ -128,6 +128,8 @@ export const useRefreshToken = () => {
 
 // Create bathroom
 export const useCreateBathroom = () => {
+  const queryClient = useQueryClient();
+
   const {
     mutateAsync: createBathroom,
     status,
@@ -136,6 +138,11 @@ export const useCreateBathroom = () => {
     mutationFn: createBathroomAPI,
     onSuccess: () => {
       toast.success('Bathroom created successfully');
+
+      // Invalidate and immediately refetch the "bathrooms" query
+      queryClient.invalidateQueries({ queryKey: ['bathrooms'] });
+      queryClient.refetchQueries({ queryKey: ['bathrooms'] });
+
     },
     onError: () => {
       const errorMessage = createError instanceof Error ? createError.message : 'Error fetching bathrooms';
@@ -160,6 +167,7 @@ export const useDeleteBathroom = () => {
     mutationFn: deleteBathroomAPI,
     onSuccess: () => {
       toast.success('Bathroom deleted successfully');
+      // Invalidate the cache
     },
     onError: () => {
       const errorMessage = deleteError instanceof Error ? deleteError.message : 'Error fetching bathrooms';

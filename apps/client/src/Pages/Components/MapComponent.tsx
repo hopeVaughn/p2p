@@ -5,7 +5,7 @@ import {
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, LoadingSpinner } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
-import { useMapContext, LocationPayload } from '../../utils/context/MapContextProvider';
+import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
   SET_LOCATION,
   SET_ZOOM_LEVEL,
@@ -29,8 +29,6 @@ type CustomMarkerProps = {
 };
 
 type DraggablePinMarkerProps = {
-  setConfirmButton: React.Dispatch<React.SetStateAction<boolean>>;
-  setPinLocation: (location: LocationPayload) => void;
   pinLocation: [number, number] | null;
 };
 
@@ -60,7 +58,7 @@ const redMarker = new L.Icon({
 
 const ChangeView = ({ center, zoom }: ChangeViewProps) => {
   const map = useMap();
-  map.flyTo(center, zoom, { duration: 2 });
+  map.flyTo(center, zoom, { duration: 1.25 });
   return null;
 };
 
@@ -71,13 +69,12 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     500, // radius
     Boolean(location)
   );
-  console.log(bathrooms);
   const handleMarkerClick = (id: React.Key | null | undefined) => {
     console.log("Clicked on bathroom with ID:", id);
   };
   return (
     <>
-      {isLoadingFindAllBathrooms && <div>Loading...</div>}
+      {isLoadingFindAllBathrooms && <LoadingSpinner />}
       <ChangeView center={location} zoom={zoomLevel} />
       <Marker position={location} icon={blueMarker}>
         <Popup>You are here!</Popup>
@@ -99,14 +96,14 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
 };
 const MemoizedMapView = React.memo(MapView);
 
-const DraggablePinMarker = ({ setConfirmButton, setPinLocation, pinLocation }: DraggablePinMarkerProps) => {
+const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
   const markerRef = useRef<LeafletMarker | null>(null);
-
+  const { dispatch, state } = useMapContext();
   useMapEvents({
     click: (e) => {
       const newLocation: [number, number] = [e.latlng.lat, e.latlng.lng];
-      setPinLocation(newLocation);
-      setConfirmButton(true);
+      dispatch({ type: SET_PIN_LOCATION, payload: newLocation });
+      dispatch({ type: SET_CONFIRM_BUTTON });
     }
   });
 
@@ -117,8 +114,7 @@ const DraggablePinMarker = ({ setConfirmButton, setPinLocation, pinLocation }: D
         if (marker != null) {
           const { lat, lng } = marker.getLatLng();
           const newLocation: [number, number] = [lat, lng];
-          setPinLocation(newLocation);
-          setConfirmButton(true);
+          dispatch({ type: SET_PIN_LOCATION, payload: newLocation });
           console.log("Updated Pin Coordinates:", newLocation);
         }
       }
@@ -130,7 +126,7 @@ const DraggablePinMarker = ({ setConfirmButton, setPinLocation, pinLocation }: D
 
   return (
     <Marker
-      draggable={true}
+      draggable={state.confirmButton}
       eventHandlers={eventHandlers}
       position={pinLocation}
       icon={redMarker}
@@ -147,6 +143,7 @@ export default function MapComponent() {
   const { state, dispatch } = useMapContext(); // Use global context
   const LOAD_ZOOM = 13;
   const SEARCH_ZOOM = 15;
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       dispatch({ type: SET_LOCATION, payload: [position.coords.latitude, position.coords.longitude] });
@@ -165,7 +162,7 @@ export default function MapComponent() {
         }, 500); // Adjust the delay as needed
       }
     });
-  }, [dispatch, state.hasInitialZoomed]);
+  }, [dispatch, state.hasInitialZoomed, state.addBathroomCount]);
 
   if (!state.location) {
     return (
@@ -189,8 +186,6 @@ export default function MapComponent() {
         />
         {state.isAddBathroomMode && (
           <MemoizedDraggablePinMarker
-            setConfirmButton={(value) => dispatch({ type: SET_CONFIRM_BUTTON, payload: value })}
-            setPinLocation={(location) => dispatch({ type: SET_PIN_LOCATION, payload: location })}
             pinLocation={state.pinLocation}
           />
         )}
@@ -220,7 +215,6 @@ export default function MapComponent() {
 
       {state.isAddBathroomModalOpen && (
         <AddBathroomModal
-          onClose={() => dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL })}
           coordinates={state.pinLocation as [number, number]}
         />
       )}

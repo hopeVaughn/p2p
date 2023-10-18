@@ -1,19 +1,16 @@
-import { Fragment, useState, useRef } from 'react';
+import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { TOGGLE_ADD_BATHROOM_MODE } from '../../utils/actions';
-
+import { INCREMENT_BATHROOM_COUNT, SET_CONFIRM_BUTTON, TOGGLE_ADD_BATHROOM_MODAL } from '../../utils/actions';
 
 type AddBathroomModalProps = {
-  onClose: () => void;
   coordinates: [number, number];
 };
 
-export default function AddBathroomModal({ onClose, coordinates }: AddBathroomModalProps) {
-  const [isOpen, setIsOpen] = useState(true);
+export default function AddBathroomModal({ coordinates }: AddBathroomModalProps) {
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
@@ -23,12 +20,8 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
   const closeTimeRef = useRef<HTMLInputElement>(null);
   const addressRef = useRef<HTMLInputElement>(null);
   const { createBathroom } = useCreateBathroom();
-  const { dispatch } = useMapContext();
+  const { dispatch, state } = useMapContext();
   const handleCloseAndReset = () => {
-    // Close the modal
-    setIsOpen(false);
-    onClose();
-
     // Reset all refs
     if (genderRef.current) genderRef.current.value = '';
     if (stallTypeRef.current) stallTypeRef.current.value = '';
@@ -38,6 +31,8 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
     if (openTimeRef.current) openTimeRef.current.value = '';
     if (closeTimeRef.current) closeTimeRef.current.value = '';
     if (addressRef.current) addressRef.current.value = '';
+    // Close the modal
+    dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,14 +63,16 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
     };
     // Call the API to submit the data
     await createBathroom(payload);
-    // Exit the "Add Bathroom" mode
-    dispatch({ type: TOGGLE_ADD_BATHROOM_MODE });
+    // Update the bathroom count
+    dispatch({ type: INCREMENT_BATHROOM_COUNT });
     // Close the modal
-    onClose();
+    dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
+    // Reset the confirm button state
+    dispatch({ type: SET_CONFIRM_BUTTON });
   };
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
+    <Transition appear show={state.isAddBathroomModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
@@ -109,7 +106,7 @@ export default function AddBathroomModal({ onClose, coordinates }: AddBathroomMo
                   <select ref={genderRef} defaultValue={BathroomGender.GENDERED} required className="mt-1 block w-full p-2 border rounded-md">
                     <option value={BathroomGender.GENDERED}>Gendered</option>
                     <option value={BathroomGender.GENDER_NEUTRAL}>Gender Neutral</option>
-                    <option value={BathroomGender.BOTH}>BOTH</option>
+                    <option value={BathroomGender.BOTH}>Both</option>
                   </select>
                 </label>
 
