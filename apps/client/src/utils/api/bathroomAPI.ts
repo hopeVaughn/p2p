@@ -53,5 +53,6 @@ export const findAllBathroomsAPI = async (lat: number, lng: number, radius: numb
 // Find a bathroom by id
 export const findBathroomByIdAPI = async (id: string) => {
   const response = await api.get(`${bathroomBaseURL}${id}`);
+  console.log("response.data", response.data);
   return response.data;
 };

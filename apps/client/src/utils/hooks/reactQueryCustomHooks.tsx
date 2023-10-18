@@ -218,7 +218,8 @@ export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => 
     data: bathroom,
     status,
     error: errorFindBathroomById,
-    refetch: refetchBathroom
+    refetch: refetchBathroom,
+    isLoading: isLoadingFindBathroomById
   } = useQuery({
     queryKey: ['bathroom', id],
     queryFn: () => findBathroomByIdAPI(id),
@@ -235,7 +236,8 @@ export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => 
   return {
     bathroom,
     refetchBathroom,
-    errorFindBathroomById
+    errorFindBathroomById,
+    isLoadingFindBathroomById
   };
 };
 

@@ -4,7 +4,7 @@ import {
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, LoadingSpinner } from '../Components';
-import { useFindAllBathrooms } from '../../utils/hooks';
+import { useFindAllBathrooms, useFindBathroomById } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
   SET_LOCATION,
@@ -32,6 +32,9 @@ type DraggablePinMarkerProps = {
   pinLocation: [number, number] | null;
 };
 
+type CustomMarkerPopupProps = {
+  bathroomId: string;
+};
 
 const customBlueMarkerSVG = `
 data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
@@ -62,6 +65,28 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
   return null;
 };
 
+const BathroomDetails = ({ bathroomId }: CustomMarkerPopupProps) => {
+  const { bathroom, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(bathroomId, true);
+  console.log("bathroom", bathroom);
+
+  if (isLoadingFindBathroomById) {
+    return <LoadingSpinner />;
+  }
+
+  if (errorFindBathroomById) {
+    return <div>Error fetching bathroom: {errorFindBathroomById.message}</div>;
+  }
+
+  // Adjust based on your API's response structure
+  return (
+    <div>
+      {/* <h3>{bathroom.name}</h3>
+      <p>{bathroom.description}</p> */}
+      {/* Add more details as required */}
+    </div>
+  );
+};
+
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
   const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
     location[0],
@@ -88,7 +113,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
             click: () => handleMarkerClick(bathroom.id)
           }}
         >
-          <Popup></Popup>
+          <Popup
+          // bathroomId={bathroom.id}
+          >
+            <BathroomDetails bathroomId={bathroom.id as string} />
+          </Popup>
         </Marker>
       ))}
     </>
