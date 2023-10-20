@@ -4,7 +4,7 @@ const ratingBaseURL = 'rating/';
 
 type Rating = {
   bathroomId: string;
-  ratedById: string;
+  ratedById: string | null;
   stars: number;
 };
 

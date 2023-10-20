@@ -2,17 +2,20 @@ import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useCreateRating } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
-
+import { useMapContext } from '../../utils/context/MapContextProvider';
+import { TOGGLE_ADD_RATING_MODAL } from '../../utils/actions';
 type AddRatingModalProps = {
   bathroomId: string;
 };
 
 export default function AddRatingModal({ bathroomId }: AddRatingModalProps) {
   const starsRef = useRef<HTMLInputElement>(null);
+  const { dispatch, state } = useMapContext();
   const { createRating } = useCreateRating();
 
   const handleCloseAndReset = () => {
-    // Reset all refs and close the modal
+    if (starsRef.current) starsRef.current.value = '';
+    dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,14 +24,16 @@ export default function AddRatingModal({ bathroomId }: AddRatingModalProps) {
     // Declare the bathroomId
 
     const payload = {
-      createdBy: userId,
+      bathroomId: bathroomId,
+      ratedById: userId,
       stars: parseFloat(starsRef.current?.value || '5'),
-      bathroomId: bathroomId
     };
+
+    await createRating(payload);
   };
 
   return (
-    <Transition appear show={state.isAddBathroomModalOpen} as={Fragment}>
+    <Transition appear show={state.isAddRatingModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"

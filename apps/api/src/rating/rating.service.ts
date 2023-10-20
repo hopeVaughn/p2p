@@ -36,8 +36,6 @@ export class RatingService {
         },
       });
 
-      let newRating: unknown;
-
       const actions = [];
 
       if (existingRating) {
@@ -59,6 +57,14 @@ export class RatingService {
           },
         });
 
+        const createRatingAction = this.prisma.rating.create({
+          data: {
+            bathroom: { connect: { id: bathroomId } },
+            ratedBy: { connect: { id: ratedById } },
+            stars,
+          },
+        });
+
         if (isCreator) {
           const otherRatings = await this.prisma.rating.findMany({
             where: {
@@ -71,44 +77,25 @@ export class RatingService {
 
           if (otherRatings.length === 0) {
             // Use the new rating as is, if no other user has rated it
-            actions.push(
-              this.prisma.rating.create({
-                data: {
-                  bathroom: { connect: { id: bathroomId } },
-                  ratedBy: { connect: { id: ratedById } },
-                  stars,
-                },
-              })
-            );
+            actions.push(createRatingAction);
           } else {
             // The creator's new rating is treated as a fresh rating
-            actions.push(
-              this.prisma.rating.create({
-                data: {
-                  bathroom: { connect: { id: bathroomId } },
-                  ratedBy: { connect: { id: ratedById } },
-                  stars,
-                },
-              })
-            );
+            actions.push(createRatingAction);
           }
         } else {
           // The user isn't the creator or has already rated it before
-          actions.push(
-            this.prisma.rating.create({
-              data: {
-                bathroom: { connect: { id: bathroomId } },
-                ratedBy: { connect: { id: ratedById } },
-                stars,
-              },
-            })
-          );
+          actions.push(createRatingAction);
         }
       }
 
+      // Add the promise from the updateAverageStars method to the actions array
       actions.push(this.updateAverageStars(bathroomId));
 
-      [newRating] = await this.prisma.$transaction(actions);
+      const results = await this.prisma.$transaction(actions);
+      if (!results || !results.length) {
+        throw new InternalServerErrorException('Error processing transaction');
+      }
+      const newRating = results[results.length - 2];  // Get the result before the updateAverageStars result
 
       return newRating;
 
@@ -149,15 +136,16 @@ export class RatingService {
    * @param bathroomId The ID of the bathroom to update the average stars for.
    * @throws InternalServerErrorException if there was an error updating the average stars.
    */
-  async updateAverageStars(bathroomId: string) {
-    try {
-      const averageStars = await this.getAverageRatingForBathroom(bathroomId);
-      await this.prisma.bathroom.update({
-        where: { id: bathroomId },
-        data: { stars: averageStars },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException(`Error updating average stars: ${error.message}`);
+  async updateAverageStars(bathroomId: string): Promise<unknown> {
+    const averageStars = await this.getAverageRatingForBathroom(bathroomId);
+    if (typeof averageStars !== 'number') {
+      // Ensure this always returns a rejected promise rather than throwing directly
+      return Promise.reject(new InternalServerErrorException('Error retrieving average stars'));
     }
+    return this.prisma.bathroom.update({
+      where: { id: bathroomId },
+      data: { stars: averageStars },
+    });
   }
+
 }

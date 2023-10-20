@@ -3,13 +3,15 @@ import {
   MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents,
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
-import { AddBathroomModal, LoadingSpinner } from '../Components';
+import { AddBathroomModal, AddRatingModal, LoadingSpinner } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
   SET_LOCATION,
   SET_ZOOM_LEVEL,
   TOGGLE_ADD_BATHROOM_MODAL,
+  TOGGLE_ADD_RATING_MODAL,
+  TOGGLE_ADD_REPORT_MODAL,
   SET_PIN_LOCATION,
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
@@ -82,7 +84,12 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   console.log("bathrooms", bathrooms);
 
   // const { bathroom: bathroomID, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(state.singleBathroomId, Boolean(state.singleBathroomId));
-
+  const handleRateClick = () => {
+    dispatch({ type: TOGGLE_ADD_RATING_MODAL });
+  };
+  const handleReportClick = () => {
+    dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
+  };
   return (
     <>
       {isLoadingFindAllBathrooms && <LoadingSpinner />}
@@ -141,9 +148,19 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                 </div>
 
                 <div className="flex justify-between mt-2 text-xs space-x-4">
-                  <a href="#" className="text-blue-500 hover:underline">verify</a>
-                  <a href="#" className="text-blue-500 hover:underline">rate</a>
-                  <a href="#" className="text-blue-500 hover:underline">report</a>
+                  <button type="button" className="text-blue-500 hover:underline">verify</button>
+                  <button
+                    type="button"
+                    id='rate'
+                    className="text-blue-500 hover:underline"
+                    onClick={handleRateClick}
+                  >rate</button>
+                  <button
+                    type="button"
+                    id='report'
+                    className="text-blue-500 hover:underline"
+                    onClick={handleReportClick}
+                  >report</button>
                 </div>
               </dl>
             </div>
@@ -275,6 +292,9 @@ export default function MapComponent() {
         <AddBathroomModal
           coordinates={state.pinLocation as [number, number]}
         />
+      )}
+      {state.isAddRatingModalOpen && (
+        <AddRatingModal bathroomId={state.bathroomId} />
       )}
     </div>
   );
