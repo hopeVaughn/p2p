@@ -12,4 +12,5 @@ export { default as HeadLogo } from './HeadLogo';
 export { default as MapComponent } from './MapComponent';
 export { default as AddBathroomModal } from './AddBathroomModal';
 export { default as AddRatingModal } from './AddRatingModal';
+export { default as AddReportModal } from './AddReportModal';
 export { default as LoadingSpinner } from './LoadingSpinner';
