@@ -21,18 +21,14 @@ export class RatingService {
     try {
       const { bathroomId, ratedById, stars } = createRatingDto;
 
-      // Check if the bathroom exists
       const bathroom = await this.prisma.bathroom.findUnique({
         where: { id: bathroomId },
       });
 
       if (!bathroom) {
-        throw new NotFoundException(
-          `Bathroom with id ${bathroomId} does not exist`,
-        );
+        throw new NotFoundException(`Bathroom with id ${bathroomId} does not exist`);
       }
 
-      // Check if the user has already rated the bathroom
       const existingRating = await this.prisma.rating.findFirst({
         where: {
           bathroomId,
@@ -40,7 +36,7 @@ export class RatingService {
         },
       });
 
-      let newRating;
+      let newRating: unknown;
 
       const actions = [];
 
@@ -56,18 +52,60 @@ export class RatingService {
           })
         );
       } else {
-        actions.push(
-          this.prisma.rating.create({
-            data: {
-              bathroom: { connect: { id: bathroomId } },
-              ratedBy: { connect: { id: ratedById } },
-              stars,
+        const isCreator = await this.prisma.bathroom.findFirst({
+          where: {
+            id: bathroomId,
+            createdById: ratedById,
+          },
+        });
+
+        if (isCreator) {
+          const otherRatings = await this.prisma.rating.findMany({
+            where: {
+              bathroomId,
+              NOT: {
+                ratedById: bathroom.createdById,  // exclude creator's original rating
+              },
             },
-          })
-        );
+          });
+
+          if (otherRatings.length === 0) {
+            // Use the new rating as is, if no other user has rated it
+            actions.push(
+              this.prisma.rating.create({
+                data: {
+                  bathroom: { connect: { id: bathroomId } },
+                  ratedBy: { connect: { id: ratedById } },
+                  stars,
+                },
+              })
+            );
+          } else {
+            // The creator's new rating is treated as a fresh rating
+            actions.push(
+              this.prisma.rating.create({
+                data: {
+                  bathroom: { connect: { id: bathroomId } },
+                  ratedBy: { connect: { id: ratedById } },
+                  stars,
+                },
+              })
+            );
+          }
+        } else {
+          // The user isn't the creator or has already rated it before
+          actions.push(
+            this.prisma.rating.create({
+              data: {
+                bathroom: { connect: { id: bathroomId } },
+                ratedBy: { connect: { id: ratedById } },
+                stars,
+              },
+            })
+          );
+        }
       }
 
-      // Adding the action to update the average stars for the bathroom
       actions.push(this.updateAverageStars(bathroomId));
 
       [newRating] = await this.prisma.$transaction(actions);
@@ -78,12 +116,12 @@ export class RatingService {
       if (error instanceof NotFoundException) {
         throw error;
       } else {
-        throw new InternalServerErrorException(
-          `Error during rating creation: ${error.message}`,
-        );
+        throw new InternalServerErrorException(`Error during rating creation: ${error.message}`);
       }
     }
   }
+
+
 
   /**
    * Updates an existing rating for a bathroom.
@@ -135,7 +173,7 @@ export class RatingService {
    * @param bathroomId The ID of the bathroom to get the average rating for.
    * @returns The average rating for the bathroom, rounded down to a whole number, or null if there are no ratings yet.
    */
-  async getAverageRating(bathroomId: string): Promise<number> {
+  async getAverageRatingForBathroom(bathroomId: string): Promise<number> {
     const result = await this.prisma.rating.groupBy({
       by: ['bathroomId'],
       where: { bathroomId },
@@ -144,13 +182,13 @@ export class RatingService {
       },
     });
 
-    // If there are no ratings yet, we should return null
+    // If there are no ratings yet, we should return 0 (or another default value if desired)
     if (result.length === 0) {
-      return null;
+      return 0;
     }
 
-    // Else return the average rating rounded down to a whole number
-    return Math.floor(result[0]._avg.stars);
+    // Return the average rating rounded to the nearest whole number
+    return Math.round(result[0]._avg.stars);
   }
 
   /**
@@ -158,18 +196,15 @@ export class RatingService {
    * @param bathroomId The ID of the bathroom to update the average stars for.
    * @throws InternalServerErrorException if there was an error updating the average stars.
    */
-  private async updateAverageStars(bathroomId: string) {
+  async updateAverageStars(bathroomId: string) {
     try {
-      const averageStars = await this.getAverageRating(bathroomId);
-      if (averageStars !== null) {
-        await this.prisma.bathroom.update({
-          where: { id: bathroomId },
-          data: { stars: averageStars },
-        });
-      }
+      const averageStars = await this.getAverageRatingForBathroom(bathroomId);
+      await this.prisma.bathroom.update({
+        where: { id: bathroomId },
+        data: { stars: averageStars },
+      });
     } catch (error) {
       throw new InternalServerErrorException(`Error updating average stars: ${error.message}`);
     }
   }
-
 }

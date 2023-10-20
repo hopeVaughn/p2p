@@ -35,9 +35,6 @@ export class BathroomController {
   async create(@Body() createBathroomDto: CreateBathroomDto) {
     const bathroom = await this.bathroomService.createWithLocation(createBathroomDto);
 
-    // Update the average stars for the created bathroom
-    // await this.ratingService.updateAverageStars(bathroom.id);
-
     return bathroom;
   }
 
