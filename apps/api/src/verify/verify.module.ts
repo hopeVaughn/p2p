@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { VerifyService } from './verify.service';
 import { VerifyController } from './verify.controller';
-import { RtGuard } from '../common/guards';
+import { AuthModule } from 'src/auth/auth.module';
 @Module({
+  imports: [AuthModule],
   controllers: [VerifyController],
-  providers: [VerifyService, RtGuard],
+  providers: [VerifyService],
 })
 export class VerifyModule { }

@@ -5,14 +5,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
-import { RatingService } from '../rating/rating.service';
+import { CreateBathroomDto } from './dto/bathroom.dto';
 
 @Injectable()
 export class BathroomService {
   constructor (
     private prisma: PrismaService,
-    private ratingService: RatingService,
   ) { }
 
   /**

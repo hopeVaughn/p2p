@@ -21,7 +21,6 @@ import { Public } from '../common/decorators/public.decorator';
 export class BathroomController {
   constructor (
     private readonly bathroomService: BathroomService,
-    private ratingService: RatingService,
   ) { }
 
   /**

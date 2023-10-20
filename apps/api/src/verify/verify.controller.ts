@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { VerifyService } from './verify.service';
 import { RtGuard } from '../common/guards';
-import { GetCurrentUserId } from '../common/decorators';
+import { GetCurrentUserId, Public } from '../common/decorators';
 import { User } from '@prisma/client';
 
 /**
@@ -24,10 +24,11 @@ export class VerifyController {
    * @param user - The authenticated user making the request.
    * @returns The result of the verification.
    */
-  @Post(':id')
+  @Public()
   @UseGuards(RtGuard)
+  @Post(':id')
   @HttpCode(HttpStatus.CREATED)
-  async verify(@Param('id') bathroomId: string, @GetCurrentUserId() user: User) {
-    return this.verifyService.verify(bathroomId, user.id);
+  async verify(@Param('id') bathroomId: string, @GetCurrentUserId() userId: string) {
+    return this.verifyService.verify(bathroomId, userId);
   }
 }

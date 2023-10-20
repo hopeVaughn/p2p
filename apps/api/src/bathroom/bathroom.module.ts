@@ -4,7 +4,7 @@ import { BathroomService } from './bathroom.service';
 import { RatingService } from '../rating/rating.service';
 import { AuthModule } from 'src/auth/auth.module';
 @Module({
-  imports: [AuthModule, RatingService],
+  imports: [AuthModule],
   controllers: [BathroomController],
   providers: [BathroomService],
 })
