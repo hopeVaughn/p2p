@@ -14,6 +14,7 @@ import {
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
+  SET_BATHROOM_ID,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 
@@ -68,14 +69,16 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
   return null;
 };
 
+
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
+  const { dispatch } = useMapContext();
+
   const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
     location[0],
     location[1],
     500, // radius
     Boolean(location)
   );
-
   console.log("bathrooms", bathrooms);
 
   // const { bathroom: bathroomID, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(state.singleBathroomId, Boolean(state.singleBathroomId));
@@ -88,10 +91,14 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
         <Popup>You are here!</Popup>
       </Marker>
       {!isLoadingFindAllBathrooms && bathrooms?.map((bathroom: CustomMarkerProps) => (
+
         <Marker
           key={bathroom.id}
           position={[bathroom.longitude, bathroom.latitude]}
           icon={redMarker}
+          eventHandlers={{
+            click: () => dispatch({ type: SET_BATHROOM_ID, payload: bathroom.id as string }),
+          }}
         >
           <Popup>
             <div className="bg-white p-3 rounded-md shadow-sm space-y-2">

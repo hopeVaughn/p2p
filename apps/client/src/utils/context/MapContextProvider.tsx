@@ -4,11 +4,13 @@ import {
   SET_ZOOM_LEVEL,
   TOGGLE_ADD_BATHROOM_MODE,
   TOGGLE_ADD_BATHROOM_MODAL,
+  TOGGLE_ADD_RATING_MODAL,
+  TOGGLE_ADD_REPORT_MODAL,
   SET_PIN_LOCATION,
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
-  SINGLE_BATHROOM_ID
+  SET_BATHROOM_ID
 } from '../actions';
 export type LocationPayload = [number, number] | null;
 
@@ -17,6 +19,9 @@ type MapState = {
   zoomLevel: number;
   isAddBathroomMode: boolean;
   isAddBathroomModalOpen: boolean;
+  isAddRatingModalOpen: boolean;
+  isAddReportModalOpen: boolean;
+  bathroomId: string;
   pinLocation: LocationPayload;
   hasInitialZoomed: boolean;
   confirmButton: boolean;
@@ -27,6 +32,9 @@ const initialState: MapState = {
   zoomLevel: 15,
   isAddBathroomMode: false,
   isAddBathroomModalOpen: false,
+  isAddRatingModalOpen: false,
+  isAddReportModalOpen: false,
+  bathroomId: '',
   pinLocation: null,
   hasInitialZoomed: false,
   confirmButton: false,
@@ -38,11 +46,13 @@ type ActionType =
   | { type: typeof SET_ZOOM_LEVEL; payload: number; }
   | { type: typeof TOGGLE_ADD_BATHROOM_MODE; }
   | { type: typeof TOGGLE_ADD_BATHROOM_MODAL; }
+  | { type: typeof TOGGLE_ADD_RATING_MODAL; }
+  | { type: typeof TOGGLE_ADD_REPORT_MODAL; }
   | { type: typeof SET_PIN_LOCATION; payload: LocationPayload; }
   | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
   | { type: typeof REMOVE_PIN; }
   | { type: typeof SET_CONFIRM_BUTTON; }
-  | { type: typeof SINGLE_BATHROOM_ID; payload: string; };
+  | { type: typeof SET_BATHROOM_ID; payload: string; };
 
 
 // Define reducer
@@ -56,6 +66,10 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, isAddBathroomMode: !state.isAddBathroomMode };
     case TOGGLE_ADD_BATHROOM_MODAL:
       return { ...state, isAddBathroomModalOpen: !state.isAddBathroomModalOpen };
+    case TOGGLE_ADD_RATING_MODAL:
+      return { ...state, isAddRatingModalOpen: !state.isAddRatingModalOpen };
+    case TOGGLE_ADD_REPORT_MODAL:
+      return { ...state, isAddRatingModalOpen: !state.isAddRatingModalOpen };
     case SET_PIN_LOCATION:
       return { ...state, pinLocation: action.payload };
     case SET_HAS_INITIAL_ZOOMED:
@@ -64,8 +78,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, pinLocation: null, confirmButton: false };
     case SET_CONFIRM_BUTTON:
       return { ...state, confirmButton: !state.confirmButton };
-    case SINGLE_BATHROOM_ID:
-      return { ...state, singleBathroomId: action.payload };
+    case SET_BATHROOM_ID:
+      return { ...state, bathroomId: action.payload };
     default:
       return state;
   }

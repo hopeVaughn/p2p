@@ -41,7 +41,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     // Capture the values from the time spinner
     const openTime = openTimeRef.current?.value || "";
     const closeTime = closeTimeRef.current?.value || "";
-    const hoursOfOperation = `${openTime} - ${closeTime}`;
+    const hoursOfOperation = `${openTime}AM - ${closeTime}PM`;
 
     // Check if coordinates are available
     if (!userId) {
