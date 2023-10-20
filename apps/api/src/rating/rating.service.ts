@@ -17,7 +17,7 @@ export class RatingService {
    * @throws NotFoundException if the bathroom with the given ID does not exist.
    * @throws InternalServerErrorException if there was an error creating or updating the rating.
    */
-  async create(createRatingDto: CreateRatingDto) {
+  async createOrUpdate(createRatingDto: CreateRatingDto) {
     try {
       const { bathroomId, ratedById, stars } = createRatingDto;
 
@@ -118,53 +118,6 @@ export class RatingService {
       } else {
         throw new InternalServerErrorException(`Error during rating creation: ${error.message}`);
       }
-    }
-  }
-
-
-
-  /**
-   * Updates an existing rating for a bathroom.
-   * @param id The ID of the rating to update.
-   * @param ratedById The ID of the user who rated the bathroom.
-   * @param updateRatingDto The new data for the rating.
-   * @returns The updated rating.
-   * @throws NotFoundException if the rating with the given ID and user ID does not exist.
-   * @throws InternalServerErrorException if there was an error updating the rating.
-   */
-  async update(
-    id: string,
-    ratedById: string,
-    updateRatingDto: UpdateRatingDto,
-  ) {
-    try {
-      const rating = await this.prisma.rating.findFirst({
-        where: {
-          id,
-          ratedById,
-        },
-      });
-
-      if (!rating) throw new NotFoundException('Rating not found');
-
-      const actions = [];
-
-      actions.push(
-        this.prisma.rating.update({
-          where: { id },
-          data: updateRatingDto,
-        })
-      );
-
-      // Adding the action to update the average stars for the bathroom
-      actions.push(this.updateAverageStars(rating.bathroomId));
-
-      const [updatedRating] = await this.prisma.$transaction(actions);
-
-      return updatedRating;
-    } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Error updating the rating');
     }
   }
 

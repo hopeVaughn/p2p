@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI } from '../api';
 
 
 type AutResponse = {
@@ -242,3 +242,36 @@ export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => 
 };
 
 
+// Rating API custom hooks
+
+// CreateOrUpdate rating
+
+export const useCreateRating = () => {
+  const queryClient = useQueryClient();
+
+  const {
+    mutateAsync: createRating,
+    status,
+    error: ratingError
+  } = useMutation({
+    mutationFn: createOrUpdateRatingAPI,
+    onSuccess: () => {
+      toast.success('Rating created successfully');
+
+      // Invalidate and immediately refetch the "bathrooms" query
+      queryClient.invalidateQueries({ queryKey: ['bathrooms'] });
+      queryClient.refetchQueries({ queryKey: ['bathrooms'] });
+
+    },
+    onError: () => {
+      const errorMessage = ratingError instanceof Error ? ratingError.message : 'Error fetching bathrooms';
+      toast.error(errorMessage);
+    }
+  });
+
+  return {
+    createRating,
+    isLoadingCreateRating: status === 'pending',
+    ratingError,
+  };
+};

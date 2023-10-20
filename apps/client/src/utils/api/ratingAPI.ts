@@ -2,7 +2,13 @@ import api from './axiosDefault';
 
 const ratingBaseURL = 'rating/';
 
-export const createRatingAPI = async (bathroomId: string, ratedById: string, stars: number) => {
-  const response = await api.post(`${ratingBaseURL}`, { bathroomId, ratedById, stars });
+type Rating = {
+  bathroomId: string;
+  ratedById: string;
+  stars: number;
+};
+
+export const createOrUpdateRatingAPI = async (data: Rating) => {
+  const response = await api.post(`${ratingBaseURL}`, data);
   return response.data;
 };
