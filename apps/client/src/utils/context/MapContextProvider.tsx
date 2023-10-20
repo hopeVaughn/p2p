@@ -8,7 +8,7 @@ import {
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
-  INCREMENT_BATHROOM_COUNT
+  SINGLE_BATHROOM_ID
 } from '../actions';
 export type LocationPayload = [number, number] | null;
 
@@ -20,7 +20,6 @@ type MapState = {
   pinLocation: LocationPayload;
   hasInitialZoomed: boolean;
   confirmButton: boolean;
-  addBathroomCount: number;
 };
 // Define initial state
 const initialState: MapState = {
@@ -31,7 +30,6 @@ const initialState: MapState = {
   pinLocation: null,
   hasInitialZoomed: false,
   confirmButton: false,
-  addBathroomCount: 0
 };
 
 // Define action types
@@ -44,7 +42,7 @@ type ActionType =
   | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
   | { type: typeof REMOVE_PIN; }
   | { type: typeof SET_CONFIRM_BUTTON; }
-  | { type: typeof INCREMENT_BATHROOM_COUNT; };
+  | { type: typeof SINGLE_BATHROOM_ID; payload: string; };
 
 
 // Define reducer
@@ -66,8 +64,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, pinLocation: null, confirmButton: false };
     case SET_CONFIRM_BUTTON:
       return { ...state, confirmButton: !state.confirmButton };
-    case INCREMENT_BATHROOM_COUNT:
-      return { ...state, addBathroomCount: state.addBathroomCount + 1 };
+    case SINGLE_BATHROOM_ID:
+      return { ...state, singleBathroomId: action.payload };
     default:
       return state;
   }

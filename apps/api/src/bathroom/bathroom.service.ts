@@ -89,18 +89,29 @@ export class BathroomService {
    */
   async findNearby(lat: number, lng: number, radius: number) {
     const result = await this.prisma.$queryRaw`
-    SELECT id, ST_X(location) as latitude, ST_Y(location) as longitude 
-        FROM "Bathroom"
-        WHERE ST_DWithin(
-          ST_Transform(ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), 3857),
-          ST_Transform(location, 3857),
-          ${radius}
-);
+    SELECT 
+        id, 
+        ST_X(location) as latitude, 
+        ST_Y(location) as longitude,
+        gender, 
+        "stallType", 
+        "wheelchairAccessible", 
+        stars, 
+        "keyRequirement", 
+        "hoursOfOperation", 
+        address
+    FROM "Bathroom"
+    WHERE ST_DWithin(
+        ST_Transform(ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), 3857),
+        ST_Transform(location, 3857),
+        ${radius}
+    );
     `;
     console.log('result', result);
 
     return result;
   }
+
 
   /**
    * Find a bathroom by id

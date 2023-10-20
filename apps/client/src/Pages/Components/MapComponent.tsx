@@ -4,7 +4,7 @@ import {
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, LoadingSpinner } from '../Components';
-import { useFindAllBathrooms, useFindBathroomById } from '../../utils/hooks';
+import { useFindAllBathrooms } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
   SET_LOCATION,
@@ -13,7 +13,7 @@ import {
   SET_PIN_LOCATION,
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
-  SET_CONFIRM_BUTTON
+  SET_CONFIRM_BUTTON,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 
@@ -26,6 +26,13 @@ type CustomMarkerProps = {
   id: React.Key | null | undefined;
   longitude: number;
   latitude: number;
+  gender: string;
+  stallType: string;
+  hoursOfOperation: string;
+  keyRequirement: boolean;
+  stars: number;
+  wheelchairAccessible: boolean;
+  address: string;
 };
 
 type DraggablePinMarkerProps = {
@@ -69,9 +76,9 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     Boolean(location)
   );
 
-  const handleMarkerClick = (id: React.Key | null | undefined) => {
-    console.log("Clicked on bathroom with ID:", id);
-  };
+  console.log("bathrooms", bathrooms);
+
+  // const { bathroom: bathroomID, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(state.singleBathroomId, Boolean(state.singleBathroomId));
 
   return (
     <>
@@ -85,17 +92,49 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           key={bathroom.id}
           position={[bathroom.longitude, bathroom.latitude]}
           icon={redMarker}
-          eventHandlers={{
-            click: () => handleMarkerClick(bathroom.id)
-          }}
         >
           <Popup>
-            <div className="flex flex-col space-y-2">
-              <div className="text-lg font-semibold">{bathroom.id}</div>
-              <div className="text-sm">{bathroom.longitude}</div>
-              <div className="text-sm">{bathroom.latitude}</div>
+            <div className="bg-white p-3 rounded-md shadow-sm space-y-1">
+              <dl className="space-y-2">
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Gender:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.gender}</dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Stall Type:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.stallType}</dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Hours:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.hoursOfOperation}</dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Key Required:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.keyRequirement ? 'Yes' : 'No'}</dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Rating:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.stars} stars</dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Wheelchair Accessible:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.wheelchairAccessible ? 'Yes' : 'No'}</dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Address:</dt>
+                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.address}</dd>
+                </div>
+              </dl>
             </div>
           </Popup>
+
+
         </Marker>
       ))}
     </>
@@ -169,7 +208,7 @@ export default function MapComponent() {
         }, 500); // Adjust the delay as needed
       }
     });
-  }, [dispatch, state.hasInitialZoomed, state.addBathroomCount]);
+  }, [dispatch, state.hasInitialZoomed]);
 
   if (!state.location) {
     return (
@@ -202,7 +241,6 @@ export default function MapComponent() {
 
       {state.isAddBathroomMode && (
         <div className="absolute top-4 right-4 flex flex-col space-y-2">
-
           <button
             onClick={() => dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL })}
             className="bg-cyan-700 text-white p-2 rounded"

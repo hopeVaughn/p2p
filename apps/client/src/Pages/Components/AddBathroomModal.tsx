@@ -4,7 +4,7 @@ import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { INCREMENT_BATHROOM_COUNT, SET_CONFIRM_BUTTON, TOGGLE_ADD_BATHROOM_MODAL } from '../../utils/actions';
+import { SET_CONFIRM_BUTTON, TOGGLE_ADD_BATHROOM_MODAL } from '../../utils/actions';
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
@@ -63,8 +63,6 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     };
     // Call the API to submit the data
     await createBathroom(payload);
-    // Update the bathroom count
-    dispatch({ type: INCREMENT_BATHROOM_COUNT });
     // Close the modal
     dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
     // Reset the confirm button state
