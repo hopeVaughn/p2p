@@ -94,47 +94,53 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           icon={redMarker}
         >
           <Popup>
-            <div className="bg-white p-3 rounded-md shadow-sm space-y-1">
+            <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
+              <div className="text-center font-boldext-lg">Bathroom Details</div>
+
               <dl className="space-y-2">
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Gender:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.gender}</dd>
+                <div className="flex items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Gender:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.gender}</dd>
                 </div>
 
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Stall Type:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.stallType}</dd>
+                <div className="flex items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Stall Type:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.stallType}</dd>
                 </div>
 
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Hours:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.hoursOfOperation}</dd>
+                <div className="flex items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Hours:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.hoursOfOperation}</dd>
                 </div>
 
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Key Required:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.keyRequirement ? 'Yes' : 'No'}</dd>
+                <div className="flex items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Key Required:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.keyRequirement ? 'Yes' : 'No'}</dd>
                 </div>
 
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Rating:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.stars} stars</dd>
+                <div className="flex items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Rating:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.stars} stars</dd>
                 </div>
 
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Wheelchair Accessible:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.wheelchairAccessible ? 'Yes' : 'No'}</dd>
+                <div className="flex items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Wheelchair Accessible:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.wheelchairAccessible ? 'Yes' : 'No'}</dd>
                 </div>
 
-                <div>
-                  <dt className="text-sm font-medium text-gray-600 block sm:inline">Address:</dt>
-                  <dd className="text-sm text-gray-800 block sm:inline ml-0 sm:ml-4">{bathroom.address}</dd>
+                <div className="flex flex-wrap items-center space-x-2">
+                  <dt className="text-sm font-bold text-gray-600">Address Notes:</dt>
+                  <dd className="text-sm text-gray-800">{bathroom.address}</dd>
+                </div>
+
+                <div className="flex justify-between mt-2 text-xs space-x-4">
+                  <a href="#" className="text-blue-500 hover:underline">verify</a>
+                  <a href="#" className="text-blue-500 hover:underline">rate</a>
+                  <a href="#" className="text-blue-500 hover:underline">report</a>
                 </div>
               </dl>
             </div>
           </Popup>
-
-
         </Marker>
       ))}
     </>
