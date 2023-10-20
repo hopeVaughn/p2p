@@ -36,19 +36,17 @@ export class RatingService {
         },
       });
 
-      const actions = [];
+      let newRating: unknown;
 
       if (existingRating) {
-        actions.push(
-          this.prisma.rating.update({
-            where: {
-              id: existingRating.id,
-            },
-            data: {
-              stars,
-            },
-          })
-        );
+        newRating = await this.prisma.rating.update({
+          where: {
+            id: existingRating.id,
+          },
+          data: {
+            stars,
+          },
+        });
       } else {
         const isCreator = await this.prisma.bathroom.findFirst({
           where: {
@@ -57,45 +55,19 @@ export class RatingService {
           },
         });
 
-        const createRatingAction = this.prisma.rating.create({
+        // At this point, it seems the isCreator check doesn't change the creation logic,
+        // so the check might be redundant unless you have future plans for it.
+        newRating = await this.prisma.rating.create({
           data: {
             bathroom: { connect: { id: bathroomId } },
             ratedBy: { connect: { id: ratedById } },
             stars,
           },
         });
-
-        if (isCreator) {
-          const otherRatings = await this.prisma.rating.findMany({
-            where: {
-              bathroomId,
-              NOT: {
-                ratedById: bathroom.createdById,  // exclude creator's original rating
-              },
-            },
-          });
-
-          if (otherRatings.length === 0) {
-            // Use the new rating as is, if no other user has rated it
-            actions.push(createRatingAction);
-          } else {
-            // The creator's new rating is treated as a fresh rating
-            actions.push(createRatingAction);
-          }
-        } else {
-          // The user isn't the creator or has already rated it before
-          actions.push(createRatingAction);
-        }
       }
 
-      // Add the promise from the updateAverageStars method to the actions array
-      actions.push(this.updateAverageStars(bathroomId));
-
-      const results = await this.prisma.$transaction(actions);
-      if (!results || !results.length) {
-        throw new InternalServerErrorException('Error processing transaction');
-      }
-      const newRating = results[results.length - 2];  // Get the result before the updateAverageStars result
+      // Update the average stars for the bathroom
+      await this.updateAverageStars(bathroomId);
 
       return newRating;
 

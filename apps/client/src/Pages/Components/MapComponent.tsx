@@ -109,7 +109,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
         >
           <Popup>
             <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
-              <div className="text-center font-boldext-lg">Bathroom Details</div>
+              <div className="text-center font-bold text-lg">Bathroom Details</div>
 
               <dl className="space-y-2">
                 <div className="flex items-center space-x-2">
