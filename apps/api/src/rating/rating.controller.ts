@@ -11,6 +11,7 @@ import {
 import { RatingService } from './rating.service';
 import { CreateRatingDto, UpdateRatingDto } from './dto/rating.dto';
 import { RtGuard } from 'src/common/guards';
+import { Public } from 'src/common/decorators';
 
 @Controller('rating')
 export class RatingController {
@@ -21,6 +22,7 @@ export class RatingController {
    * @param createRatingDto The data to create the rating.
    * @returns The created rating.
    */
+  @Public()
   @UseGuards(RtGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -34,6 +36,7 @@ export class RatingController {
    * @param updateRatingDto The data to update the rating.
    * @returns The updated rating.
    */
+  @Public()
   @UseGuards(RtGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)

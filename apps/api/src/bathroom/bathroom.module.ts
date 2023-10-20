@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { BathroomController } from './bathroom.controller';
 import { BathroomService } from './bathroom.service';
 import { RatingService } from '../rating/rating.service';
-import { AtStrategy, RtStrategy } from '../auth/strategies';
-import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from 'src/auth/auth.module';
 @Module({
-  imports: [JwtModule.register({})],
+  imports: [AuthModule, RatingService],
   controllers: [BathroomController],
-  providers: [BathroomService, RatingService, RtStrategy, AtStrategy],
+  providers: [BathroomService],
 })
 export class BathroomModule { }

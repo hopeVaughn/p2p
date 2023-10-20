@@ -8,7 +8,7 @@ import { CreateRatingDto, UpdateRatingDto } from './dto/rating.dto';
 
 @Injectable()
 export class RatingService {
-  constructor(private prisma: PrismaService) {}
+  constructor (private prisma: PrismaService) { }
 
   /**
    * Creates a new rating for a bathroom or updates an existing one if the user has already rated it.
@@ -42,31 +42,38 @@ export class RatingService {
 
       let newRating;
 
+      const actions = [];
+
       if (existingRating) {
-        // Update the existing rating instead of creating a new one
-        newRating = await this.prisma.rating.update({
-          where: {
-            id: existingRating.id,
-          },
-          data: {
-            stars,
-          },
-        });
+        actions.push(
+          this.prisma.rating.update({
+            where: {
+              id: existingRating.id,
+            },
+            data: {
+              stars,
+            },
+          })
+        );
       } else {
-        // Create a new rating entry
-        newRating = await this.prisma.rating.create({
-          data: {
-            bathroom: { connect: { id: bathroomId } },
-            ratedBy: { connect: { id: ratedById } },
-            stars,
-          },
-        });
+        actions.push(
+          this.prisma.rating.create({
+            data: {
+              bathroom: { connect: { id: bathroomId } },
+              ratedBy: { connect: { id: ratedById } },
+              stars,
+            },
+          })
+        );
       }
 
-      // Update the average stars for the bathroom
-      await this.updateAverageStars(bathroomId);
+      // Adding the action to update the average stars for the bathroom
+      actions.push(this.updateAverageStars(bathroomId));
+
+      [newRating] = await this.prisma.$transaction(actions);
 
       return newRating;
+
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -102,13 +109,19 @@ export class RatingService {
 
       if (!rating) throw new NotFoundException('Rating not found');
 
-      const updatedRating = await this.prisma.rating.update({
-        where: { id },
-        data: updateRatingDto,
-      });
+      const actions = [];
 
-      // Update the average stars for the bathroom
-      await this.updateAverageStars(rating.bathroomId);
+      actions.push(
+        this.prisma.rating.update({
+          where: { id },
+          data: updateRatingDto,
+        })
+      );
+
+      // Adding the action to update the average stars for the bathroom
+      actions.push(this.updateAverageStars(rating.bathroomId));
+
+      const [updatedRating] = await this.prisma.$transaction(actions);
 
       return updatedRating;
     } catch (error) {
@@ -145,17 +158,18 @@ export class RatingService {
    * @param bathroomId The ID of the bathroom to update the average stars for.
    * @throws InternalServerErrorException if there was an error updating the average stars.
    */
-  async updateAverageStars(bathroomId: string) {
+  private async updateAverageStars(bathroomId: string) {
     try {
       const averageStars = await this.getAverageRating(bathroomId);
-      await this.prisma.bathroom.update({
-        where: { id: bathroomId },
-        data: { stars: averageStars },
-      });
+      if (averageStars !== null) {
+        await this.prisma.bathroom.update({
+          where: { id: bathroomId },
+          data: { stars: averageStars },
+        });
+      }
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Error updating the average stars for the bathroom',
-      );
+      throw new InternalServerErrorException(`Error updating average stars: ${error.message}`);
     }
   }
+
 }
