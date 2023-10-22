@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI } from '../api';
 
 
 type AutResponse = {
@@ -273,5 +273,34 @@ export const useCreateRating = () => {
     createRating,
     isLoadingCreateRating: status === 'pending',
     ratingError,
+  };
+};
+
+
+// Report API custom hooks
+
+// Create report
+
+export const useCreateReport = () => {
+
+  const {
+    mutateAsync: createReport,
+    status,
+    error: reportError
+  } = useMutation({
+    mutationFn: reportAPI,
+    onSuccess: () => {
+      toast.success('Report created successfully');
+    },
+    onError: () => {
+      const errorMessage = reportError instanceof Error ? reportError.message : 'Error sending report';
+      toast.error(errorMessage);
+    }
+  });
+
+  return {
+    createReport,
+    isLoadingCreateReport: status === 'pending',
+    reportError,
   };
 };

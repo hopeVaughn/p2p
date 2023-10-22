@@ -1,6 +1,6 @@
 import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useCreateRating } from '../../utils/hooks';
+import { useCreateReport } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { TOGGLE_ADD_REPORT_MODAL } from '../../utils/actions';
@@ -11,7 +11,7 @@ type AddRatingModalProps = {
 export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
   const reportRef = useRef<HTMLInputElement>(null);
   const { dispatch, state } = useMapContext();
-  const { createRating } = useCreateRating();
+  const { createReport } = useCreateReport();
 
   const handleCloseAndReset = () => {
     if (reportRef.current) reportRef.current.value = '';
@@ -26,14 +26,14 @@ export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
     const payload = {
       bathroomId: bathroomId,
       reportedById: userId,
-      stars: parseFloat(reportRef.current?.value || '5'),
+      message: reportRef.current?.value,
     };
 
-    // await createRating(payload);
+    await createReport(payload);
   };
 
   return (
-    <Transition appear show={state.isAddRatingModalOpen} as={Fragment}>
+    <Transition appear show={state.isAddReportModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
@@ -52,7 +52,7 @@ export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
               as="h3"
               className="text-lg font-medium leading-6 text-gray-900 text-center"
             >
-              Leave a Rating
+              Report a Bathroom
             </Dialog.Title>
             <button
               onClick={handleCloseAndReset}
@@ -63,10 +63,20 @@ export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
             <div className="bg-orange-100 p-4 mt-2">
               <form onSubmit={handleSubmit}>
 
-                <label className="block mt-4">
-                  Stars:
-                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
-                </label>
+                <div className="sm:col-span-2">
+                  <label htmlFor="message" className="block text-sm font-semibold leading-6 text-cyan-900">
+                    Message
+                  </label>
+                  <div className="mt-2.5">
+                    <textarea
+                      name="message"
+                      id="message"
+                      rows={4}
+                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+                      defaultValue={''}
+                    />
+                  </div>
+                </div>
 
                 <div className="bg-orange-100 p-4 mt-4">
                   <button
