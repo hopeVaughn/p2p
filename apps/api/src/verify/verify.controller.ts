@@ -6,11 +6,11 @@ import {
   Post,
   Param,
   Body,
+  Get,
 } from '@nestjs/common';
 import { VerifyService } from './verify.service';
 import { RtGuard } from '../common/guards';
-import { GetCurrentUserId, Public } from '../common/decorators';
-import { User } from '@prisma/client';
+import { Public } from '../common/decorators';
 import { VerifyDto } from './dto';
 
 /**
@@ -28,9 +28,17 @@ export class VerifyController {
    */
   @Public()
   @UseGuards(RtGuard)
-  @Post(':id')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   async verify(@Body() dto: VerifyDto) {
     return this.verifyService.verify(dto);
+  }
+
+  @Public()
+  @UseGuards(RtGuard)
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getVerifications(@Body() bathroomID: string) {
+    return this.verifyService.countVerifications(bathroomID);
   }
 }

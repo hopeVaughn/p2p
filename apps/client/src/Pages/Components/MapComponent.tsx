@@ -19,6 +19,7 @@ import {
   SET_BATHROOM_ID,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
+import { CheckBadgeIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
 
 type ChangeViewProps = {
   center: [number, number];
@@ -161,6 +162,10 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                   >report</button>
                 </div>
               </dl>
+              <div className="flex justify-end items-center mt-2 space-x-2">
+                <span className="text-sm font-medium text-gray-600">verified</span>
+                <CheckBadgeIcon className="h-5 w-5" />
+              </div>
             </div>
           </Popup>
         </Marker>
