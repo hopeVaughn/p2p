@@ -4,7 +4,7 @@ import {
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, AddRatingModal, AddReportModal, LoadingSpinner } from '../Components';
-import { useFindAllBathrooms } from '../../utils/hooks';
+import { useFindAllBathrooms, useCountVerify } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
   SET_LOCATION,
@@ -74,7 +74,7 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
-  const { dispatch } = useMapContext();
+  const { dispatch, state } = useMapContext();
 
   const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
     location[0],
@@ -84,7 +84,8 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   );
   console.log("bathrooms", bathrooms);
 
-  // const { bathroom: bathroomID, isLoadingFindBathroomById, errorFindBathroomById } = useFindBathroomById(state.singleBathroomId, Boolean(state.singleBathroomId));
+  const { countVerify } = useCountVerify(state.bathroomId);
+
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };
