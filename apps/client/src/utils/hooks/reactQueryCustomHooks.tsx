@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI } from '../api';
 
 
 type AutResponse = {
@@ -302,5 +302,34 @@ export const useCreateReport = () => {
     createReport,
     isLoadingCreateReport: status === 'pending',
     reportError,
+  };
+};
+
+
+// Verify API custom hooks
+
+// Verify a bathroom
+
+export const useCreateVerify = () => {
+
+  const {
+    mutateAsync: createVerify,
+    status,
+    error: verifyError
+  } = useMutation({
+    mutationFn: verifyBathroomAPI,
+    onSuccess: () => {
+      toast.success('Bathroom verified successfully');
+    },
+    onError: () => {
+      const errorMessage = verifyError instanceof Error ? verifyError.message : 'Error verifying bathroom';
+      toast.error(errorMessage);
+    }
+  });
+
+  return {
+    createVerify,
+    isLoadingCreateVerify: status === 'pending',
+    verifyError,
   };
 };
