@@ -9,24 +9,30 @@ type AddRatingModalProps = {
 };
 
 export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
-  const reportRef = useRef<HTMLInputElement>(null);
+  const reportRef = useRef<HTMLTextAreaElement>(null);
   const { dispatch, state } = useMapContext();
   const { createReport } = useCreateReport();
 
+  const predefinedMessagesRef = useRef([
+    "It's dirty",
+    "Out of order",
+    "No toilet paper",
+    "Other issues",
+  ]);
+
   const handleCloseAndReset = () => {
-    if (reportRef.current) reportRef.current.value = '';
+    if (reportRef.current) reportRef.current.value = predefinedMessagesRef.current.join(', '); // Setting textarea to show predefined messages
     dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = getUserId();
-    // Declare the bathroomId
 
     const payload = {
       bathroomId: bathroomId,
       reportedById: userId,
-      message: reportRef.current?.value,
+      message: reportRef.current?.value, // Reading the textarea value directly
     };
 
     await createReport(payload);
@@ -62,29 +68,20 @@ export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
             </button>
             <div className="bg-orange-100 p-4 mt-2">
               <form onSubmit={handleSubmit}>
-
                 <div className="sm:col-span-2">
                   <label htmlFor="message" className="block text-sm font-semibold leading-6 text-cyan-900">
                     Message
                   </label>
                   <div className="mt-2.5">
                     <textarea
+                      ref={reportRef}
                       name="message"
                       id="message"
                       rows={4}
                       className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-                      defaultValue={''}
+                      defaultValue={predefinedMessagesRef.current.join(', ')} // Default to showing predefined messages
                     />
                   </div>
-                </div>
-
-                <div className="bg-orange-100 p-4 mt-4">
-                  <button
-                    type="submit"
-                    className="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-cyan-700 border border-transparent rounded-md hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
-                  >
-                    Add
-                  </button>
                 </div>
               </form>
             </div>
