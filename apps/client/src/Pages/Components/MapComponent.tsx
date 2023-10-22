@@ -3,7 +3,7 @@ import {
   MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents,
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
-import { AddBathroomModal, AddRatingModal, LoadingSpinner } from '../Components';
+import { AddBathroomModal, AddRatingModal, AddReportModal, LoadingSpinner } from '../Components';
 import { useFindAllBathrooms } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
@@ -151,13 +151,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                   <button type="button" className="text-blue-500 hover:underline">verify</button>
                   <button
                     type="button"
-                    id='rate'
                     className="text-blue-500 hover:underline"
                     onClick={handleRateClick}
                   >rate</button>
                   <button
                     type="button"
-                    id='report'
                     className="text-blue-500 hover:underline"
                     onClick={handleReportClick}
                   >report</button>
@@ -295,6 +293,9 @@ export default function MapComponent() {
       )}
       {state.isAddRatingModalOpen && (
         <AddRatingModal bathroomId={state.bathroomId} />
+      )}
+      {state.isAddReportModalOpen && (
+        <AddReportModal bathroomId={state.bathroomId} />
       )}
     </div>
   );

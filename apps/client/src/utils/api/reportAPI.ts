@@ -5,7 +5,7 @@ const ratingBaseURL = 'report/';
 type Report = {
   bathroomId: string;
   reportedById: string | null;
-  message: string | undefined;
+  reason: string | undefined;
 };
 
 export const reportAPI = async (data: Report) => {

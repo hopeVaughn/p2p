@@ -69,7 +69,7 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
     case TOGGLE_ADD_RATING_MODAL:
       return { ...state, isAddRatingModalOpen: !state.isAddRatingModalOpen };
     case TOGGLE_ADD_REPORT_MODAL:
-      return { ...state, isAddRatingModalOpen: !state.isAddRatingModalOpen };
+      return { ...state, isAddReportModalOpen: !state.isAddReportModalOpen };
     case SET_PIN_LOCATION:
       return { ...state, pinLocation: action.payload };
     case SET_HAS_INITIAL_ZOOMED:

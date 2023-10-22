@@ -9,19 +9,19 @@ type AddRatingModalProps = {
 };
 
 export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
-  const reportRef = useRef<HTMLTextAreaElement>(null);
+  const reportRef = useRef<HTMLSelectElement>(null);
   const { dispatch, state } = useMapContext();
   const { createReport } = useCreateReport();
 
   const predefinedMessagesRef = useRef([
-    "It's dirty",
-    "Out of order",
-    "No toilet paper",
-    "Other issues",
+    "This bathroom does not exist",
+    "This bathroom is out of order",
+    "Please review this bathroom's details",
+    "Other",
   ]);
 
   const handleCloseAndReset = () => {
-    if (reportRef.current) reportRef.current.value = predefinedMessagesRef.current.join(', '); // Setting textarea to show predefined messages
+    if (reportRef.current) reportRef.current.value = ''; // Reset to default value
     dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
   };
 
@@ -32,10 +32,11 @@ export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
     const payload = {
       bathroomId: bathroomId,
       reportedById: userId,
-      message: reportRef.current?.value, // Reading the textarea value directly
+      reason: reportRef.current?.value, // Reading the selected option value directly
     };
 
     await createReport(payload);
+    dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
   };
 
   return (
@@ -73,15 +74,17 @@ export default function AddReportModal({ bathroomId }: AddRatingModalProps) {
                     Message
                   </label>
                   <div className="mt-2.5">
-                    <textarea
-                      ref={reportRef}
-                      name="message"
-                      id="message"
-                      rows={4}
-                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-                      defaultValue={predefinedMessagesRef.current.join(', ')} // Default to showing predefined messages
-                    />
+                    <select ref={reportRef} name="message" id="message" className="block w-full rounded-md px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6">
+                      {predefinedMessagesRef.current.map((msg, index) => (
+                        <option key={index} value={msg}>{msg}</option>
+                      ))}
+                    </select>
                   </div>
+                </div>
+                <div className="bg-orange-100 p-4 mt-4">
+                  <button type="submit" className="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-cyan-700 border border-transparent rounded-md hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500">
+                    Add
+                  </button>
                 </div>
               </form>
             </div>

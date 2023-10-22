@@ -30,6 +30,7 @@ export default function AddRatingModal({ bathroomId }: AddRatingModalProps) {
     };
 
     await createRating(payload);
+    dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };
 
   return (
