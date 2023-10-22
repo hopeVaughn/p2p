@@ -13,8 +13,7 @@ import {
 import { BathroomService } from './bathroom.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { GetCurrentUserId } from '../common/decorators';
-import { RatingService } from '../rating/rating.service';
-import { RtGuard } from 'src/common/guards';
+import { RtGuard } from '../common/guards';
 import { Public } from '../common/decorators/public.decorator';
 
 @Controller('bathroom')
@@ -66,8 +65,8 @@ export class BathroomController {
    * @param updateBathroomDto - The DTO containing the updated data for the bathroom
    * @returns The updated bathroom
    */
-  @Patch('update_location/:id')
   @UseGuards(RtGuard)
+  @Patch('update_location/:id')
   @HttpCode(HttpStatus.OK)
   async updateLocation(
     @Param('id') id: string,

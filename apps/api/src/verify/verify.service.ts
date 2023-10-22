@@ -5,10 +5,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { VerifyDto } from './dto';
 @Injectable()
 export class VerifyService {
-  constructor(private prisma: PrismaService) {}
+  constructor (private prisma: PrismaService) { }
 
   /**
    * Verifies a bathroom by creating a verification entry in the database.
@@ -19,18 +19,18 @@ export class VerifyService {
    * @throws BadRequestException if the user is the creator of the bathroom or has already verified the bathroom.
    * @throws InternalServerErrorException if there is an error during the verification process.
    */
-  async verify(bathroomId: string, userId: string) {
+  async verify(dto: VerifyDto) {
     try {
       // Fetch the bathroom to be verified
       const bathroom = await this.prisma.bathroom.findUnique({
-        where: { id: bathroomId },
+        where: { id: dto.bathroomId },
       });
       if (!bathroom) {
         throw new NotFoundException('Bathroom not found');
       }
 
       // Ensure the user is not the creator of the bathroom
-      if (bathroom.createdById === userId) {
+      if (bathroom.createdById === dto.verifiedById) {
         throw new BadRequestException(
           'A user cannot verify their own bathroom',
         );
@@ -39,8 +39,8 @@ export class VerifyService {
       // Check if the user has already verified this bathroom
       const existingVerification = await this.prisma.verification.findFirst({
         where: {
-          verifiedById: userId,
-          bathroomId: bathroomId,
+          verifiedById: dto.verifiedById,
+          bathroomId: dto.bathroomId,
         },
       });
 
@@ -53,8 +53,8 @@ export class VerifyService {
       // Create the verification entry
       const verification = await this.prisma.verification.create({
         data: {
-          bathroomId: bathroomId,
-          verifiedById: userId,
+          bathroomId: dto.bathroomId,
+          verifiedById: dto.verifiedById,
         },
       });
 

@@ -2,6 +2,7 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { CreateReportDto } from './dto/report.dto';
 import { RtGuard } from 'src/common/guards';
+import { Public } from 'src/common/decorators';
 
 @Controller('report')
 export class ReportController {
@@ -12,7 +13,7 @@ export class ReportController {
    * @param dto - Data transfer object containing the report information.
    * @returns The newly created report.
   */
-
+  @Public()
   @UseGuards(RtGuard)
   @Post()
   async createReport(@Body() dto: CreateReportDto) {

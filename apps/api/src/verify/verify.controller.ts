@@ -5,11 +5,13 @@ import {
   HttpStatus,
   Post,
   Param,
+  Body,
 } from '@nestjs/common';
 import { VerifyService } from './verify.service';
 import { RtGuard } from '../common/guards';
 import { GetCurrentUserId, Public } from '../common/decorators';
 import { User } from '@prisma/client';
+import { VerifyDto } from './dto';
 
 /**
  * Controller responsible for handling verification requests.
@@ -28,7 +30,7 @@ export class VerifyController {
   @UseGuards(RtGuard)
   @Post(':id')
   @HttpCode(HttpStatus.CREATED)
-  async verify(@Param('id') bathroomId: string, @GetCurrentUserId() userId: string) {
-    return this.verifyService.verify(bathroomId, userId);
+  async verify(@Body() dto: VerifyDto) {
+    return this.verifyService.verify(dto);
   }
 }
