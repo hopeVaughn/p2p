@@ -311,6 +311,7 @@ export const useCreateReport = () => {
 // Verify a bathroom
 
 export const useCreateVerify = () => {
+  const queryClient = useQueryClient();
 
   const {
     mutateAsync: createVerify,
@@ -320,6 +321,9 @@ export const useCreateVerify = () => {
     mutationFn: verifyBathroomAPI,
     onSuccess: () => {
       toast.success('Bathroom verified successfully');
+      // Invalidate and immediately refetch the "bathrooms" query
+      queryClient.invalidateQueries({ queryKey: ['bathrooms'] });
+      queryClient.refetchQueries({ queryKey: ['bathrooms'] });
     },
     onError: () => {
       const errorMessage = verifyError instanceof Error ? verifyError.message : 'Error verifying bathroom';

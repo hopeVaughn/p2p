@@ -3,9 +3,8 @@ import api from './axiosDefault';
 const verifyBaseURL = 'verify/';
 
 
-type VerifyBathroom = {
+export type VerifyBathroom = {
   bathroomId: string;
-  userId: string;
 };
 
 
@@ -14,7 +13,7 @@ type VerifyBathroom = {
 
 // Verify a bathroom
 export const verifyBathroomAPI = async (data: VerifyBathroom) => {
-  const response = await api.post(`${verifyBaseURL}`, { data });
+  const response = await api.post(`${verifyBaseURL}`, data);
   return response.data;
 };
 

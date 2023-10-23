@@ -4,8 +4,6 @@ import {
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, AddRatingModal, AddReportModal, LoadingSpinner } from '../Components';
-import { useFindAllBathrooms, useCountVerify } from '../../utils/hooks';
-import { useMapContext } from '../../utils/context/MapContextProvider';
 import {
   SET_LOCATION,
   SET_ZOOM_LEVEL,
@@ -19,6 +17,9 @@ import {
   SET_BATHROOM_ID,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
+import { useMapContext } from '../../utils/context/MapContextProvider';
+import { VerifyBathroom } from '../../utils/api';
+import { useFindAllBathrooms, useCountVerify, useCreateVerify } from '../../utils/hooks';
 import { CheckBadgeIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
 
 type ChangeViewProps = {
@@ -87,6 +88,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   const { countVerify } = useCountVerify(state.bathroomId);
   console.log("countVerify", countVerify);
 
+  const { createVerify } = useCreateVerify();
 
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
@@ -96,7 +98,12 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
   };
 
-  // const handleVerifyClick = () => {}
+  const handleVerifyClick = () => {
+    const data: VerifyBathroom = {
+      bathroomId: state.bathroomId,
+    };
+    createVerify(data);
+  };
   return (
     <>
       {isLoadingFindAllBathrooms && <LoadingSpinner />}
@@ -155,7 +162,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                 </div>
 
                 <div className="flex justify-between mt-2 text-xs space-x-4">
-                  <button type="button" className="text-blue-500 hover:underline">verify</button>
+                  <button
+                    type="button"
+                    className="text-blue-500 hover:underline"
+                    onClick={handleVerifyClick}
+                  >verify</button>
                   <button
                     type="button"
                     className="text-blue-500 hover:underline"

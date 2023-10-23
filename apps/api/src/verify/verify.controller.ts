@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { VerifyService } from './verify.service';
 import { RtGuard } from '../common/guards';
-import { Public } from '../common/decorators';
+import { GetCurrentUserId, Public } from '../common/decorators';
 import { VerifyDto } from './dto';
 
 /**
@@ -26,12 +26,10 @@ export class VerifyController {
    * @param user - The authenticated user making the request.
    * @returns The result of the verification.
    */
-  @Public()
-  @UseGuards(RtGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async verify(@Body() dto: VerifyDto) {
-    return this.verifyService.verify(dto);
+  async verify(@Body() dto: VerifyDto, @GetCurrentUserId() verifiedById: string) {
+    return this.verifyService.verify(dto, verifiedById);
   }
 
   @Public()

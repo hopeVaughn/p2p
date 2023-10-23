@@ -6,8 +6,4 @@ export class VerifyDto {
   @IsNotEmpty()
   @IsUUID()
   bathroomId: string;
-
-  @IsNotEmpty()
-  @IsUUID()
-  verifiedById: string;
 }

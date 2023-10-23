@@ -19,7 +19,7 @@ export class VerifyService {
    * @throws BadRequestException if the user is the creator of the bathroom or has already verified the bathroom.
    * @throws InternalServerErrorException if there is an error during the verification process.
    */
-  async verify(dto: VerifyDto) {
+  async verify(dto: VerifyDto, verifiedById: string) {
     try {
       // Fetch the bathroom to be verified
       const bathroom = await this.prisma.bathroom.findUnique({
@@ -30,7 +30,7 @@ export class VerifyService {
       }
 
       // Ensure the user is not the creator of the bathroom
-      if (bathroom.createdById === dto.verifiedById) {
+      if (bathroom.createdById === verifiedById) {
         throw new BadRequestException(
           'A user cannot verify their own bathroom',
         );
@@ -39,7 +39,7 @@ export class VerifyService {
       // Check if the user has already verified this bathroom
       const existingVerification = await this.prisma.verification.findFirst({
         where: {
-          verifiedById: dto.verifiedById,
+          verifiedById: verifiedById,
           bathroomId: dto.bathroomId,
         },
       });
@@ -54,7 +54,7 @@ export class VerifyService {
       const verification = await this.prisma.verification.create({
         data: {
           bathroomId: dto.bathroomId,
-          verifiedById: dto.verifiedById,
+          verifiedById: verifiedById,
         },
       });
 
