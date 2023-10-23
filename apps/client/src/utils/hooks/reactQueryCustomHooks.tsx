@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI, confirmBathroomCreatorAPI } from '../api';
 
 
 type AutResponse = {
@@ -338,3 +338,26 @@ export const useCreateVerify = () => {
   };
 };
 
+export const useConfirmBathroomCreator = (bathroomId: string) => {
+
+  const {
+    data,
+    error: errorConfirmBathroomCreator,
+    status,
+  } = useQuery({
+    queryKey: ['confirmBathroomCreator'],
+    queryFn: () => confirmBathroomCreatorAPI(bathroomId),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false
+  });
+
+  if (status === 'error') {
+    const errorMessage = errorConfirmBathroomCreator instanceof Error ? errorConfirmBathroomCreator.message : 'Error fetching bathrooms';
+    toast.error(errorMessage);
+  }
+  return {
+    data,
+    isLoading: status === 'pending',
+    errorConfirmBathroomCreator
+  };
+};
