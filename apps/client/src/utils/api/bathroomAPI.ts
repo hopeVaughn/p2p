@@ -56,3 +56,13 @@ export const findBathroomByIdAPI = async (id: string) => {
   console.log("response.data", response.data);
   return response.data;
 };
+
+// Confirm a user is the creator of a bathroom
+export const confirmBathroomCreatorAPI = async (bathroomId: string) => {
+  const response = await api.get(`${bathroomBaseURL}confirm`, {
+    params: {
+      bathroomId: bathroomId
+    }
+  });
+  return response.data;
+};

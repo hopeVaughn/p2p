@@ -9,13 +9,13 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { BathroomService } from './bathroom.service';
-import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
+import { CreateBathroomDto } from './dto/bathroom.dto';
 import { GetCurrentUserId } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { Public } from '../common/decorators/public.decorator';
-import { get } from 'http';
 
 @Controller('bathroom')
 export class BathroomController {
@@ -31,9 +31,10 @@ export class BathroomController {
    */
   @Get('confirm')
   @HttpCode(HttpStatus.OK)
-  async confirm(@Body() bathroomId: string, @GetCurrentUserId() userId: string) {
+  async confirm(@Query('bathroomId') bathroomId: string, @GetCurrentUserId() userId: string) {
     return await this.bathroomService.isCreator(bathroomId, userId);
   }
+
 
   /**
    * Create a new bathroom. This route is protected, and only authenticated users can access it.
