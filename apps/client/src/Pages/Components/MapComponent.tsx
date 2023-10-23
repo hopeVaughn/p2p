@@ -91,9 +91,12 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };
+
   const handleReportClick = () => {
     dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
   };
+
+  // const handleVerifyClick = () => {}
   return (
     <>
       {isLoadingFindAllBathrooms && <LoadingSpinner />}
