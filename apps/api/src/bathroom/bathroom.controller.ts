@@ -15,12 +15,25 @@ import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { GetCurrentUserId } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { Public } from '../common/decorators/public.decorator';
+import { get } from 'http';
 
 @Controller('bathroom')
 export class BathroomController {
   constructor (
     private readonly bathroomService: BathroomService,
   ) { }
+
+  /**
+   * Confirm the the user is the creator of the bathroom
+   * @param bathroomId 
+   * @param userId 
+   * @returns Boolean indicating whether the user is the creator of the bathroom
+   */
+  @Get('confirm')
+  @HttpCode(HttpStatus.OK)
+  async confirm(@Body() bathroomId: string, @GetCurrentUserId() userId: string) {
+    return await this.bathroomService.isCreator(bathroomId, userId);
+  }
 
   /**
    * Create a new bathroom. This route is protected, and only authenticated users can access it.
@@ -40,12 +53,12 @@ export class BathroomController {
    * Get a list of all bathrooms. This route is public.
    * @returns A list of all bathrooms
    */
-
   @Post('nearby')
   @HttpCode(HttpStatus.OK)
   findNearby(@Body('lat') lat: number, @Body('lng') lng: number, @Body('radius') radius: number) {
     return this.bathroomService.findNearby(lat, lng, radius);
   }
+
   /**
    * Get a specific bathroom by its ID. This route is public.
    * @param id - The ID of the bathroom to retrieve
