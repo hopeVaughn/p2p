@@ -7,6 +7,20 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBathroomDto } from './dto/bathroom.dto';
 
+interface BathroomResult {
+  id: string;
+  latitude: number;
+  longitude: number;
+  gender: string;
+  stallType: string;
+  wheelchairAccessible: boolean;
+  stars: number;
+  keyRequirement: boolean;
+  hoursOfOperation: string;
+  address: string;
+  verification_count?: number;
+}
+
 @Injectable()
 export class BathroomService {
   constructor (
@@ -88,27 +102,45 @@ export class BathroomService {
   async findNearby(lat: number, lng: number, radius: number) {
     const result = await this.prisma.$queryRaw`
     SELECT 
-        id, 
-        ST_X(location) as latitude, 
-        ST_Y(location) as longitude,
-        gender, 
-        "stallType", 
-        "wheelchairAccessible", 
-        stars, 
-        "keyRequirement", 
-        "hoursOfOperation", 
-        address
-    FROM "Bathroom"
+        b.id, 
+        ST_X(b.location) as latitude, 
+        ST_Y(b.location) as longitude,
+        b.gender, 
+        b."stallType", 
+        b."wheelchairAccessible", 
+        b.stars, 
+        b."keyRequirement", 
+        b."hoursOfOperation", 
+        b.address,
+        COUNT(v.id) as verification_count
+    FROM "Bathroom" b
+    LEFT JOIN "Verification" v ON b.id = v."bathroomId"
     WHERE ST_DWithin(
         ST_Transform(ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), 3857),
-        ST_Transform(location, 3857),
+        ST_Transform(b.location, 3857),
         ${radius}
-    );
-    `;
+    )
+    GROUP BY 
+        b.id,
+        b.location,
+        b.gender,
+        b."stallType",
+        b."wheelchairAccessible",
+        b.stars,
+        b."keyRequirement",
+        b."hoursOfOperation",
+        b.address
+    ;
+    ` as BathroomResult[];
     console.log('result', result);
 
-    return result;
+    return result.map(bathroom => ({
+      ...bathroom,
+      verification_count: Number(bathroom.verification_count)
+    }));
+
   }
+
 
 
   /**

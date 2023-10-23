@@ -78,3 +78,4 @@ export class UpdateBathroomDto {
   @IsString()
   address?: string;
 }
+

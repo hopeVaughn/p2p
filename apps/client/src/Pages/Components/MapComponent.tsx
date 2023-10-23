@@ -38,6 +38,7 @@ type CustomMarkerProps = {
   stars: number;
   wheelchairAccessible: boolean;
   address: string;
+  verification_count: number;
 };
 
 type DraggablePinMarkerProps = {
@@ -179,7 +180,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                   >report</button>
                 </div>
               </dl>
-              {countVerify > 0 ? (
+              {bathroom.verification_count > 0 ? (
                 <div className="flex justify-end items-center mt-2 space-x-2">
                   <span className="text-sm font-medium text-gray-600">verified</span>
                   <CheckBadgeIcon className="h-5 w-5 text-green-600" />
