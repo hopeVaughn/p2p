@@ -85,6 +85,8 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   console.log("bathrooms", bathrooms);
 
   const { countVerify } = useCountVerify(state.bathroomId);
+  console.log("countVerify", countVerify);
+
 
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
@@ -163,10 +165,17 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                   >report</button>
                 </div>
               </dl>
-              <div className="flex justify-end items-center mt-2 space-x-2">
-                <span className="text-sm font-medium text-gray-600">verified</span>
-                <CheckBadgeIcon className="h-5 w-5" />
-              </div>
+              {countVerify > 0 ? (
+                <div className="flex justify-end items-center mt-2 space-x-2">
+                  <span className="text-sm font-medium text-gray-600">verified</span>
+                  <CheckBadgeIcon className="h-5 w-5 text-green-600" />
+                </div>
+              ) : (
+                <div className="flex justify-center items-center mt-2 space-x-2">
+                  <span className="text-sm font-medium text-gray-600">awaiting verification</span>
+                  <ShieldExclamationIcon className="h-5 w-5 text-grey-600" />
+                </div>
+              )}
             </div>
           </Popup>
         </Marker>
