@@ -19,7 +19,7 @@ import {
 import 'leaflet/dist/leaflet.css';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { VerifyBathroom } from '../../utils/api';
-import { useFindAllBathrooms, useCountVerify, useCreateVerify } from '../../utils/hooks';
+import { useFindAllBathrooms, useCreateVerify } from '../../utils/hooks';
 import { CheckBadgeIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
 
 type ChangeViewProps = {
@@ -86,8 +86,8 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   );
   console.log("bathrooms", bathrooms);
 
-  const { countVerify } = useCountVerify(state.bathroomId);
-  console.log("countVerify", countVerify);
+  // const { countVerify } = useCountVerify(state.bathroomId);
+  // console.log("countVerify", countVerify);
 
   const { createVerify } = useCreateVerify();
 
