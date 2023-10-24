@@ -4,11 +4,14 @@ import { accessTokenExpired, decodeAccessToken } from "../../utils/helpers";
 import { Dashboard } from '.';
 import { useRefreshToken } from '../../utils/hooks';
 import { useNavigate } from "react-router-dom";
+import { LoadingSpinner } from '../Components/';
 const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   const { refreshToken, isLoading: isRefreshing } = useRefreshToken();
   const [userRoles, setUserRoles] = useState<string[]>([]);
+
   const isAuthenticated = Boolean(sessionStorage.getItem('accessToken'));
   const navigate = useNavigate();
+
   useEffect(() => {
     const decodedToken = decodeAccessToken();
     if (decodedToken && decodedToken.roles) {
@@ -23,7 +26,9 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   }, [refreshToken, isAuthenticated]);
 
   if (isRefreshing) {
-    return <div>Loading...</div>;
+    return (
+      <LoadingSpinner />
+    );
   }
 
   if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {

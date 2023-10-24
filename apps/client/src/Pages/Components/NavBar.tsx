@@ -70,10 +70,10 @@ export default function NavBar() {
       <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
         {showLogo && (
           <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+            <button className="-m-1.5 p-1.5">
+              <span className="sr-only">Mother Monster</span>
               <Logo />
-            </a>
+            </button>
           </div>
         )}
         {!mobileMenuOpen && (
@@ -96,7 +96,7 @@ export default function NavBar() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link to="/login" className="text-sm font-semibold leading-6 text-gray-900">
+          <Link to="/login" className="text-sm font-semibold leading-6 text-cyan-900">
             Log in <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
