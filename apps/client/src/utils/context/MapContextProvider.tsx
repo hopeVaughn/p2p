@@ -10,8 +10,10 @@ import {
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
-  SET_BATHROOM_ID
+  SET_BATHROOM_ID,
+  SET_CONFIRM_CREATOR,
 } from '../actions';
+
 export type LocationPayload = [number, number] | null;
 
 type MapState = {
@@ -21,6 +23,7 @@ type MapState = {
   isAddBathroomModalOpen: boolean;
   isAddRatingModalOpen: boolean;
   isAddReportModalOpen: boolean;
+  isBathroomCreator: boolean;
   bathroomId: string;
   pinLocation: LocationPayload;
   hasInitialZoomed: boolean;
@@ -34,6 +37,7 @@ const initialState: MapState = {
   isAddBathroomModalOpen: false,
   isAddRatingModalOpen: false,
   isAddReportModalOpen: false,
+  isBathroomCreator: false,
   bathroomId: '',
   pinLocation: null,
   hasInitialZoomed: false,
@@ -52,7 +56,8 @@ type ActionType =
   | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
   | { type: typeof REMOVE_PIN; }
   | { type: typeof SET_CONFIRM_BUTTON; }
-  | { type: typeof SET_BATHROOM_ID; payload: string; };
+  | { type: typeof SET_BATHROOM_ID; payload: string; }
+  | { type: typeof SET_CONFIRM_CREATOR; payload: boolean; };
 
 
 // Define reducer
@@ -80,6 +85,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, confirmButton: !state.confirmButton };
     case SET_BATHROOM_ID:
       return { ...state, bathroomId: action.payload };
+    case SET_CONFIRM_CREATOR:
+      return { ...state, isBathroomCreator: action.payload };
     default:
       return state;
   }

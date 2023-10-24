@@ -15,12 +15,13 @@ import {
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
   SET_BATHROOM_ID,
+  SET_CONFIRM_CREATOR,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { VerifyBathroom } from '../../utils/api';
+import { VerifyBathroom, confirmBathroomCreatorAPI } from '../../utils/api';
 import { useFindAllBathrooms, useCreateVerify } from '../../utils/hooks';
-import { CheckBadgeIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon, ShieldExclamationIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
 type ChangeViewProps = {
   center: [number, number];
@@ -84,13 +85,8 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     500, // radius
     Boolean(location)
   );
-  console.log("bathrooms", bathrooms);
-
-  // const { countVerify } = useCountVerify(state.bathroomId);
-  // console.log("countVerify", countVerify);
 
   const { createVerify } = useCreateVerify();
-
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };
@@ -105,6 +101,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     };
     createVerify(data);
   };
+
   return (
     <>
       {isLoadingFindAllBathrooms && <LoadingSpinner />}
@@ -119,11 +116,21 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           position={[bathroom.longitude, bathroom.latitude]}
           icon={redMarker}
           eventHandlers={{
-            click: () => dispatch({ type: SET_BATHROOM_ID, payload: bathroom.id as string }),
+            click: async () => {
+              dispatch({ type: SET_BATHROOM_ID, payload: bathroom.id as string });
+              if (await confirmBathroomCreatorAPI(bathroom.id as string)) {
+                dispatch({ type: SET_CONFIRM_CREATOR, payload: true });
+              }
+            },
           }}
         >
           <Popup>
             <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
+              {state.isBathroomCreator && (
+                <div className="flex justify-start items-center">
+                  <PencilSquareIcon className="h-5 w-5 text-blue-600 ml-2 mt-2" />
+                </div>
+              )}
               <div className="text-center font-bold text-lg">Bathroom Details</div>
 
               <dl className="space-y-2">

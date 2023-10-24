@@ -341,7 +341,7 @@ export const useCreateVerify = () => {
 export const useConfirmBathroomCreator = (bathroomId: string) => {
 
   const {
-    data,
+    data: confirmedBathroomCreator,
     error: errorConfirmBathroomCreator,
     status,
   } = useQuery({
@@ -356,7 +356,7 @@ export const useConfirmBathroomCreator = (bathroomId: string) => {
     toast.error(errorMessage);
   }
   return {
-    data,
+    confirmedBathroomCreator,
     isLoading: status === 'pending',
     errorConfirmBathroomCreator
   };
