@@ -9,9 +9,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { RatingService } from './rating.service';
-import { CreateRatingDto, UpdateRatingDto } from './dto/rating.dto';
+import { CreateRatingDto } from './dto/rating.dto';
 import { RtGuard } from 'src/common/guards';
 import { Public } from 'src/common/decorators';
+
 
 @Controller('rating')
 export class RatingController {

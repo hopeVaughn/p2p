@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateRatingDto, UpdateRatingDto } from './dto/rating.dto';
+import { CreateRatingDto } from './dto/rating.dto';
 
 @Injectable()
 export class RatingService {
@@ -38,36 +38,51 @@ export class RatingService {
 
       let newRating: unknown;
 
-      if (existingRating) {
-        newRating = await this.prisma.rating.update({
-          where: {
-            id: existingRating.id,
-          },
-          data: {
-            stars,
-          },
-        });
-      } else {
-        const isCreator = await this.prisma.bathroom.findFirst({
-          where: {
-            id: bathroomId,
-            createdById: ratedById,
-          },
-        });
-
-        // At this point, it seems the isCreator check doesn't change the creation logic,
-        // so the check might be redundant unless you have future plans for it.
-        newRating = await this.prisma.rating.create({
-          data: {
-            bathroom: { connect: { id: bathroomId } },
-            ratedBy: { connect: { id: ratedById } },
-            stars,
-          },
-        });
+      if (bathroom.createdById === ratedById) { // If the rater is the bathroom's creator
+        if (existingRating) {
+          // Update existing rating by the creator
+          newRating = await this.prisma.rating.update({
+            where: {
+              id: existingRating.id,
+            },
+            data: {
+              stars,
+            },
+          });
+        } else {
+          // Create new rating by the creator
+          newRating = await this.prisma.rating.create({
+            data: {
+              bathroom: { connect: { id: bathroomId } },
+              ratedBy: { connect: { id: ratedById } },
+              stars,
+            },
+          });
+        }
+      } else { // If the rater isn't the bathroom's creator
+        if (existingRating) {
+          // Update existing rating by the user
+          newRating = await this.prisma.rating.update({
+            where: {
+              id: existingRating.id,
+            },
+            data: {
+              stars,
+            },
+          });
+        } else {
+          // Create new rating by the user
+          newRating = await this.prisma.rating.create({
+            data: {
+              bathroom: { connect: { id: bathroomId } },
+              ratedBy: { connect: { id: ratedById } },
+              stars,
+            },
+          });
+        }
+        // Calculate and update average rating for the bathroom
+        await this.updateAverageStars(bathroomId);
       }
-
-      // Update the average stars for the bathroom
-      await this.updateAverageStars(bathroomId);
 
       return newRating;
 
@@ -79,6 +94,7 @@ export class RatingService {
       }
     }
   }
+
 
   /**
    * Gets the average rating for a bathroom.
