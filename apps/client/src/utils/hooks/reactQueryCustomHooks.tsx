@@ -358,6 +358,7 @@ export const useConfirmBathroomCreator = (bathroomId: string) => {
   return {
     confirmedBathroomCreator,
     isLoading: status === 'pending',
+    isSuccessful: status === 'success',
     errorConfirmBathroomCreator
   };
 };
