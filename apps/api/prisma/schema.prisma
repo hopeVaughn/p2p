@@ -54,7 +54,7 @@ model Verification {
   verifiedById String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  bathroom     Bathroom @relation(fields: [bathroomId], references: [id])
+  bathroom     Bathroom @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
   verifiedBy   User     @relation(fields: [verifiedById], references: [id])
 }
 
@@ -66,7 +66,7 @@ model Rating {
   stars      Float
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  bathroom   Bathroom @relation(fields: [bathroomId], references: [id])
+  bathroom   Bathroom @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
   ratedBy    User     @relation(fields: [ratedById], references: [id])
 }
 
@@ -78,7 +78,7 @@ model Report {
   reason       String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id])
+  bathroom     Bathroom     @relation(fields: [bathroomId], references: [id], onDelete: Cascade)
   reportedBy   User         @relation(fields: [reportedById], references: [id])
   userReports  UserReport[]
 }

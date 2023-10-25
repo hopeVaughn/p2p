@@ -107,7 +107,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
       {isLoadingFindAllBathrooms && <LoadingSpinner />}
       <ChangeView center={location} zoom={zoomLevel} />
       <Marker position={location} icon={blueMarker}>
-        <Popup>You are here!</Popup>
+        <Popup>You exist here!!</Popup>
       </Marker>
       {!isLoadingFindAllBathrooms && bathrooms?.map((bathroom: CustomMarkerProps) => (
 
@@ -183,10 +183,13 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                   >report</button>
                 </div>
               </dl>
-              <div className="flex justify-between items-center mt-2">
+              <div className="flex justify-between items-center mt-4">
                 {state.isBathroomCreator && (
                   <div className="flex items-center">
-                    <PencilSquareIcon className="h-5 w-5 text-blue-600" />
+                    <PencilSquareIcon
+                      className="h-5 w-5 text-blue-600 cursor-pointer"
+                      onClick={() => console.log("Icon clicked!")}
+                    />
                   </div>
                 )}
                 {bathroom.verification_count > 0 ? (
@@ -197,7 +200,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                 ) : (
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium text-gray-600">awaiting verification</span>
-                    <ShieldExclamationIcon className="h-5 w-5 text-grey-600" />
+                    <ShieldExclamationIcon className="h-5 w-5 text-cyan-700" onClick={() => console.log("Icon clicked!")} />
                   </div>
                 )}
               </div>
