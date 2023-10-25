@@ -36,7 +36,7 @@ export class BathroomService {
    */
   async isCreator(bathroomId: string, userId: string,): Promise<boolean> {
     // Find the bathroom by id
-    console.log('bathroomId bubbah', bathroomId);
+    console.log('bathroom.service check bathroomId', bathroomId);
 
     const bathroom = await this.prisma.bathroom.findUnique({
       where: { id: bathroomId },

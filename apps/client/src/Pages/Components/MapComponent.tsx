@@ -126,11 +126,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
         >
           <Popup>
             <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
-              {state.isBathroomCreator && (
-                <div className="flex justify-start items-center">
-                  <PencilSquareIcon className="h-5 w-5 text-blue-600 ml-2 mt-2" />
-                </div>
-              )}
+
               <div className="text-center font-bold text-lg">Bathroom Details</div>
 
               <dl className="space-y-2">
@@ -187,17 +183,24 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
                   >report</button>
                 </div>
               </dl>
-              {bathroom.verification_count > 0 ? (
-                <div className="flex justify-end items-center mt-2 space-x-2">
-                  <span className="text-sm font-medium text-gray-600">verified</span>
-                  <CheckBadgeIcon className="h-5 w-5 text-green-600" />
-                </div>
-              ) : (
-                <div className="flex justify-center items-center mt-2 space-x-2">
-                  <span className="text-sm font-medium text-gray-600">awaiting verification</span>
-                  <ShieldExclamationIcon className="h-5 w-5 text-grey-600" />
-                </div>
-              )}
+              <div className="flex justify-between items-center mt-2">
+                {state.isBathroomCreator && (
+                  <div className="flex items-center">
+                    <PencilSquareIcon className="h-5 w-5 text-blue-600" />
+                  </div>
+                )}
+                {bathroom.verification_count > 0 ? (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-600">verified</span>
+                    <CheckBadgeIcon className="h-5 w-5 text-green-600" />
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-600">awaiting verification</span>
+                    <ShieldExclamationIcon className="h-5 w-5 text-grey-600" />
+                  </div>
+                )}
+              </div>
             </div>
           </Popup>
         </Marker>
