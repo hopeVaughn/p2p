@@ -67,8 +67,8 @@ export default function Dashboard({ children }: DashboardProps) {
   };
 
   const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
+    { name: 'Your Profile' },
+    { name: 'Settings' },
     { name: 'Sign out', action: handleLogout },
   ];
 
@@ -98,7 +98,7 @@ export default function Dashboard({ children }: DashboardProps) {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) => (
-                          <a
+                          <button
                             key={item.name}
                             onClick={() => handleNavigationClick(item.name)}
                             className={classNames(
@@ -110,7 +110,7 @@ export default function Dashboard({ children }: DashboardProps) {
                             aria-current={item.current ? 'page' : undefined}
                           >
                             {item.name}
-                          </a>
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -171,11 +171,10 @@ export default function Dashboard({ children }: DashboardProps) {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <button
                                     className={classNames(
-                                      active ? 'bg-gray-100' : '',
-                                      'block px-4 py-2 text-sm text-cyan-800'
+                                      active ? 'bg-gray-100 w-full' : '',
+                                      'block px-4 py-2 text-sm text-cyan-800 text-left'
                                     )}
                                     onClick={item.action ? (e) => {
                                       e.preventDefault();
@@ -183,7 +182,7 @@ export default function Dashboard({ children }: DashboardProps) {
                                     } : undefined}
                                   >
                                     {item.name}
-                                  </a>
+                                  </button>
                                 )}
                               </Menu.Item>
                             ))}
@@ -252,7 +251,7 @@ export default function Dashboard({ children }: DashboardProps) {
                     {userNavigation.map((item) => (
                       <Disclosure.Button
                         key={item.name}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-cyan-500 hover:bg-opacity-75"
+                        className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-cyan-500 hover:bg-opacity-75 w-full text-left"
                         onClick={item.action}
                       >
                         {item.name}
