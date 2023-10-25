@@ -16,6 +16,7 @@ import {
   SET_CONFIRM_BUTTON,
   SET_BATHROOM_ID,
   SET_CONFIRM_CREATOR,
+  SET_IS_LOADING,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 import { useMapContext } from '../../utils/context/MapContextProvider';
@@ -117,94 +118,104 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           icon={redMarker}
           eventHandlers={{
             click: async () => {
-              dispatch({ type: SET_BATHROOM_ID, payload: bathroom.id as string });
-              if (await confirmBathroomCreatorAPI(bathroom.id as string)) {
-                dispatch({ type: SET_CONFIRM_CREATOR, payload: true });
+              try {
+                dispatch({ type: SET_IS_LOADING, payload: true });
+                dispatch({ type: SET_BATHROOM_ID, payload: bathroom.id as string });
+                const isBathroomCreator = await confirmBathroomCreatorAPI(bathroom.id as string);
+                dispatch({ type: SET_CONFIRM_CREATOR, payload: isBathroomCreator });
+              } catch (error) {
+                console.error("Error confirming bathroom creator:", error);
+              } finally {
+                dispatch({ type: SET_IS_LOADING, payload: false });
               }
             },
           }}
         >
           <Popup>
-            <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
+            {state.isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
 
-              <div className="text-center font-bold text-lg">Bathroom Details</div>
+                <div className="text-center font-bold text-lg">Bathroom Details</div>
 
-              <dl className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Gender:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.gender}</dd>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Stall Type:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.stallType}</dd>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Hours:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.hoursOfOperation}</dd>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Key Required:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.keyRequirement ? 'Yes' : 'No'}</dd>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Rating:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.stars} stars</dd>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Wheelchair Accessible:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.wheelchairAccessible ? 'Yes' : 'No'}</dd>
-                </div>
-
-                <div className="flex flex-wrap items-center space-x-2">
-                  <dt className="text-sm font-bold text-gray-600">Address Notes:</dt>
-                  <dd className="text-sm text-gray-800">{bathroom.address}</dd>
-                </div>
-
-                <div className="flex justify-between mt-2 text-xs space-x-4">
-                  <button
-                    type="button"
-                    className="text-blue-500 hover:underline"
-                    onClick={handleVerifyClick}
-                  >verify</button>
-                  <button
-                    type="button"
-                    className="text-blue-500 hover:underline"
-                    onClick={handleRateClick}
-                  >rate</button>
-                  <button
-                    type="button"
-                    className="text-blue-500 hover:underline"
-                    onClick={handleReportClick}
-                  >report</button>
-                </div>
-              </dl>
-              <div className="flex justify-between items-center mt-4">
-                {state.isBathroomCreator && (
-                  <div className="flex items-center">
-                    <PencilSquareIcon
-                      className="h-5 w-5 text-blue-600 cursor-pointer"
-                      onClick={() => console.log("Icon clicked!")}
-                    />
-                  </div>
-                )}
-                {bathroom.verification_count > 0 ? (
+                <dl className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium text-gray-600">verified</span>
-                    <CheckBadgeIcon className="h-5 w-5 text-green-600" />
+                    <dt className="text-sm font-bold text-gray-600">Gender:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.gender}</dd>
                   </div>
-                ) : (
+
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium text-gray-600">awaiting verification</span>
-                    <ShieldExclamationIcon className="h-5 w-5 text-cyan-700" onClick={() => console.log("Icon clicked!")} />
+                    <dt className="text-sm font-bold text-gray-600">Stall Type:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.stallType}</dd>
                   </div>
-                )}
+
+                  <div className="flex items-center space-x-2">
+                    <dt className="text-sm font-bold text-gray-600">Hours:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.hoursOfOperation}</dd>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <dt className="text-sm font-bold text-gray-600">Key Required:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.keyRequirement ? 'Yes' : 'No'}</dd>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <dt className="text-sm font-bold text-gray-600">Rating:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.stars} stars</dd>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <dt className="text-sm font-bold text-gray-600">Wheelchair Accessible:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.wheelchairAccessible ? 'Yes' : 'No'}</dd>
+                  </div>
+
+                  <div className="flex flex-wrap items-center space-x-2">
+                    <dt className="text-sm font-bold text-gray-600">Address Notes:</dt>
+                    <dd className="text-sm text-gray-800">{bathroom.address}</dd>
+                  </div>
+
+                  <div className="flex justify-between mt-2 text-xs space-x-4">
+                    <button
+                      type="button"
+                      className="text-blue-500 hover:underline"
+                      onClick={handleVerifyClick}
+                    >verify</button>
+                    <button
+                      type="button"
+                      className="text-blue-500 hover:underline"
+                      onClick={handleRateClick}
+                    >rate</button>
+                    <button
+                      type="button"
+                      className="text-red-700 hover:underline"
+                      onClick={handleReportClick}
+                    >report</button>
+                  </div>
+                </dl>
+                <div className="flex justify-between items-center mt-4">
+                  {state.isBathroomCreator && (
+                    <div className="flex items-center">
+                      <PencilSquareIcon
+                        className="h-5 w-5 text-blue-600 cursor-pointer"
+                        onClick={() => console.log("Icon clicked!")}
+                      />
+                    </div>
+                  )}
+                  {bathroom.verification_count > 0 ? (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium text-gray-600">verified</span>
+                      <CheckBadgeIcon className="h-5 w-5 text-green-600" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium text-gray-600">verification needed</span>
+                      <ShieldExclamationIcon className="h-5 w-5 text-red-700" onClick={() => console.log("Icon clicked!")} />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </Popup>
         </Marker>
       ))}

@@ -12,6 +12,7 @@ import {
   SET_CONFIRM_BUTTON,
   SET_BATHROOM_ID,
   SET_CONFIRM_CREATOR,
+  SET_IS_LOADING
 } from '../actions';
 
 export type LocationPayload = [number, number] | null;
@@ -28,6 +29,7 @@ type MapState = {
   pinLocation: LocationPayload;
   hasInitialZoomed: boolean;
   confirmButton: boolean;
+  isLoading: boolean;
 };
 // Define initial state
 const initialState: MapState = {
@@ -42,6 +44,7 @@ const initialState: MapState = {
   pinLocation: null,
   hasInitialZoomed: false,
   confirmButton: false,
+  isLoading: false,
 };
 
 // Define action types
@@ -57,7 +60,8 @@ type ActionType =
   | { type: typeof REMOVE_PIN; }
   | { type: typeof SET_CONFIRM_BUTTON; }
   | { type: typeof SET_BATHROOM_ID; payload: string; }
-  | { type: typeof SET_CONFIRM_CREATOR; payload: boolean; };
+  | { type: typeof SET_CONFIRM_CREATOR; payload: boolean; }
+  | { type: typeof SET_IS_LOADING; payload: boolean; };
 
 
 // Define reducer
@@ -87,6 +91,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, bathroomId: action.payload };
     case SET_CONFIRM_CREATOR:
       return { ...state, isBathroomCreator: action.payload };
+    case SET_IS_LOADING:
+      return { ...state, isLoading: action.payload };
     default:
       return state;
   }
