@@ -59,6 +59,10 @@ export class RatingService {
             },
           });
         }
+        // Always update the average stars after creating or updating a rating
+        await this.updateAverageStars(bathroomId);
+
+        return newRating;
       } else { // If the rater isn't the bathroom's creator
         if (existingRating) {
           // Update existing rating by the user

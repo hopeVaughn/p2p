@@ -94,7 +94,6 @@ export class AuthController {
     // Step 2: Check if the environment is local (development) or production.
     // Step 3: Clear the refresh token by setting an empty cookie that is expired.
     // Step 4: Send a success message in the response body.
-    console.log('Logout userId: ', userId);
 
     await this.authService.logout(userId);
 
@@ -129,7 +128,6 @@ export class AuthController {
     // Step 4: Set a secure httpOnly cookie for the new refresh token.
     // Step 5: Send the new access token in the response body.
     const oldRefreshToken = response.req.cookies['refreshToken']; // Extract directly from the cookies
-    console.log('Old refresh token:', oldRefreshToken);
 
     const tokens = await this.authService.refresh(userId, oldRefreshToken);
     const isLocal = this.config.get<string>('IS_LOCAL') === 'true';

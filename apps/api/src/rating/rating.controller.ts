@@ -1,8 +1,6 @@
 import {
   Controller,
   Post,
-  Patch,
-  Param,
   Body,
   UseGuards,
   HttpCode,

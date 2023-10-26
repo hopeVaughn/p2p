@@ -39,11 +39,9 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
    * Returns the decoded payload if refreshToken is valid.
    */
   async validate(req: Request): Promise<boolean | object> {
-    console.log('Received cookies:', req.cookies);
     const refreshToken = req.cookies['refreshToken'];
 
     if (!refreshToken) {
-      console.log('No refreshToken found in cookies');
       return false;
     }
 
@@ -62,17 +60,14 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
       });
 
       if (!storedToken) {
-        console.log('Stored token not found in the database');
         return false;
       }
 
       // Attach the decoded payload to the request for later use
       req.user = decoded;
 
-      console.log('Refresh token validation successful');
       return decoded;
     } catch (error) {
-      console.error('Refresh token validation error:', error);
       return false;
     }
   }

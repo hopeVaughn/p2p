@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBathroomDto } from './dto/bathroom.dto';
+import { RatingService } from '../rating/rating.service';
+import { CreateRatingDto } from 'src/rating/dto';
 
 interface BathroomResult {
   id: string;
@@ -25,6 +27,7 @@ interface BathroomResult {
 export class BathroomService {
   constructor (
     private prisma: PrismaService,
+    private ratingService: RatingService,
   ) { }
 
   /**
@@ -36,14 +39,10 @@ export class BathroomService {
    */
   async isCreator(bathroomId: string, userId: string,): Promise<boolean> {
     // Find the bathroom by id
-    console.log('bathroom.service check bathroomId', bathroomId);
 
     const bathroom = await this.prisma.bathroom.findUnique({
       where: { id: bathroomId },
     });
-    console.log('bathroom', bathroom);
-    console.log('userId', userId);
-
 
     // If bathroom not found, throw a NotFoundException
     if (!bathroom)
@@ -60,41 +59,64 @@ export class BathroomService {
    * @throws InternalServerErrorException if there is an error during bathroom creation
    */
   async createWithLocation(createBathroomDto: CreateBathroomDto) {
-    const { lat, lng, ...rest } = createBathroomDto;
+    const { lat, lng, stars, ...rest } = createBathroomDto;
 
+    // Insert the new bathroom without the initial star rating
     const result = await this.prisma.$executeRaw`
-      INSERT INTO "Bathroom" (
-        "id",
-        "createdById", 
-        "gender", 
-        "stallType", 
-        "wheelchairAccessible", 
-        "stars", 
-        "keyRequirement", 
-        "hoursOfOperation", 
-        "location", 
-        "address",
-        "updatedAt"
-      )
-      VALUES (
-        uuid_generate_v4(),
-        ${createBathroomDto.createdBy}, 
-        ${createBathroomDto.gender}::"BathroomGender", 
-        ${createBathroomDto.stallType}::"StallType",   
-        ${createBathroomDto.wheelchairAccessible}, 
-        ${createBathroomDto.stars}, 
-        ${createBathroomDto.keyRequirement}, 
-        ${createBathroomDto.hoursOfOperation}, 
-        ST_SetSRID(ST_Point(${lng}, ${lat}), 4326), 
-        ${createBathroomDto.address},
-        NOW()
-      )
-      RETURNING *;
-    `;
+  INSERT INTO "Bathroom" (
+    "id",
+    "createdById", 
+    "gender", 
+    "stallType", 
+    "wheelchairAccessible", 
+    "keyRequirement", 
+    "hoursOfOperation", 
+    "location", 
+    "address",
+    "updatedAt"
+  )
+  VALUES (
+    uuid_generate_v4(),
+    ${createBathroomDto.createdBy}, 
+    ${createBathroomDto.gender}::"BathroomGender", 
+    ${createBathroomDto.stallType}::"StallType",   
+    ${createBathroomDto.wheelchairAccessible}, 
+    ${createBathroomDto.keyRequirement}, 
+    ${createBathroomDto.hoursOfOperation}, 
+    ST_SetSRID(ST_Point(${lng}, ${lat}), 4326), 
+    ${createBathroomDto.address},
+    NOW()
+  )
+  RETURNING *;
+`;
 
-    console.log('Raw SQL Insert Result:', result);
+    // Fetch the newly created bathroom
+    const bathroom = await this.prisma.bathroom.findFirst({
+      where: {
+        createdById: createBathroomDto.createdBy,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
 
-    return result;
+    if (!bathroom) {
+      throw new InternalServerErrorException('Failed to create a new bathroom');
+    }
+
+    // Create a new rating for the new bathroom
+    const createRatingDto: CreateRatingDto = {
+      bathroomId: bathroom.id,
+      ratedById: createBathroomDto.createdBy,
+      stars: stars, // initial rating by the creator
+    };
+
+    await this.ratingService.createOrUpdate(createRatingDto);
+
+    // Update the average rating for the new bathroom
+    await this.ratingService.updateAverageStars(bathroom.id);
+
+    return bathroom;
   }
   /**
    * Find all bathrooms
@@ -134,7 +156,6 @@ export class BathroomService {
         b.address
     ;
     ` as BathroomResult[];
-    console.log('result', result);
 
     return result.map(bathroom => ({
       ...bathroom,
@@ -200,8 +221,6 @@ export class BathroomService {
    * @throws InternalServerErrorException if there is an error deleting the bathroom
    */
   async remove(id: string, userId: string) {
-    console.log('id', id);
-    console.log('userId', userId);
 
     // Check if the user is the creator of the bathroom
     const isCreator = await this.isCreator(userId, id);

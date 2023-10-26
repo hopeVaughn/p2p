@@ -32,7 +32,7 @@ model Bathroom {
   gender               BathroomGender
   stallType            StallType
   wheelchairAccessible Boolean
-  stars                Float
+  stars                Float?
   keyRequirement       Boolean
   hoursOfOperation     String
   location             Bytes?
