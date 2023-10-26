@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateBathroomDto } from './dto/bathroom.dto';
+import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { RatingService } from '../rating/rating.service';
 import { CreateRatingDto } from 'src/rating/dto';
 
@@ -29,28 +29,6 @@ export class BathroomService {
     private prisma: PrismaService,
     private ratingService: RatingService,
   ) { }
-
-  /**
-   * Check if the user is the creator of the bathroom
-   * @param userId - The id of the user
-   * @param bathroomId - The id of the bathroom
-   * @returns A boolean indicating whether the user is the creator of the bathroom
-   * @throws NotFoundException if the bathroom is not found
-   */
-  async isCreator(bathroomId: string, userId: string,): Promise<boolean> {
-    // Find the bathroom by id
-
-    const bathroom = await this.prisma.bathroom.findUnique({
-      where: { id: bathroomId },
-    });
-
-    // If bathroom not found, throw a NotFoundException
-    if (!bathroom)
-      throw new NotFoundException('Bathroom created by this user not found');
-
-    // Return true if the user is the creator of the bathroom
-    return bathroom.createdById === userId;
-  }
 
   /**
    * Create a new bathroom
@@ -118,6 +96,7 @@ export class BathroomService {
 
     return bathroom;
   }
+
   /**
    * Find all bathrooms
    * @returns An array of all bathrooms with their verification count
@@ -164,8 +143,6 @@ export class BathroomService {
 
   }
 
-
-
   /**
    * Find a bathroom by id
    * @param id - The id of the bathroom to find
@@ -196,20 +173,36 @@ export class BathroomService {
 
   /**
    * Update a bathroom by id
-   * @param id - The id of the bathroom to update
+   * @param bathroomId - The id of the bathroom to update
+   * @param userId - The id of the user requesting to update the bathroom
    * @param updateBathroomDto - The data for updating the bathroom
    * @returns The updated bathroom
    * @throws NotFoundException if the bathroom is not found
    * @throws InternalServerErrorException if there is an error updating the bathroom
    */
-  async updateLocation(bathroomId: string, lat: number, lng: number) {
-    const result = await this.prisma.$executeRaw`
-      UPDATE "Bathroom"
-      SET location = ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
-      WHERE id = ${bathroomId};
-    `;
+  async updateLocation(bathroomId: string, userId: string, dto: UpdateBathroomDto) {
+    const isCreator = await this.isCreator(userId, bathroomId);
+    const bathroom = await this.findOne(bathroomId);
 
-    return result;
+    if (!bathroom) {
+      throw new NotFoundException('Bathroom not found');
+    }
+
+    if (!isCreator) {
+      throw new UnauthorizedException(
+        'Only the creator of the bathroom can update their bathroom information.',
+      );
+    }
+
+    try {
+      const updatedBathroom = await this.prisma.bathroom.update({
+        where: { id: bathroomId },
+        data: dto,
+      });
+      return updatedBathroom;
+    } catch (error) {
+      throw new InternalServerErrorException(`Error updating bathroom: ${error.message}`);
+    }
   }
 
   /**
@@ -241,5 +234,27 @@ export class BathroomService {
         `Error during bathroom deletion: ${error.message}`,
       );
     }
+  }
+
+  /**
+  * Check if the user is the creator of the bathroom
+  * @param userId - The id of the user
+  * @param bathroomId - The id of the bathroom
+  * @returns A boolean indicating whether the user is the creator of the bathroom
+  * @throws NotFoundException if the bathroom is not found
+  */
+  async isCreator(bathroomId: string, userId: string,): Promise<boolean> {
+    // Find the bathroom by id
+
+    const bathroom = await this.prisma.bathroom.findUnique({
+      where: { id: bathroomId },
+    });
+
+    // If bathroom not found, throw a NotFoundException
+    if (!bathroom)
+      throw new NotFoundException('Bathroom created by this user not found');
+
+    // Return true if the user is the creator of the bathroom
+    return bathroom.createdById === userId;
   }
 }

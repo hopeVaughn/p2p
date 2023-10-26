@@ -12,7 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { BathroomService } from './bathroom.service';
-import { CreateBathroomDto } from './dto/bathroom.dto';
+import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { GetCurrentUserId } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { Public } from '../common/decorators/public.decorator';
@@ -83,11 +83,12 @@ export class BathroomController {
   @Patch('update_location/:id')
   @HttpCode(HttpStatus.OK)
   async updateLocation(
-    @Param('id') id: string,
-    @Body('lat') lat: number,
-    @Body('lng') lng: number,
+    @Param('id') bathroomId: string,
+    @GetCurrentUserId() userId: string,
+    @Body() dto: UpdateBathroomDto,
+
   ) {
-    return await this.bathroomService.updateLocation(id, lat, lng);
+    return await this.bathroomService.updateLocation(bathroomId, userId, dto);
   }
   /**
    * Delete a specific bathroom. This route is protected, and only authenticated users can access it.

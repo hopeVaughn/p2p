@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsEnum,
   IsString,
+  isNotEmpty,
 } from 'class-validator';
 import { BathroomGender, StallType } from '@prisma/client';
 
@@ -51,6 +52,7 @@ export class CreateBathroomDto {
 }
 
 export class UpdateBathroomDto {
+
   @IsEnum(BathroomGender)
   gender?: BathroomGender;
 
@@ -61,7 +63,7 @@ export class UpdateBathroomDto {
   wheelchairAccessible?: boolean;
 
   @IsNumber()
-  cleanliness?: number;
+  rating?: number;
 
   @IsBoolean()
   keyRequirement?: boolean;
@@ -69,13 +71,7 @@ export class UpdateBathroomDto {
   @IsString()
   hoursOfOperation?: string;
 
-  @IsNumber()
-  lat?: number;
-
-  @IsNumber()
-  lng?: number;
-
   @IsString()
-  address?: string;
+  addressNotes?: string;
 }
 
