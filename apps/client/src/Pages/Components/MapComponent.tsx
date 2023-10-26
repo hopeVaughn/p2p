@@ -114,7 +114,6 @@ const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
           const { lat, lng } = marker.getLatLng();
           const newLocation: [number, number] = [lat, lng];
           dispatch({ type: SET_PIN_LOCATION, payload: newLocation });
-          console.log("Updated Pin Coordinates:", newLocation);
         }
       }
     }),
