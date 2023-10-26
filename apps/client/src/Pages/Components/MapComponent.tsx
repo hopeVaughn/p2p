@@ -8,21 +8,15 @@ import {
   SET_LOCATION,
   SET_ZOOM_LEVEL,
   TOGGLE_ADD_BATHROOM_MODAL,
-  TOGGLE_ADD_RATING_MODAL,
-  TOGGLE_ADD_REPORT_MODAL,
   SET_PIN_LOCATION,
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
-  SET_BATHROOM_ID,
-  SET_CONFIRM_CREATOR,
-  SET_IS_LOADING,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { VerifyBathroom, confirmBathroomCreatorAPI } from '../../utils/api';
-import { useFindAllBathrooms, useCreateVerify } from '../../utils/hooks';
-import { CheckBadgeIcon, ShieldExclamationIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { useFindAllBathrooms } from '../../utils/hooks';
+import BathroomMarker from '../Protected_Routes/components/BathroomMarker';
 
 type ChangeViewProps = {
   center: [number, number];
@@ -78,7 +72,6 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
-  const { dispatch, state } = useMapContext();
 
   const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
     location[0],
@@ -86,22 +79,6 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     500, // radius
     Boolean(location)
   );
-
-  const { createVerify } = useCreateVerify();
-  const handleRateClick = () => {
-    dispatch({ type: TOGGLE_ADD_RATING_MODAL });
-  };
-
-  const handleReportClick = () => {
-    dispatch({ type: TOGGLE_ADD_REPORT_MODAL });
-  };
-
-  const handleVerifyClick = () => {
-    const data: VerifyBathroom = {
-      bathroomId: state.bathroomId,
-    };
-    createVerify(data);
-  };
 
   return (
     <>
@@ -111,113 +88,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
         <Popup>You exist here!!</Popup>
       </Marker>
       {!isLoadingFindAllBathrooms && bathrooms?.map((bathroom: CustomMarkerProps) => (
-
-        <Marker
-          key={bathroom.id}
-          position={[bathroom.longitude, bathroom.latitude]}
-          icon={redMarker}
-          eventHandlers={{
-            click: async () => {
-              try {
-                dispatch({ type: SET_IS_LOADING, payload: true });
-                dispatch({ type: SET_BATHROOM_ID, payload: bathroom.id as string });
-                const isBathroomCreator = await confirmBathroomCreatorAPI(bathroom.id as string);
-                dispatch({ type: SET_CONFIRM_CREATOR, payload: isBathroomCreator });
-              } catch (error) {
-                console.error("Error confirming bathroom creator:", error);
-              } finally {
-                dispatch({ type: SET_IS_LOADING, payload: false });
-              }
-            },
-          }}
-        >
-          <Popup>
-            {state.isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
-
-                <div className="text-center font-bold text-lg">Bathroom Details</div>
-
-                <dl className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Gender:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.gender}</dd>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Stall Type:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.stallType}</dd>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Hours:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.hoursOfOperation}</dd>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Key Required:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.keyRequirement ? 'Yes' : 'No'}</dd>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Rating:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.stars} stars</dd>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Wheelchair Accessible:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.wheelchairAccessible ? 'Yes' : 'No'}</dd>
-                  </div>
-
-                  <div className="flex flex-wrap items-center space-x-2">
-                    <dt className="text-sm font-bold text-gray-600">Address Notes:</dt>
-                    <dd className="text-sm text-gray-800">{bathroom.address}</dd>
-                  </div>
-
-                  <div className="flex justify-between mt-2 text-xs space-x-4">
-                    <button
-                      type="button"
-                      className="text-blue-500 hover:underline"
-                      onClick={handleVerifyClick}
-                    >verify</button>
-                    <button
-                      type="button"
-                      className="text-blue-500 hover:underline"
-                      onClick={handleRateClick}
-                    >rate</button>
-                    <button
-                      type="button"
-                      className="text-red-700 hover:underline"
-                      onClick={handleReportClick}
-                    >report</button>
-                  </div>
-                </dl>
-                <div className="flex justify-between items-center mt-4">
-                  {state.isBathroomCreator && (
-                    <div className="flex items-center">
-                      <PencilSquareIcon
-                        className="h-5 w-5 text-blue-600 cursor-pointer"
-                        onClick={() => console.log("Icon clicked!")}
-                      />
-                    </div>
-                  )}
-                  {bathroom.verification_count > 0 ? (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-600">verified</span>
-                      <CheckBadgeIcon className="h-5 w-5 text-green-600" />
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-600">verification needed</span>
-                      <ShieldExclamationIcon className="h-5 w-5 text-red-700" onClick={() => console.log("Icon clicked!")} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </Popup>
-        </Marker>
+        <BathroomMarker key={bathroom.id} bathroom={bathroom} />
       ))}
     </>
   );
