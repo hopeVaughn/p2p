@@ -207,32 +207,33 @@ export class BathroomService {
 
   /**
    * Remove a bathroom by id
-   * @param id - The id of the bathroom to remove
+   * @param bathroomId - The id of the bathroom to remove
    * @param userId - The id of the user requesting to remove the bathroom
    * @returns The deleted bathroom
    * @throws UnauthorizedException if the user is not the creator of the bathroom
    * @throws InternalServerErrorException if there is an error deleting the bathroom
    */
-  async deleteBathroom(id: string, userId: string) {
-
+  async deleteBathroom(bathroomId: string, userId: string) {
     // Check if the user is the creator of the bathroom
-    const isCreator = await this.isCreator(userId, id);
+    const isCreator = await this.isCreator(userId, bathroomId);
+    const bathroom = await this.findOne(bathroomId);
+
+    // If the bathroom is not found, throw a NotFoundException
+    if (!bathroom) {
+      throw new NotFoundException('Bathroom not found');
+    }
 
     // If the user is not the creator of the bathroom, throw an UnauthorizedException
     if (!isCreator) {
-      throw new UnauthorizedException(
-        'You are not authorized to delete this bathroom.',
-      );
+      throw new UnauthorizedException('You are not authorized to delete this bathroom.');
     }
 
     try {
       // Delete the bathroom and return the deleted bathroom
-      return await this.prisma.bathroom.delete({ where: { id } });
+      return await this.prisma.bathroom.delete({ where: { id: bathroomId } });
     } catch (error) {
       // If there is an error, throw an InternalServerErrorException
-      throw new InternalServerErrorException(
-        `Error during bathroom deletion: ${error.message}`,
-      );
+      throw new InternalServerErrorException(`Error during bathroom deletion: ${error.message}`);
     }
   }
 

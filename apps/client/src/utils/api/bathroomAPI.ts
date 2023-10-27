@@ -26,7 +26,7 @@ export type Bathroom = {
   address: string;
 };
 
-// API calls
+// Bathroom API calls
 
 // Add a new bathroom
 export const createBathroomAPI = async (data: Bathroom) => {
@@ -36,7 +36,7 @@ export const createBathroomAPI = async (data: Bathroom) => {
 
 
 // Delete Bathroom
-// the bathroom id is from the params, the userId is from the token
+// the bathroom id is from the params
 export const deleteBathroomAPI = async (bathroomId: string) => {
   const deleteRoute = "delete_bathroom/";
   const response = await api.delete(`${bathroomBaseURL}${deleteRoute}`, {
@@ -46,7 +46,6 @@ export const deleteBathroomAPI = async (bathroomId: string) => {
   });
   return response.data;
 };
-
 
 // Find all bathrooms near the user
 export const findAllBathroomsAPI = async (lat: number, lng: number, radius: number) => {
