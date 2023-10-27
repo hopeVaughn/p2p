@@ -37,6 +37,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
   const { dispatch, state } = useMapContext();
   const { createVerify } = useCreateVerify();
   const { deleteBathroom, } = useDeleteBathroom();
+
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };

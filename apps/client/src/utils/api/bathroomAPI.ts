@@ -13,6 +13,16 @@ export enum StallType {
   CONNECTED = 'CONNECTED',
 }
 
+export type UpdateBathroom = {
+  gender?: BathroomGender;
+  stallType?: StallType;
+  wheelchairAccessible?: boolean;
+  stars?: number;
+  keyRequirement?: boolean;
+  hoursOfOperation?: string;
+  address?: string;
+};
+
 export type Bathroom = {
   createdBy: string | null;
   gender: BathroomGender;
@@ -43,7 +53,7 @@ export const deleteBathroomAPI = async (bathroomId: string) => {
 };
 
 // Update a bathroom
-export const updateBathroomAPI = async ({ bathroomId, data }: { bathroomId: string; data: Bathroom; }) => {
+export const updateBathroomAPI = async ({ bathroomId, data }: { bathroomId: string; data: UpdateBathroom; }) => {
   const response = await api.patch(`${bathroomBaseURL}update_location/${bathroomId}`, data);
   return response.data;
 };

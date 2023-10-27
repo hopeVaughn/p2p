@@ -1,17 +1,16 @@
 import { Fragment, useRef, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useUpdateBathroom } from '../../../utils/hooks';
-import { getUserId } from '../../../utils/helpers';
 import { BathroomGender, StallType } from '../../../utils/api';
 import { useMapContext } from '../../../utils/context/MapContextProvider';
-import { SET_CONFIRM_BUTTON, TOGGLE_UPDATE_MODAL } from '../../../utils/actions';
+import { TOGGLE_UPDATE_MODAL } from '../../../utils/actions';
 import { BathroomMarkerProps } from './BathroomMarker';
 
 type UpdateBathroomModalProps = {
   bathroom: BathroomMarkerProps;
 };
 
-export default function UpdateBathroomModal({ bathroom }: UpdateBathroomModalProps) {
+export default function UpdateBathroomModal({ bathroom: { gender, stallType, wheelchairAccessible, stars, keyRequirement, hoursOfOperation, address } }: UpdateBathroomModalProps) {
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
@@ -25,16 +24,16 @@ export default function UpdateBathroomModal({ bathroom }: UpdateBathroomModalPro
 
   useEffect(() => {
     // Populate the modal with current bathroom details
-    if (genderRef.current) genderRef.current.value = bathroom.gender;
-    if (stallTypeRef.current) stallTypeRef.current.value = bathroom.stallType;
-    if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = bathroom.wheelchairAccessible;
-    if (starsRef.current) starsRef.current.value = bathroom.stars.toString();
-    if (keyRequirementRef.current) keyRequirementRef.current.checked = bathroom.keyRequirement;
-    const [openTime, closeTime] = bathroom.hoursOfOperation.split(" - ");
+    if (genderRef.current) genderRef.current.value = gender;
+    if (stallTypeRef.current) stallTypeRef.current.value = stallType;
+    if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = wheelchairAccessible;
+    if (starsRef.current) starsRef.current.value = stars.toString();
+    if (keyRequirementRef.current) keyRequirementRef.current.checked = keyRequirement;
+    const [openTime, closeTime] = hoursOfOperation.split(" - ");
     if (openTimeRef.current) openTimeRef.current.value = openTime.slice(0, -2);
     if (closeTimeRef.current) closeTimeRef.current.value = closeTime.slice(0, -2);
-    if (addressRef.current) addressRef.current.value = bathroom.address;
-  }, [bathroom]);
+    if (addressRef.current) addressRef.current.value = address;
+  }, []);
 
   const handleCloseAndReset = () => {
     // Reset all refs
@@ -52,27 +51,23 @@ export default function UpdateBathroomModal({ bathroom }: UpdateBathroomModalPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userId = getUserId();
     // Capture the values from the time spinner
     const openTime = openTimeRef.current?.value || "";
     const closeTime = closeTimeRef.current?.value || "";
     const hoursOfOperation = `${openTime}AM - ${closeTime}PM`;
 
-    // Check if coordinates are available
-    if (!userId) {
-      console.error("Coordinates not provided!");
-      return;
-    }
-
     const payload = {
-      id: bathroom.id,
-      gender: genderRef.current?.value as BathroomGender,
-      stallType: stallTypeRef.current?.value as StallType,
-      wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
-      stars: parseFloat(starsRef.current?.value || '5'),
-      keyRequirement: keyRequirementRef.current?.checked || false,
-      hoursOfOperation: hoursOfOperation,
-      address: addressRef.current?.value || ""
+      bathroomId: state.bathroomId,
+      data:
+      {
+        gender: genderRef.current?.value as BathroomGender,
+        stallType: stallTypeRef.current?.value as StallType,
+        wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
+        stars: parseFloat(starsRef.current?.value || '5'),
+        keyRequirement: keyRequirementRef.current?.checked || false,
+        hoursOfOperation: hoursOfOperation,
+        address: addressRef.current?.value || ""
+      }
     };
     // Call the API to submit the data
     await updateBathroom(payload);
@@ -82,7 +77,7 @@ export default function UpdateBathroomModal({ bathroom }: UpdateBathroomModalPro
   };
 
   return (
-    <Transition appear show={state.isAddBathroomModalOpen} as={Fragment}>
+    <Transition appear show={state.isUpdateModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
@@ -101,7 +96,7 @@ export default function UpdateBathroomModal({ bathroom }: UpdateBathroomModalPro
               as="h3"
               className="text-lg font-medium leading-6 text-gray-900 text-center"
             >
-              Add Bathroom
+              Update Bathroom
             </Dialog.Title>
             <button
               onClick={handleCloseAndReset}
