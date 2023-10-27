@@ -37,8 +37,13 @@ export const createBathroomAPI = async (data: Bathroom) => {
 
 // Delete Bathroom
 // the bathroom id is from the params, the userId is from the token
-export const deleteBathroomAPI = async (id: string) => {
-  const response = await api.delete(`${bathroomBaseURL}${id}`);
+export const deleteBathroomAPI = async (bathroomId: string) => {
+  const deleteRoute = "delete_bathroom/";
+  const response = await api.delete(`${bathroomBaseURL}${deleteRoute}`, {
+    params: {
+      bathroomId: bathroomId
+    }
+  });
   return response.data;
 };
 
@@ -66,3 +71,4 @@ export const confirmBathroomCreatorAPI = async (bathroomId: string) => {
   });
   return response.data;
 };
+

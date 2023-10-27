@@ -6,7 +6,7 @@ import { confirmBathroomCreatorAPI } from "../../../utils/api";
 import { LoadingSpinner } from "../../Components";
 import { VerifyBathroom } from "../../../utils/api";
 import { useCreateVerify } from "../../../utils/hooks";
-import { PencilSquareIcon, CheckBadgeIcon, ShieldExclamationIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, CheckBadgeIcon, ShieldExclamationIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const customRedMarkerSVG = `
 data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
@@ -117,7 +117,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
                 <dd className="text-sm text-gray-800">{bathroom.address}</dd>
               </div>
 
-              <div className="flex justify-between mt-2 text-xs space-x-4">
+              <div className="flex justify-between mt-2 space-x-4">
                 <button
                   type="button"
                   className="text-blue-500 hover:underline"
@@ -130,20 +130,23 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
                 >rate</button>
                 <button
                   type="button"
-                  className="text-red-700 hover:underline"
+                  className="text-blue-500 hover:underline"
                   onClick={handleReportClick}
                 >report</button>
               </div>
             </dl>
-            <div className="flex justify-between items-center mt-4">
-              {state.isBathroomCreator && (
-                <div className="flex items-center">
-                  <PencilSquareIcon
-                    className="h-5 w-5 text-blue-600 cursor-pointer"
-                    onClick={() => console.log("Icon clicked!")}
-                  />
-                </div>
-              )}
+            {state.isBathroomCreator && (
+              <div className="flex justify-between">
+                <PencilSquareIcon
+                  className="h-5 w-5 text-blue-600 cursor-pointer"
+                  onClick={() => console.log("Icon clicked!")}
+                />
+                <TrashIcon
+                  className="h-5 w-5 text-red-700 cursor-pointer"
+                />
+              </div>
+            )}
+            <div className="flex justify-center items-center mt-4 w-full">
               {bathroom.verification_count > 0 ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium text-gray-600">verified</span>
@@ -151,7 +154,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium text-gray-600">verification needed</span>
+                  <span className="text-sm font-medium text-gray-600">awaiting verification</span>
                   <ShieldExclamationIcon className="h-5 w-5 text-red-700" onClick={() => console.log("Icon clicked!")} />
                 </div>
               )}

@@ -213,7 +213,7 @@ export class BathroomService {
    * @throws UnauthorizedException if the user is not the creator of the bathroom
    * @throws InternalServerErrorException if there is an error deleting the bathroom
    */
-  async remove(id: string, userId: string) {
+  async deleteBathroom(id: string, userId: string) {
 
     // Check if the user is the creator of the bathroom
     const isCreator = await this.isCreator(userId, id);
