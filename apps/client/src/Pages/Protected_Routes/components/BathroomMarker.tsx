@@ -19,7 +19,7 @@ const redMarker = new L.Icon({
   iconSize: [35, 45],
 });
 
-type BathroomMarkerProps = {
+export type BathroomMarkerProps = {
   id: React.Key | null | undefined;
   longitude: number;
   latitude: number;

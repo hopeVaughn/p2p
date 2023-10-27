@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI, updateBathroomAPI } from '../api';
 
 
 type AutResponse = {
@@ -183,6 +183,36 @@ export const useDeleteBathroom = () => {
     deleteBathroom,
     isSuccessDelete: status === 'success',
     deleteError
+  };
+};
+
+// Update bathroom
+export const useUpdateBathroom = () => {
+  const queryClient = useQueryClient();
+
+  const {
+    mutateAsync: updateBathroom,
+    status,
+    error: updateError
+  } = useMutation({
+    mutationFn: updateBathroomAPI,
+    onSuccess: () => {
+      toast.success('Bathroom updated successfully');
+
+      // Invalidate and immediately refetch the "bathrooms" query
+      queryClient.invalidateQueries({ queryKey: ['bathrooms'] });
+      queryClient.refetchQueries({ queryKey: ['bathrooms'] });
+
+    },
+    onError: (error) => {
+      const errorMessage = error instanceof Error ? error.message : 'Error updating bathroom';
+      toast.error(errorMessage);
+    }
+  });
+  return {
+    updateBathroom,
+    isSuccessUpdate: status === 'success',
+    updateError
   };
 };
 

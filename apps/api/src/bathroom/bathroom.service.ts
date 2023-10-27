@@ -181,7 +181,7 @@ export class BathroomService {
    * @throws InternalServerErrorException if there is an error updating the bathroom
    */
   async updateLocation(bathroomId: string, userId: string, dto: UpdateBathroomDto) {
-    const isCreator = await this.isCreator(userId, bathroomId);
+    const isCreator = await this.isCreator(bathroomId, userId);
     const bathroom = await this.findOne(bathroomId);
 
     if (!bathroom) {

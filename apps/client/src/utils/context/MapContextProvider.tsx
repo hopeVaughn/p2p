@@ -6,6 +6,7 @@ import {
   TOGGLE_ADD_BATHROOM_MODAL,
   TOGGLE_ADD_RATING_MODAL,
   TOGGLE_ADD_REPORT_MODAL,
+  TOGGLE_UPDATE_MODAL,
   SET_PIN_LOCATION,
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
@@ -24,6 +25,7 @@ type MapState = {
   isAddBathroomModalOpen: boolean;
   isAddRatingModalOpen: boolean;
   isAddReportModalOpen: boolean;
+  isUpdateModalOpen: boolean;
   isBathroomCreator: boolean;
   bathroomId: string;
   pinLocation: LocationPayload;
@@ -39,6 +41,7 @@ const initialState: MapState = {
   isAddBathroomModalOpen: false,
   isAddRatingModalOpen: false,
   isAddReportModalOpen: false,
+  isUpdateModalOpen: false,
   isBathroomCreator: false,
   bathroomId: '',
   pinLocation: null,
@@ -55,6 +58,7 @@ type ActionType =
   | { type: typeof TOGGLE_ADD_BATHROOM_MODAL; }
   | { type: typeof TOGGLE_ADD_RATING_MODAL; }
   | { type: typeof TOGGLE_ADD_REPORT_MODAL; }
+  | { type: typeof TOGGLE_UPDATE_MODAL; }
   | { type: typeof SET_PIN_LOCATION; payload: LocationPayload; }
   | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
   | { type: typeof REMOVE_PIN; }
@@ -79,6 +83,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, isAddRatingModalOpen: !state.isAddRatingModalOpen };
     case TOGGLE_ADD_REPORT_MODAL:
       return { ...state, isAddReportModalOpen: !state.isAddReportModalOpen };
+    case TOGGLE_UPDATE_MODAL:
+      return { ...state, isUpdateModalOpen: !state.isUpdateModalOpen };
     case SET_PIN_LOCATION:
       return { ...state, pinLocation: action.payload };
     case SET_HAS_INITIAL_ZOOMED:
