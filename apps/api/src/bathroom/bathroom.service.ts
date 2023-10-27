@@ -214,8 +214,10 @@ export class BathroomService {
    * @throws InternalServerErrorException if there is an error deleting the bathroom
    */
   async deleteBathroom(bathroomId: string, userId: string) {
+    console.log(`bathroomId: ${bathroomId}, userId: ${userId}`);
+
     // Check if the user is the creator of the bathroom
-    const isCreator = await this.isCreator(userId, bathroomId);
+    const isCreator = await this.isCreator(bathroomId, userId);
     const bathroom = await this.findOne(bathroomId);
 
     // If the bathroom is not found, throw a NotFoundException
@@ -244,11 +246,13 @@ export class BathroomService {
   * @returns A boolean indicating whether the user is the creator of the bathroom
   * @throws NotFoundException if the bathroom is not found
   */
-  async isCreator(bathroomId: string, userId: string,): Promise<boolean> {
+  async isCreator(bathroomId: string, userId: string): Promise<boolean> {
     // Find the bathroom by id
 
     const bathroom = await this.prisma.bathroom.findUnique({
-      where: { id: bathroomId },
+      where: {
+        id: bathroomId
+      },
     });
 
     // If bathroom not found, throw a NotFoundException

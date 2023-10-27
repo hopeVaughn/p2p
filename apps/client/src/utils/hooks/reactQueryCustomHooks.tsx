@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI, confirmBathroomCreatorAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI } from '../api';
 
 
 type AutResponse = {
@@ -108,7 +108,6 @@ export const useRefreshToken = () => {
     mutationFn: refreshTokenAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
-      // toast.success('Token refreshed');
     },
     onError: () => {
       const errorMessage = refreshTokenError instanceof Error ? refreshTokenError.message : 'Error fetching bathrooms';
@@ -159,6 +158,8 @@ export const useCreateBathroom = () => {
 
 // Delete bathroom
 export const useDeleteBathroom = () => {
+  const queryClient = useQueryClient();
+
   const {
     mutateAsync: deleteBathroom,
     status,
@@ -167,21 +168,23 @@ export const useDeleteBathroom = () => {
     mutationFn: deleteBathroomAPI,
     onSuccess: () => {
       toast.success('Bathroom deleted successfully');
-      // Invalidate the cache
+
+      // Invalidate and immediately refetch the "bathrooms" query
+      queryClient.invalidateQueries({ queryKey: ['bathrooms'] });
+      queryClient.refetchQueries({ queryKey: ['bathrooms'] });
+
     },
     onError: () => {
-      const errorMessage = deleteError instanceof Error ? deleteError.message : 'Error fetching bathrooms';
+      const errorMessage = deleteError instanceof Error ? deleteError.message : 'Error deleting bathroom';
       toast.error(errorMessage);
     }
   });
-
   return {
     deleteBathroom,
-    isLoading: status === 'pending',
+    isSuccessDelete: status === 'success',
     deleteError
   };
 };
-
 
 // Find all bathrooms near the user
 export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
@@ -335,30 +338,5 @@ export const useCreateVerify = () => {
     createVerify,
     isLoadingCreateVerify: status === 'pending',
     verifyError,
-  };
-};
-
-export const useConfirmBathroomCreator = (bathroomId: string) => {
-
-  const {
-    data: confirmedBathroomCreator,
-    error: errorConfirmBathroomCreator,
-    status,
-  } = useQuery({
-    queryKey: ['confirmBathroomCreator'],
-    queryFn: () => confirmBathroomCreatorAPI(bathroomId),
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false
-  });
-
-  if (status === 'error') {
-    const errorMessage = errorConfirmBathroomCreator instanceof Error ? errorConfirmBathroomCreator.message : 'Error fetching bathrooms';
-    toast.error(errorMessage);
-  }
-  return {
-    confirmedBathroomCreator,
-    isLoading: status === 'pending',
-    isSuccessful: status === 'success',
-    errorConfirmBathroomCreator
   };
 };

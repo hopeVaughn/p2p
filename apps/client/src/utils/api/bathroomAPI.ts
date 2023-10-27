@@ -36,28 +36,21 @@ export const createBathroomAPI = async (data: Bathroom) => {
 
 
 // Delete Bathroom
-// the bathroom id is from the params
 export const deleteBathroomAPI = async (bathroomId: string) => {
-  const deleteRoute = "delete_bathroom/";
-  const response = await api.delete(`${bathroomBaseURL}${deleteRoute}`, {
-    params: {
-      bathroomId: bathroomId
-    }
-  });
+  const response = await api.delete(`${bathroomBaseURL}delete_bathroom/`, { data: { bathroomId } });
+
   return response.data;
 };
 
 // Find all bathrooms near the user
 export const findAllBathroomsAPI = async (lat: number, lng: number, radius: number) => {
   const response = await api.post(`${bathroomBaseURL}nearby`, { lat, lng, radius });
-  console.log(response.data);
   return response.data;
 };
 
 // Find a bathroom by id
 export const findBathroomByIdAPI = async (id: string) => {
   const response = await api.get(`${bathroomBaseURL}${id}`);
-  console.log("response.data", response.data);
   return response.data;
 };
 

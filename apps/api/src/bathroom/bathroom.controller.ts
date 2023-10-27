@@ -98,9 +98,9 @@ export class BathroomController {
    */
   @Public()
   @UseGuards(RtGuard)
-  @Delete('delete_bathroom/:id')
+  @Delete('delete_bathroom')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteBathroom(@Param('id') bathroomId: string, @GetCurrentUserId() userId: string) {
+  async deleteBathroom(@Body('bathroomId') bathroomId: string, @GetCurrentUserId() userId: string) {
     return await this.bathroomService.deleteBathroom(bathroomId, userId);
   }
 }

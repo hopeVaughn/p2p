@@ -5,7 +5,7 @@ import { SET_IS_LOADING, SET_BATHROOM_ID, SET_CONFIRM_CREATOR, TOGGLE_ADD_RATING
 import { confirmBathroomCreatorAPI } from "../../../utils/api";
 import { LoadingSpinner } from "../../Components";
 import { VerifyBathroom } from "../../../utils/api";
-import { useCreateVerify } from "../../../utils/hooks";
+import { useCreateVerify, useDeleteBathroom } from "../../../utils/hooks";
 import { PencilSquareIcon, CheckBadgeIcon, ShieldExclamationIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const customRedMarkerSVG = `
@@ -35,10 +35,8 @@ type BathroomMarkerProps = {
 
 export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerProps; }) {
   const { dispatch, state } = useMapContext();
-  // const { confirmedBathroomCreator, isLoading, isSuccessful, errorConfirmBathroomCreator } = useConfirmBathroomCreator(bathroom.id);
-
-  // Do conditional logic based on confirmedBathroomCreator here...
   const { createVerify } = useCreateVerify();
+  const { deleteBathroom, } = useDeleteBathroom();
   const handleRateClick = () => {
     dispatch({ type: TOGGLE_ADD_RATING_MODAL });
   };
@@ -53,6 +51,18 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
     };
     createVerify(data);
   };
+
+  const handleDeleteClick = (bathroomId: string) => {
+    try {
+      dispatch({ type: SET_IS_LOADING, payload: true });
+      deleteBathroom(bathroomId);
+    } catch (error) {
+      console.error("Error deleting bathroom:", error);
+    } finally {
+      dispatch({ type: SET_IS_LOADING, payload: false });
+    }
+  };
+
   return (
     <Marker
       key={bathroom.id}
@@ -143,6 +153,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
                 />
                 <TrashIcon
                   className="h-5 w-5 text-red-700 cursor-pointer"
+                  onClick={() => handleDeleteClick(bathroom.id as string)}
                 />
               </div>
             )}
