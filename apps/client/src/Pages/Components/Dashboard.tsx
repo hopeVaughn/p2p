@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+// import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
 import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
 import { useLogout, useRefreshToken } from '../../utils/hooks';
@@ -116,7 +116,7 @@ export default function Dashboard({ children }: DashboardProps) {
                     </div>
                   </section>
                   {/* Search Bar */}
-                  <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
+                  {/* <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
                     <div className="w-full max-w-lg lg:max-w-xs">
                       <label htmlFor="search" className="sr-only">
                         Search
@@ -134,7 +134,7 @@ export default function Dashboard({ children }: DashboardProps) {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   {/* User Profile & Notification */}
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
