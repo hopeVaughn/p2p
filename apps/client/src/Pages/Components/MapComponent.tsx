@@ -4,6 +4,7 @@ import {
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, AddRatingModal, AddReportModal, LoadingSpinner } from '../Components';
+import { UpdateModal } from '../Protected_Routes/components';
 import {
   SET_LOCATION,
   SET_ZOOM_LEVEL,
@@ -220,6 +221,9 @@ export default function MapComponent() {
       )}
       {state.isAddReportModalOpen && (
         <AddReportModal bathroomId={state.bathroomId} />
+      )}
+      {state.isUpdateModalOpen && (
+        <UpdateModal />
       )}
     </div>
   );
