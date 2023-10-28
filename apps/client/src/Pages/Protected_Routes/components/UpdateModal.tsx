@@ -1,16 +1,13 @@
 import { Fragment, useRef, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useUpdateBathroom } from '../../../utils/hooks';
+import { useFindBathroomById, useUpdateBathroom } from '../../../utils/hooks';
 import { BathroomGender, StallType } from '../../../utils/api';
 import { useMapContext } from '../../../utils/context/MapContextProvider';
 import { TOGGLE_UPDATE_MODAL } from '../../../utils/actions';
-import { BathroomMarkerProps } from './BathroomMarker';
 
-type UpdateBathroomModalProps = {
-  bathroom: BathroomMarkerProps;
-};
 
-export default function UpdateBathroomModal({ bathroom: { gender, stallType, wheelchairAccessible, stars, keyRequirement, hoursOfOperation, address } }: UpdateBathroomModalProps) {
+
+export default function UpdateBathroomModal() {
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
@@ -21,19 +18,22 @@ export default function UpdateBathroomModal({ bathroom: { gender, stallType, whe
   const addressRef = useRef<HTMLInputElement>(null);
   const { updateBathroom } = useUpdateBathroom();
   const { dispatch, state } = useMapContext();
+  const { bathroom } = useFindBathroomById(state.bathroomId, true);
 
   useEffect(() => {
-    // Populate the modal with current bathroom details
-    if (genderRef.current) genderRef.current.value = gender;
-    if (stallTypeRef.current) stallTypeRef.current.value = stallType;
-    if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = wheelchairAccessible;
-    if (starsRef.current) starsRef.current.value = stars.toString();
-    if (keyRequirementRef.current) keyRequirementRef.current.checked = keyRequirement;
-    const [openTime, closeTime] = hoursOfOperation.split(" - ");
-    if (openTimeRef.current) openTimeRef.current.value = openTime.slice(0, -2);
-    if (closeTimeRef.current) closeTimeRef.current.value = closeTime.slice(0, -2);
-    if (addressRef.current) addressRef.current.value = address;
-  }, []);
+    if (bathroom) {
+      // Populate the modal with current bathroom details
+      if (genderRef.current) genderRef.current.value = bathroom.gender;
+      if (stallTypeRef.current) stallTypeRef.current.value = bathroom.stallType;
+      if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = bathroom.wheelchairAccessible;
+      if (starsRef.current) starsRef.current.value = bathroom.stars.toString();
+      if (keyRequirementRef.current) keyRequirementRef.current.checked = bathroom.keyRequirement;
+      const [openTime, closeTime] = bathroom.hoursOfOperation.split(" - ");
+      if (openTimeRef.current) openTimeRef.current.value = openTime.slice(0, -2);
+      if (closeTimeRef.current) closeTimeRef.current.value = closeTime.slice(0, -2);
+      if (addressRef.current) addressRef.current.value = bathroom.address;
+    }
+  }, [bathroom]);
 
   const handleCloseAndReset = () => {
     // Reset all refs

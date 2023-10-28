@@ -1,7 +1,7 @@
 import { Marker, Popup } from "react-leaflet";
 import { useMapContext } from "../../../utils/context/MapContextProvider";
 import L from 'leaflet';
-import { SET_IS_LOADING, SET_BATHROOM_ID, SET_CONFIRM_CREATOR, TOGGLE_ADD_RATING_MODAL, TOGGLE_ADD_REPORT_MODAL } from '../../../utils/actions';
+import { SET_IS_LOADING, SET_BATHROOM_ID, SET_CONFIRM_CREATOR, TOGGLE_ADD_RATING_MODAL, TOGGLE_ADD_REPORT_MODAL, TOGGLE_UPDATE_MODAL } from '../../../utils/actions';
 import { confirmBathroomCreatorAPI } from "../../../utils/api";
 import { LoadingSpinner } from "../../Components";
 import { VerifyBathroom } from "../../../utils/api";
@@ -62,6 +62,10 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
     } finally {
       dispatch({ type: SET_IS_LOADING, payload: false });
     }
+  };
+
+  const handleUpdateClick = () => {
+    dispatch({ type: TOGGLE_UPDATE_MODAL });
   };
 
   return (
@@ -150,7 +154,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
               <div className="flex justify-between">
                 <PencilSquareIcon
                   className="h-5 w-5 text-blue-600 cursor-pointer"
-                  onClick={() => console.log("Icon clicked!")}
+                  onClick={() => handleUpdateClick()}
                 />
                 <TrashIcon
                   className="h-5 w-5 text-red-700 cursor-pointer"
@@ -167,7 +171,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
               ) : (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium text-gray-600">awaiting verification</span>
-                  <ShieldExclamationIcon className="h-5 w-5 text-red-700" onClick={() => console.log("Icon clicked!")} />
+                  <ShieldExclamationIcon className="h-5 w-5 text-red-700" />
                 </div>
               )}
             </div>

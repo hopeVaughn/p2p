@@ -252,7 +252,7 @@ export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => 
     status,
     error: errorFindBathroomById,
     refetch: refetchBathroom,
-    isLoading: isLoadingFindBathroomById
+    isLoading: isLoadingBathroomById
   } = useQuery({
     queryKey: ['bathroom', id],
     queryFn: () => findBathroomByIdAPI(id),
@@ -262,7 +262,7 @@ export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => 
   });
 
   if (status === 'error') {
-    const errorMessage = errorFindBathroomById instanceof Error ? errorFindBathroomById.message : 'Error fetching bathroom details';
+    const errorMessage = errorFindBathroomById instanceof Error ? errorFindBathroomById.message : 'Error updating bathroom details';
     toast.error(errorMessage);
   }
 
@@ -270,7 +270,7 @@ export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => 
     bathroom,
     refetchBathroom,
     errorFindBathroomById,
-    isLoadingFindBathroomById
+    isLoadingBathroomById
   };
 };
 
