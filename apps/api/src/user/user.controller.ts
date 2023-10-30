@@ -14,6 +14,5 @@ export class UserController {
     };
   }
   @Patch()
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   editUser() { }
 }
