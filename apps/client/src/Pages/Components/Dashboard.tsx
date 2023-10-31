@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 // import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
 import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
@@ -67,8 +67,8 @@ export default function Dashboard({ children }: DashboardProps) {
   };
 
   const userNavigation = [
-    { name: 'Your Profile' },
-    { name: 'Settings' },
+    // { name: 'Your Profile' },
+    // { name: 'Settings' },
     { name: 'Sign out', action: handleLogout },
   ];
 
@@ -138,14 +138,14 @@ export default function Dashboard({ children }: DashboardProps) {
                   {/* User Profile & Notification */}
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
-                      <button
+                      {/* <button
                         type="button"
                         className="relative rounded-full bg-cyan-600 p-1 text-white hover:bg-cyan-500 hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cyan-600"
                       >
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
+                      </button> */}
 
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
@@ -238,14 +238,14 @@ export default function Dashboard({ children }: DashboardProps) {
                     <div className="ml-3">
                       <div className="text-sm font-medium text-cyan-800">{user.email}</div>
                     </div>
-                    <button
+                    {/* <button
                       type="button"
                       className="relative ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-cyan-600 p-1 text-white hover:bg-cyan-500 hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cyan-600"
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </button> */}
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
