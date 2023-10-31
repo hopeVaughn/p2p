@@ -39,11 +39,13 @@ export class AuthController {
     // Step 4: Send the access token in the response body.
     const tokens = await this.authService.signUp(dto);
 
-    const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    // const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: !isLocal, // set to true if in production
-      sameSite: 'strict'
+      secure: isProduction,
+      sameSite: 'strict',
+      domain: 'placetopee.onrender.com' // Adjust as needed
     });
 
     return response.send({
@@ -67,11 +69,13 @@ export class AuthController {
     // Step 4: Send the access token in the response body.
     const tokens = await this.authService.signIn(dto);
 
-    const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    // const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: !isLocal, // set to true if in production
-      sameSite: 'strict'
+      secure: isProduction,
+      sameSite: 'strict',
+      domain: 'placetopee.onrender.com' // Adjust as needed
     });
 
     // can either send the accessToken in the response body or as another cookie.
@@ -97,11 +101,12 @@ export class AuthController {
 
     await this.authService.logout(userId);
 
-    const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    // const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', '', {
       expires: new Date(0),
       httpOnly: true,
-      secure: !isLocal, // set to true if in production
+      secure: isProduction, // set to true if in production
       sameSite: 'strict'
     });
 
@@ -130,10 +135,11 @@ export class AuthController {
     const oldRefreshToken = response.req.cookies['refreshToken']; // Extract directly from the cookies
 
     const tokens = await this.authService.refresh(userId, oldRefreshToken);
-    const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    // const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: !isLocal,
+      secure: isProduction,
       sameSite: 'strict'
     });
 
