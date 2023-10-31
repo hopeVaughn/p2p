@@ -27,9 +27,9 @@ const features: Feature[] = [
     icon: ArrowPathIcon,
   },
   {
-    name: 'Advanced security',
+    name: 'Secure Authentication',
     description:
-      'We ask for very basic information to sign up and sign in. We store your information behind advanced security encryption and authentication processes',
+      'Only basic information is required to sign up and sign in. We store your personal data behind advanced security encryption and authentication processes',
     icon: FingerPrintIcon,
   },
 ];
@@ -37,7 +37,7 @@ const features: Feature[] = [
 export default function FeatureSection() {
   return (
     <section className="py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6f lg:px-8">
         <header className="mx-auto max-w-2xl lg:text-center">
           <h2 className="text-base font-semibold leading-7 text-cyan-600">Trust the Place You Pee</h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
