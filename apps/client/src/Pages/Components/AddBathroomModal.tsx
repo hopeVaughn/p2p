@@ -1,4 +1,4 @@
-import { Fragment, useRef } from 'react';
+import React, { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
