@@ -35,9 +35,9 @@ import { AtGuard } from './common/guards';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client', 'dist'), // <-- path to the static files
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '../..', 'client', 'dist'), // <-- path to the static files
+    // }),
     AuthModule,
     UserModule,
     BathroomModule,
