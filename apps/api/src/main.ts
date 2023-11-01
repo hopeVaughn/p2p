@@ -8,7 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('/api'); // <--- this line set the route prefix
   app.use(cookieParser());
   app.enableCors({
-    origin: 'https://placetopee.onrender.com',
+    origin: 'https://placetopee.netlify.app/',
     credentials: true,
   });
   app.useGlobalPipes(
