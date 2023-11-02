@@ -43,8 +43,8 @@ export class AuthController {
     const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'placetopee.netlify.app'// Adjust as needed
     });
 
@@ -73,8 +73,8 @@ export class AuthController {
     const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'placetopee.netlify.app' // Adjust as needed
     });
 
@@ -106,8 +106,8 @@ export class AuthController {
     response.cookie('refreshToken', '', {
       expires: new Date(0),
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'placetopee.netlify.app'
     });
 
@@ -140,8 +140,8 @@ export class AuthController {
     const isProduction = process.env.NODE_ENV === 'production';
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'placetopee.netlify.app'
     });
 
