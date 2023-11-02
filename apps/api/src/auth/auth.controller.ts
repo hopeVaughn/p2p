@@ -44,8 +44,8 @@ export class AuthController {
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'strict',
-      domain: 'placetopee.onrender.com' // Adjust as needed
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: 'placetopee.netlify.app'// Adjust as needed
     });
 
     return response.send({
@@ -74,8 +74,8 @@ export class AuthController {
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'strict',
-      domain: 'placetopee.onrender.com' // Adjust as needed
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: 'placetopee.netlify.app' // Adjust as needed
     });
 
     // can either send the accessToken in the response body or as another cookie.
@@ -106,8 +106,9 @@ export class AuthController {
     response.cookie('refreshToken', '', {
       expires: new Date(0),
       httpOnly: true,
-      secure: isProduction, // set to true if in production
-      sameSite: 'strict'
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: 'placetopee.netlify.app'
     });
 
     return response.send({ message: 'Logged out successfully' });
@@ -140,7 +141,8 @@ export class AuthController {
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'strict'
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: 'placetopee.netlify.app'
     });
 
     return response.send({
