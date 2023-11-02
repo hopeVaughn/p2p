@@ -7,10 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api'); // <--- this line set the route prefix
   app.use(cookieParser());
-  app.enableCors({
-    origin: 'https://placetopee.netlify.app',
-    credentials: true,
-  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,6 +14,10 @@ async function bootstrap() {
       skipMissingProperties: true,
     }),
   );
+  app.enableCors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL,
+  });
   await app.listen(3000);
 }
 bootstrap();

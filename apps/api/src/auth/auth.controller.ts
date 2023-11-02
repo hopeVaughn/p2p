@@ -13,6 +13,7 @@ import { AuthDto } from './dto';
 import { Public, GetCurrentUserId } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { ConfigService } from '@nestjs/config';
+import { log } from 'console';
 /**
  * Controller for handling authentication related requests.
  */
@@ -71,6 +72,7 @@ export class AuthController {
 
     // const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
     const isProduction = process.env.NODE_ENV === 'production';
+    log('isProduction boolean', isProduction);
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: isProduction,
