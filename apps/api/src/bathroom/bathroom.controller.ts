@@ -79,8 +79,8 @@ export class BathroomController {
    * @param updateBathroomDto - The DTO containing the updated data for the bathroom
    * @returns The updated bathroom
    */
-  @Public()
-  @UseGuards(RtGuard)
+  // @Public()
+  // @UseGuards(RtGuard)
   @Patch('update_location/:id')
   @HttpCode(HttpStatus.OK)
   async updateLocation(
@@ -97,8 +97,8 @@ export class BathroomController {
    * @param user - The authenticated user making the request
    * @returns Nothing
    */
-  @Public()
-  @UseGuards(RtGuard)
+  // @Public()
+  // @UseGuards(RtGuard)
   @Delete('delete_bathroom')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteBathroom(@Body('bathroomId') bathroomId: string, @GetCurrentUserId() userId: string) {
