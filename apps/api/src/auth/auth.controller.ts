@@ -46,7 +46,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      domain: 'placetopee.netlify.app'// Adjust as needed
+      // domain: 'placetopee.netlify.app'
     });
 
     return response.send({
@@ -77,7 +77,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      domain: 'placetopee.netlify.app' // Adjust as needed
+      // domain: 'placetopee.netlify.app'
     });
 
     // can either send the accessToken in the response body or as another cookie.
@@ -110,7 +110,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      domain: 'placetopee.netlify.app'
+      // domain: 'placetopee.netlify.app'
     });
 
     return response.send({ message: 'Logged out successfully' });
@@ -144,7 +144,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      domain: 'placetopee.netlify.app'
+      // domain: 'placetopee.netlify.app'
     });
 
     return response.send({

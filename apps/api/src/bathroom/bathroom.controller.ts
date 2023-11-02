@@ -65,8 +65,8 @@ export class BathroomController {
    * @param id - The ID of the bathroom to retrieve
    * @returns The bathroom with the specified ID
    */
-  @Public()
-  @UseGuards(RtGuard)
+  // @Public()
+  // @UseGuards(RtGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
@@ -79,6 +79,7 @@ export class BathroomController {
    * @param updateBathroomDto - The DTO containing the updated data for the bathroom
    * @returns The updated bathroom
    */
+  @Public()
   @UseGuards(RtGuard)
   @Patch('update_location/:id')
   @HttpCode(HttpStatus.OK)
