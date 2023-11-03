@@ -57,8 +57,8 @@ export default function Dashboard({ children }: DashboardProps) {
       dispatch({ type: TOGGLE_ADD_BATHROOM_MODE });
       dispatch({ type: SET_ZOOM_LEVEL, payload: 18 });
     } else if (clickedItemName === 'Search') {
-      dispatch({ type: SET_ZOOM_LEVEL, payload: 16 });
       dispatch({ type: TOGGLE_ADD_BATHROOM_MODE });
+      dispatch({ type: SET_ZOOM_LEVEL, payload: 16 });
     }
   };
 
