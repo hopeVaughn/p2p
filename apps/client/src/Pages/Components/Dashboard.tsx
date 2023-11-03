@@ -88,7 +88,7 @@ export default function Dashboard({ children }: DashboardProps) {
   return (
     <Fragment>
       {/* main container */}
-      <div className="min-h-full">
+      <div className="min-h-full pb-12">
 
         {/* navbar */}
         <Disclosure as="nav" className="bg-cyan-600">
