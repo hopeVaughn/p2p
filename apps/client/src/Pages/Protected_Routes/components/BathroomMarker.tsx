@@ -90,7 +90,9 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
     >
       <Popup>
         {state.isLoading ? (
-          <LoadingSpinner />
+          <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
+            <LoadingSpinner />
+          </div>
         ) : (
           <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
 

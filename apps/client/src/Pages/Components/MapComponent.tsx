@@ -94,7 +94,7 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     </>
   );
 };
-const MemoizedMapView = React.memo(MapView);
+// const MemoizedMapView = React.memo(MapView);
 
 const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
   const markerRef = useRef<LeafletMarker | null>(null);
@@ -136,7 +136,7 @@ const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
   );
 };
 
-const MemoizedDraggablePinMarker = React.memo(DraggablePinMarker);
+// const MemoizedDraggablePinMarker = React.memo(DraggablePinMarker);
 
 export default function MapComponent() {
   const { state, dispatch } = useMapContext(); // Use global context
@@ -179,12 +179,12 @@ export default function MapComponent() {
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
-        <MemoizedMapView
+        <MapView
           location={state.location}
           zoomLevel={state.zoomLevel}
         />
         {state.isAddBathroomMode && (
-          <MemoizedDraggablePinMarker
+          <DraggablePinMarker
             pinLocation={state.pinLocation}
           />
         )}
