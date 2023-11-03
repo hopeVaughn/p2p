@@ -1,7 +1,7 @@
 import { Marker, Popup } from "react-leaflet";
 import { useMapContext } from "../../../utils/context/MapContextProvider";
 import L from 'leaflet';
-import { SET_IS_LOADING, SET_BATHROOM_ID, SET_CONFIRM_CREATOR, TOGGLE_ADD_RATING_MODAL, TOGGLE_ADD_REPORT_MODAL, TOGGLE_UPDATE_MODAL } from '../../../utils/actions';
+import { SET_IS_LOADING, SET_BATHROOM_ID, SET_CONFIRM_CREATOR, TOGGLE_ADD_RATING_MODAL, TOGGLE_ADD_REPORT_MODAL, TOGGLE_UPDATE_MODAL, REMOVE_PIN } from '../../../utils/actions';
 import { confirmBathroomCreatorAPI } from "../../../utils/api";
 import { LoadingSpinner } from "../../Components";
 import { VerifyBathroom } from "../../../utils/api";
@@ -60,6 +60,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
     } catch (error) {
       console.error("Error deleting bathroom:", error);
     } finally {
+      dispatch({ type: REMOVE_PIN });
       dispatch({ type: SET_IS_LOADING, payload: false });
     }
   };
