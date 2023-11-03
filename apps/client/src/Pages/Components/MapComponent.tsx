@@ -170,7 +170,7 @@ export default function MapComponent() {
   }
 
   return (
-    <div className="h-[65vh] w-full relative">
+    <div className="h-[70vh] w-full relative">
       <MapContainer
         center={state.location}
         zoom={state.zoomLevel}
