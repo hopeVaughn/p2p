@@ -4,7 +4,7 @@ import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { SET_CONFIRM_BUTTON, TOGGLE_ADD_BATHROOM_MODAL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
+import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODAL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
@@ -65,8 +65,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     await createBathroom(payload);
     // Dispatch action to set current navigation to "Search"
     dispatch({ type: SET_CURRENT_NAVIGATION, payload: 'Search' });
-    // Reset the confirm button state
-    // dispatch({ type: SET_CONFIRM_BUTTON });
+    dispatch({ type: SET_ZOOM_LEVEL, payload: 16 });
     // Close the modal
     dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
     // move back to search
