@@ -66,7 +66,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     // Dispatch action to set current navigation to "Search"
     dispatch({ type: SET_CURRENT_NAVIGATION, payload: 'Search' });
     // Reset the confirm button state
-    dispatch({ type: SET_CONFIRM_BUTTON });
+    // dispatch({ type: SET_CONFIRM_BUTTON });
     // Close the modal
     dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
     // move back to search
