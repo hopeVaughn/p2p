@@ -143,7 +143,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
                 </label>
 
                 <label className="block mt-4">
-                  Address:
+                  Location Notes:
                   <input ref={addressRef} type="text" required className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
