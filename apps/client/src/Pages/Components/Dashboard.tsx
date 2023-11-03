@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 // import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
@@ -6,7 +6,8 @@ import { MapComponent, HeadLogo } from '.';
 import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
 import { useLogout, useRefreshToken } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODE } from '../../utils/actions';
+import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
+
 type DashboardProps = {
   children: React.ReactNode;
 };
@@ -16,14 +17,24 @@ function classNames(...classes: string[]) {
 }
 
 export default function Dashboard({ children }: DashboardProps) {
+  const { dispatch, state } = useMapContext();
   const [navigation, setNavigation] = useState([
-    { name: 'Search', current: true },
-    { name: 'Add Bathroom', current: false },
+    { name: 'Search', current: state.currentNavigation === 'Search' },
+    { name: 'Add Bathroom', current: state.currentNavigation === 'Add Bathroom' },
   ]);
-  const { dispatch } = useMapContext();
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
+
+  useEffect(() => {
+    // This will run when `state.currentNavigation` changes.
+    setNavigation(navigation.map(item => ({
+      ...item,
+      current: item.name === state.currentNavigation
+    })));
+  }, [state.currentNavigation]); // Only re-run the effect if `state.currentNavigation` changes
+
+
   const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -52,6 +63,8 @@ export default function Dashboard({ children }: DashboardProps) {
         current: item.name === clickedItemName
       }))
     );
+    // Update global state
+    dispatch({ type: SET_CURRENT_NAVIGATION, payload: clickedItemName });
     // Adjust the zoom level
     if (clickedItemName === 'Add Bathroom') {
       dispatch({ type: TOGGLE_ADD_BATHROOM_MODE });
