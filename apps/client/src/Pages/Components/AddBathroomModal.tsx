@@ -4,7 +4,7 @@ import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { SET_CONFIRM_BUTTON, TOGGLE_ADD_BATHROOM_MODAL } from '../../utils/actions';
+import { SET_CONFIRM_BUTTON, TOGGLE_ADD_BATHROOM_MODAL, TOGGLE_ADD_BATHROOM_MODE } from '../../utils/actions';
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
@@ -67,6 +67,8 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
     // Reset the confirm button state
     dispatch({ type: SET_CONFIRM_BUTTON });
+    // move back to search
+    dispatch({ type: TOGGLE_ADD_BATHROOM_MODE });
   };
 
   return (
