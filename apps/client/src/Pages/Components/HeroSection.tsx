@@ -19,10 +19,10 @@ const HeroSection = () => {
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <p className="relative rounded-full px-3 py-1 text-sm leading-6 text-grey-600 ring-1 ring-gray-900/10 hover:ring-cyan-900/20">
             Would you like to buy me a coffee?{' '}
-            <button className="font-semibold text-cyan-800 outline-none">
+            <a href="https://www.buymeacoffee.com/mothermonsterint" target="_blank" className="font-semibold text-cyan-800 outline-none">
               <span className="absolute inset-0" aria-hidden="true" />
               Read more <span aria-hidden="true">&rarr;</span>
-            </button>
+            </a>
           </p>
         </div>
         <section className="text-center">

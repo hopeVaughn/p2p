@@ -34,7 +34,7 @@ export default function ContactSection() {
             </p>
           </div>
         </div>
-        <form action="https://formsubmit.co/mothermonsterinteractive@gmail.com" method="POST" className="px-6 pb-12 pt-16 sm:pb-24 lg:px-8 lg:py-32">
+        <form action="https://formsubmit.co/9e80e8e41bfe3a8c512029108a9181b0" method="POST" className="px-6 pb-12 pt-16 sm:pb-24 lg:px-8 lg:py-32">
           <div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
@@ -43,8 +43,8 @@ export default function ContactSection() {
                 </label>
                 <div className="mt-2.5">
                   <input
-                    type="email"
                     name="email"
+                    type="email"
                     id="email"
                     autoComplete="email"
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
