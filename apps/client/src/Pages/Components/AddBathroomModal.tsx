@@ -21,12 +21,14 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
   const addressRef = useRef<HTMLInputElement>(null);
   const { createBathroom } = useCreateBathroom();
   const { dispatch, state } = useMapContext();
+
   const handleCloseAndReset = () => {
     // Reset all refs
     if (genderRef.current) genderRef.current.value = '';
     if (stallTypeRef.current) stallTypeRef.current.value = '';
     if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = false;
     if (keyRequirementRef.current) keyRequirementRef.current.checked = false;
+    if (ratingRef.current) ratingRef.current.value = '';
     if (openTimeRef.current) openTimeRef.current.value = '';
     if (closeTimeRef.current) closeTimeRef.current.value = '';
     if (addressRef.current) addressRef.current.value = '';
