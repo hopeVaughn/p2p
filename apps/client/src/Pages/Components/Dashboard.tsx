@@ -39,20 +39,20 @@ export default function Dashboard({ children }: DashboardProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    const token = sessionStorage.getItem('accessToken');
+    const accessToken = sessionStorage.getItem('accessToken') || '';
 
     // Check if there's an access token
-    if (!token || accessTokenExpired()) {
+    if (accessTokenExpired()) {
       try {
-        await refreshToken();
-        const token = sessionStorage.getItem('accessToken');
-        logout(token as string);
+        await refreshToken({ accessToken });
+        const newToken = sessionStorage.getItem('accessToken');
+        logout(newToken as string);
       } catch (error) {
         console.error("Failed to refresh token:", error);
       }
     }
-    if (token) {
-      logout(token);
+    if (accessToken) {
+      logout(accessToken);
     }
   };
 
