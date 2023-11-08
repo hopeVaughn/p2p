@@ -97,30 +97,29 @@ export const useLogout = () => {
     isLoading: status === 'pending',
   };
 };
-
 // Refresh Token
 export const useRefreshToken = () => {
-  const {
-    mutateAsync: refreshToken,
-    status,
-    error: refreshTokenError
-  } = useMutation({
+
+  const { mutateAsync: refreshToken, status, error: refreshTokenError } = useMutation({
     mutationFn: refreshTokenAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
+      // Handle successful token refresh
     },
-    onError: () => {
-      const errorMessage = refreshTokenError instanceof Error ? refreshTokenError.message : 'Error fetching bathrooms';
+    onError: (error) => {
+      // Handle error
+      const errorMessage = error instanceof Error ? error.message : 'Error refreshing token';
       toast.error(errorMessage);
     }
   });
 
   return {
     refreshToken,
-    isLoading: status === 'pending',
+    isLoading: status === 'pending', // Note: Check if the 'loading' status is correct as per your react-query version
     refreshTokenError
   };
 };
+
 
 
 // Bathroom API custom hooks

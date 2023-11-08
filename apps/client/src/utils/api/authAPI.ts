@@ -10,6 +10,9 @@ export type AuthCredentials = {
 export type LogoutCredentials = {
   accessToken: string;
 };
+export type TokenCredentials = {
+  accessToken: string;
+};
 
 export type AuthResponse = {
   accessToken: string;
@@ -35,9 +38,8 @@ export const logoutAPI = async (data: LogoutCredentials): Promise<LogoutResponse
   return response.data;
 };
 
-export const refreshTokenAPI = async (): Promise<AuthResponse> => {
-  const response = await api.post<AuthResponse>(`${authBaseURL}refresh`);
-  console.log('refreshTokenAPI response: ', response);
-
+export const refreshTokenAPI = async ({ accessToken }: { accessToken: string; }): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>(`${authBaseURL}refresh`, { accessToken });
   return response.data;
 };
+

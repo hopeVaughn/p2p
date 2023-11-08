@@ -121,33 +121,20 @@ export class AuthController {
     * @returns The HTTP response with new access token and refresh token cookie.
     */
   @Public()
-  @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
-    @GetCurrentUserId() userId: string,
-    @Res() response: Response
+    @Body('accessToken') accessToken: string, // Accept accessToken from the body
+    @Res() response: Response,
   ): Promise<Response> {
-    // Step 1: Extract the old refresh token directly from the cookies.
-    // Step 2: Call the refresh method from AuthService.
-    // Step 3: Check if the environment is local (development) or production.
-    // Step 4: Set a secure httpOnly cookie for the new refresh token.
-    // Step 5: Send the new access token in the response body.
-    const oldRefreshToken = response.req.cookies['refreshToken']; // Extract directly from the cookies
+    // Pass the access token to the service method
+    const tokens = await this.authService.refresh(accessToken);
 
-    const tokens = await this.authService.refresh(userId, oldRefreshToken);
-    // const isLocal = this.config.get<string>('IS_LOCAL') === 'true';
-    const isProduction = process.env.NODE_ENV === 'production';
-    response.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      // domain: 'placetopee.netlify.app'
-    });
-
+    // Send the new access token in the response body
     return response.send({
       accessToken: tokens.accessToken,
     });
   }
+
 
 }

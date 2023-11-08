@@ -176,54 +176,33 @@ export class AuthService {
    * @returns - Promise with access token and refresh token.
   */
 
-  async refresh(userId: string, oldRefreshToken: string): Promise<Tokens> {
-    // Step 1: Find the user by the provided user ID.
-    // Step 2: Decode the old refresh token to get the JWT ID (jti).
-    // Step 3: Verify if the decoded token's JWT ID and hashed value are stored in the database.
-    // Step 4: If not found, throw an error.
-    // Step 5. Compare the old refresh token with the stored hash
-    // Step 6: Generate new access and refresh tokens.
-    // Step 7: Handle the storage and deletion of old and new refresh tokens.
-    // Step 8: Return the newly generated tokens.
+  async refresh(refreshToken: string): Promise<Tokens> {
+    // Decode the refresh token to get the JWT payload
+    const payload = this.jwtService.verify(refreshToken, {
+      secret: this.config.get<string>("RT_SECRET"),
+    }) as JwtPayload;
 
-    // 1. Find the user by the provided user ID.
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) throw new ForbiddenException('Access Denied 01');
-
-    // 2. Decode the old refresh token to get the JWT ID (jti).
-    const oldRtDecoded: any = this.jwtService.decode(oldRefreshToken);
-    const jti = oldRtDecoded.jti;
-
-    // 3. Verify if the decoded token's JWT ID and hashed value are stored in the database.
+    // Find the stored token using the payload's subject (which is the user ID)
     const storedToken = await this.prisma.token.findFirst({
       where: {
-        userId: userId,
-        jti: jti,
+        userId: payload.sub, // Use the sub property from the JWT as the user ID
+        token: await this.hashData(refreshToken),
       }
     });
 
-    // 4. If not found, throw an error.
-    if (!storedToken) throw new ForbiddenException('Access Denied');
-
-    // 5. Compare the old refresh token with the stored hash
-    if (!storedToken || !await argon.verify(storedToken.token, oldRefreshToken)) {
-      console.log("Failed to verify old refresh token with stored hash");
+    if (!storedToken) {
       throw new ForbiddenException('Access Denied');
     }
 
-    // 6. Generate new access and refresh tokens.
-    const tokens = await this.getTokens(user.id, user.email);
+    // Generate new tokens
+    const newTokens = await this.getTokens(payload.sub, payload.email);
 
-    // 7. Handle the storage and deletion of old and new refresh tokens.
-    await this.handleRefreshToken(userId, oldRefreshToken, tokens.refreshToken);
+    // Update the stored token with the new refresh token
+    await this.handleRefreshToken(payload.sub, refreshToken, newTokens.refreshToken);
 
-    // 8. Return the newly generated tokens.
-    return { ...tokens };
+    return newTokens;
   }
+
 
   /* End of business logic for routes */
 
