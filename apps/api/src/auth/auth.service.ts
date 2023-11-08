@@ -191,7 +191,7 @@ export class AuthService {
     });
 
     if (!storedToken) {
-      throw new ForbiddenException('Access Denied');
+      throw new ForbiddenException('Access Denied - Invalid Token');
     }
 
     // Generate new tokens
