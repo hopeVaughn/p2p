@@ -21,7 +21,7 @@ const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
           type="button"
           key={star}
           onClick={() => handleRating(star)}
-          className="hover:text-cyan-500"
+          className={`hover:text-cyan-500 ${star <= rating ? 'text-cyan-700' : 'text-gray-300'}`} // Use conditional rendering for the class
           aria-label={`Rate ${star} stars`}
         >
           {star <= rating ? (
