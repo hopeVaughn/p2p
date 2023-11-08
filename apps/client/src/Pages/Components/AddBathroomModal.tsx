@@ -1,20 +1,19 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODAL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
-import { StarRating } from '../Protected_Routes/components';
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
 };
 
 export default function AddBathroomModal({ coordinates }: AddBathroomModalProps) {
-  const [rating, setRating] = useState(0); // New state for the rating
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
+  const ratingRef = useRef<HTMLInputElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
   const keyRequirementRef = useRef<HTMLInputElement>(null);
   const openTimeRef = useRef<HTMLInputElement>(null);
@@ -54,7 +53,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
       gender: genderRef.current?.value as BathroomGender,
       stallType: stallTypeRef.current?.value as StallType,
       wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
-      stars: rating,
+      stars: parseFloat(ratingRef.current?.value || '0'),
       keyRequirement: keyRequirementRef.current?.checked || false,
       hoursOfOperation: hoursOfOperation,
       lat: coordinates[0], // Updated from the draggable marker.
@@ -125,8 +124,8 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
                 </label>
 
                 <label className="block mt-4">
-                  Rating:
-                  <StarRating onRatingChange={(rate) => setRating(rate)} rating={rating} />
+                  Rate:
+                  <input ref={ratingRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
