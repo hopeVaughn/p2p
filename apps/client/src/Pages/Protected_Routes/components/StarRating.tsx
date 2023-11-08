@@ -9,6 +9,7 @@ type StarRatingProps = {
 const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
 
   const handleRating = (rate: number) => {
+    console.log('Selected rate:', rate);
     onRatingChange(rate); // Pass the rating up to the parent component
   };
 
@@ -19,7 +20,7 @@ const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
           type="button"
           key={star}
           onClick={() => handleRating(star)}
-          className="hover:text-yellow-500"
+          className="hover:text-cyan-500"
           aria-label={`Rate ${star} stars`}
         >
           {star <= rating ? (
