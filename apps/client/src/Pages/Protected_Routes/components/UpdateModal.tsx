@@ -1,13 +1,13 @@
-import { Fragment, useRef, useEffect } from 'react';
+import { Fragment, useRef, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useFindBathroomById, useUpdateBathroom } from '../../../utils/hooks';
 import { BathroomGender, StallType } from '../../../utils/api';
 import { useMapContext } from '../../../utils/context/MapContextProvider';
 import { TOGGLE_UPDATE_MODAL } from '../../../utils/actions';
-
-
+import StarRating from './StarRating';
 
 export default function UpdateBathroomModal() {
+  const [rating, setRating] = useState(0); // New state for the rating
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
@@ -23,10 +23,10 @@ export default function UpdateBathroomModal() {
   useEffect(() => {
     if (bathroom) {
       // Populate the modal with current bathroom details
+      setRating(bathroom.stars);
       if (genderRef.current) genderRef.current.value = bathroom.gender;
       if (stallTypeRef.current) stallTypeRef.current.value = bathroom.stallType;
       if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = bathroom.wheelchairAccessible;
-      if (starsRef.current) starsRef.current.value = bathroom.stars.toString();
       if (keyRequirementRef.current) keyRequirementRef.current.checked = bathroom.keyRequirement;
       const [openTime, closeTime] = bathroom.hoursOfOperation.split(" - ");
       if (openTimeRef.current) openTimeRef.current.value = openTime.slice(0, -2);
@@ -63,7 +63,7 @@ export default function UpdateBathroomModal() {
         gender: genderRef.current?.value as BathroomGender,
         stallType: stallTypeRef.current?.value as StallType,
         wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
-        stars: parseFloat(starsRef.current?.value || '5'),
+        stars: rating,
         keyRequirement: keyRequirementRef.current?.checked || false,
         hoursOfOperation: hoursOfOperation,
         address: addressRef.current?.value || ""
@@ -129,8 +129,8 @@ export default function UpdateBathroomModal() {
                 </label>
 
                 <label className="block mt-4">
-                  Stars:
-                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
+                  Rating:
+                  <StarRating rating={rating} onRatingChange={setRating} />
                 </label>
 
                 <label className="block mt-4">

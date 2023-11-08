@@ -5,40 +5,12 @@ import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODAL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
-import { StarIcon as FilledStarIcon, StarIcon as EmptyStarIcon } from "@heroicons/react/24/outline";
+import { StarRating } from '../Protected_Routes/components';
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
 };
 
-// Interactive star rating component
-const StarRating = ({ onRatingChange }: { onRatingChange: (rating: number) => void; }) => {
-  const [rating, setRating] = useState(0);
-
-  const handleRating = (rate: number) => {
-    setRating(rate);
-    onRatingChange(rate); // Pass the rating up to the parent component
-  };
-
-  return (
-    <div className="flex space-x-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          onClick={() => handleRating(star)}
-          className="hover:text-yellow-500"
-          aria-label={`Rate ${star} stars`}
-        >
-          {star <= rating ? (
-            <FilledStarIcon className="h-5 w-5 text-yellow-400" />
-          ) : (
-            <EmptyStarIcon className="h-5 w-5 text-gray-400" />
-          )}
-        </button>
-      ))}
-    </div>
-  );
-};
 
 
 export default function AddBathroomModal({ coordinates }: AddBathroomModalProps) {
@@ -156,7 +128,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
 
                 <label className="block mt-4">
                   Rating:
-                  <StarRating onRatingChange={(rate) => setRating(rate)} />
+                  <StarRating onRatingChange={(rate) => setRating(rate)} rating={rating} />
                 </label>
 
                 <label className="block mt-4">
