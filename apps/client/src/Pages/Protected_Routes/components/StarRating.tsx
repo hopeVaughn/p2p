@@ -12,6 +12,8 @@ const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
     onRatingChange(rate); // Pass the rating up to the parent component
   };
 
+  console.log('Rendering StarRating with rating:', rating); // This will log every time the component re-renders
+
   return (
     <div className="flex space-x-1">
       {[1, 2, 3, 4, 5].map((star) => (
