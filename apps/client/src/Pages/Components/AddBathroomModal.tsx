@@ -1,20 +1,51 @@
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODAL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
+import { StarIcon as FilledStarIcon, StarIcon as EmptyStarIcon } from "@heroicons/react/24/outline";
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
 };
 
+// Interactive star rating component
+const StarRating = ({ onRatingChange }: { onRatingChange: (rating: number) => void; }) => {
+  const [rating, setRating] = useState(0);
+
+  const handleRating = (rate: number) => {
+    setRating(rate);
+    onRatingChange(rate); // Pass the rating up to the parent component
+  };
+
+  return (
+    <div className="flex space-x-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          onClick={() => handleRating(star)}
+          className="hover:text-yellow-500"
+          aria-label={`Rate ${star} stars`}
+        >
+          {star <= rating ? (
+            <FilledStarIcon className="h-5 w-5 text-yellow-400" />
+          ) : (
+            <EmptyStarIcon className="h-5 w-5 text-gray-400" />
+          )}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+
 export default function AddBathroomModal({ coordinates }: AddBathroomModalProps) {
+  const [rating, setRating] = useState(0); // New state for the rating
   const genderRef = useRef<HTMLSelectElement>(null);
   const stallTypeRef = useRef<HTMLSelectElement>(null);
   const wheelchairAccessibleRef = useRef<HTMLInputElement>(null);
-  const starsRef = useRef<HTMLInputElement>(null);
   const keyRequirementRef = useRef<HTMLInputElement>(null);
   const openTimeRef = useRef<HTMLInputElement>(null);
   const closeTimeRef = useRef<HTMLInputElement>(null);
@@ -26,7 +57,6 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     if (genderRef.current) genderRef.current.value = '';
     if (stallTypeRef.current) stallTypeRef.current.value = '';
     if (wheelchairAccessibleRef.current) wheelchairAccessibleRef.current.checked = false;
-    if (starsRef.current) starsRef.current.value = '';
     if (keyRequirementRef.current) keyRequirementRef.current.checked = false;
     if (openTimeRef.current) openTimeRef.current.value = '';
     if (closeTimeRef.current) closeTimeRef.current.value = '';
@@ -54,7 +84,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
       gender: genderRef.current?.value as BathroomGender,
       stallType: stallTypeRef.current?.value as StallType,
       wheelchairAccessible: wheelchairAccessibleRef.current?.checked || false,
-      stars: parseFloat(starsRef.current?.value || '5'),
+      stars: rating,
       keyRequirement: keyRequirementRef.current?.checked || false,
       hoursOfOperation: hoursOfOperation,
       lat: coordinates[0], // Updated from the draggable marker.
@@ -125,8 +155,8 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
                 </label>
 
                 <label className="block mt-4">
-                  Stars:
-                  <input ref={starsRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
+                  Rating:
+                  <StarRating onRatingChange={(rate) => setRating(rate)} />
                 </label>
 
                 <label className="block mt-4">
