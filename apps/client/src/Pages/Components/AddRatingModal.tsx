@@ -4,6 +4,7 @@ import { useCreateRating } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { TOGGLE_ADD_RATING_MODAL } from '../../utils/actions';
+
 type AddRatingModalProps = {
   bathroomId: string;
 };
