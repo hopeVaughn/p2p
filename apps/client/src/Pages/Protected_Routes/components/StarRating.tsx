@@ -9,7 +9,6 @@ type StarRatingProps = {
 const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
 
   const handleRating = (rate: number) => {
-    console.log('Selected rate:', rate);
     onRatingChange(rate); // Pass the rating up to the parent component
   };
 

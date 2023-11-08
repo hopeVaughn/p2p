@@ -11,8 +11,6 @@ type AddBathroomModalProps = {
   coordinates: [number, number];
 };
 
-
-
 export default function AddBathroomModal({ coordinates }: AddBathroomModalProps) {
   const [rating, setRating] = useState(0); // New state for the rating
   const genderRef = useRef<HTMLSelectElement>(null);
