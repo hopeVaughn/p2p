@@ -6,7 +6,26 @@ import { confirmBathroomCreatorAPI } from "../../../utils/api";
 import { LoadingSpinner } from "../../Components";
 import { VerifyBathroom } from "../../../utils/api";
 import { useCreateVerify, useDeleteBathroom } from "../../../utils/hooks";
-import { PencilSquareIcon, CheckBadgeIcon, ShieldExclamationIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, CheckBadgeIcon, ShieldExclamationIcon, TrashIcon, StarIcon as EmptyStarIcon } from "@heroicons/react/24/outline";
+import { StarIcon as FilledStarIcon } from "@heroicons/react/24/solid";
+
+// Helper component to render stars based on rating
+
+const RatingStars = ({ rating }: { rating: number; }) => {
+  const filledStars = Math.floor(rating);
+  const emptyStars = 5 - filledStars;
+
+  return (
+    <div className="flex items-center">
+      {Array.from({ length: filledStars }, (_, index) => (
+        <FilledStarIcon key={index} className="h-5 w-5 text-cyan-700" />
+      ))}
+      {Array.from({ length: emptyStars }, (_, index) => (
+        <EmptyStarIcon key={index} className="h-5 w-5 text-cyan-700" />
+      ))}
+    </div>
+  );
+};
 
 const customRedMarkerSVG = `
 data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
@@ -122,7 +141,9 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
 
               <div className="flex items-center space-x-2">
                 <dt className="text-sm font-bold text-gray-600">Rating:</dt>
-                <dd className="text-sm text-gray-800">{bathroom.stars} stars</dd>
+                <dd className="text-sm text-gray-800">
+                  <RatingStars rating={bathroom.stars} />
+                </dd>
               </div>
 
               <div className="flex items-center space-x-2">
