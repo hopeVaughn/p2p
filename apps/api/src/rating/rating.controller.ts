@@ -21,8 +21,6 @@ export class RatingController {
    * @param createRatingDto The data to create the rating.
    * @returns The created rating.
    */
-  @Public()
-  @UseGuards(RtGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createOrUpdate(@Body() createRatingDto: CreateRatingDto) {

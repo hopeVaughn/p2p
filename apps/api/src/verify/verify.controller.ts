@@ -32,8 +32,11 @@ export class VerifyController {
     return this.verifyService.verify(dto, verifiedById);
   }
 
-  @Public()
-  @UseGuards(RtGuard)
+  /**
+   * Endpoint for getting the number of verifications for a bathroom.
+   * @param bathroomID - The ID of the bathroom to get the verifications for.
+   * @returns The number of verifications for the bathroom.
+   */
   @Get()
   @HttpCode(HttpStatus.OK)
   async getVerifications(@Body() bathroomID: string) {

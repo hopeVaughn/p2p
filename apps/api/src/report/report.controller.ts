@@ -13,8 +13,6 @@ export class ReportController {
    * @param dto - Data transfer object containing the report information.
    * @returns The newly created report.
   */
-  @Public()
-  @UseGuards(RtGuard)
   @Post()
   async createReport(@Body() dto: CreateReportDto) {
     return this.reportService.createReport(dto);
