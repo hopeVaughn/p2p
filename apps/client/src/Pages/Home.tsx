@@ -9,15 +9,15 @@ export default function HomePage() {
         <HeroSection />
       </header>
 
-      <section>
+      <section id="features">
         <FeatureSection />
       </section>
 
-      <section>
+      <section id='faq'>
         <FAQSection />
       </section>
 
-      <section>
+      <section id='testimonials'>
         <TestimonialSection />
       </section>
 

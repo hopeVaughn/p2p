@@ -10,9 +10,9 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
-  { name: 'Features', href: '#' },
-  { name: 'FAQ', href: '#' },
-  { name: 'Testimonials', href: '#' },
+  { name: 'Features', href: '#features' },
+  { name: 'FAQ', href: '#faq' },
+  { name: 'Testimonials', href: '#testimonials' },
 ];
 
 export default function NavBar() {
@@ -55,6 +55,12 @@ export default function NavBar() {
     };
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const section = document.querySelector(href);
+    section?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const handleMobileMenuOpen = () => {
     setShowLogo(false);
     setMobileMenuOpen(true);
@@ -90,9 +96,14 @@ export default function NavBar() {
         )}
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-cyan-900">
+            <Link
+              key={item.name}
+              to={item.href}
+              onClick={(e) => handleNavClick(e, item.href)}
+              className="text-sm font-semibold leading-6 text-cyan-900"
+            >
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -125,6 +136,7 @@ export default function NavBar() {
                   <a
                     key={item.name}
                     href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-cyan-900 hover:bg-gray-50"
                   >
                     {item.name}
