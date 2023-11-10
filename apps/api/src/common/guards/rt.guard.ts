@@ -9,7 +9,6 @@ export class RtGuard extends AuthGuard('jwt-refresh') {
 
   canActivate(context: ExecutionContext) {
     // Add logging at the start of canActivate to check if guard is being called
-    console.log('RtGuard - canActivate is called');
 
     try {
       // Call the default canActivate method from AuthGuard
@@ -21,9 +20,6 @@ export class RtGuard extends AuthGuard('jwt-refresh') {
   }
 
   handleRequest(err, user, info) {
-    // Log error, user, and info objects for debugging
-    console.log('RtGuard - handleRequest', { err, user, info });
-
     // If an error is thrown within the guard, or if there is no user, throw UnauthorizedException
     if (err || !user) {
       throw err || new UnauthorizedException();

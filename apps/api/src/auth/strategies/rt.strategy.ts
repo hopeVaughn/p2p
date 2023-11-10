@@ -26,7 +26,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     private readonly prismaService: PrismaService,
   ) {
     super({
-      jwtFromRequest: (req: Request) => req.cookies['refreshToken'], // Extract from the cookie
+      jwtFromRequest: (req: Request) => req.body.refreshToken, // Extract from the request body
       secretOrKey: configService.get<string>('RT_SECRET'),
       passReqToCallback: true,
     });
@@ -39,7 +39,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
    * Returns the decoded payload if refreshToken is valid.
    */
   async validate(req: Request): Promise<boolean | object> {
-    const refreshToken = req.cookies['refreshToken'];
+    const refreshToken = req.body.refreshToken;
 
     if (!refreshToken) {
       return false;

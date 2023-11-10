@@ -7,6 +7,7 @@ import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroom
 
 type AutResponse = {
   accessToken: string;
+  refreshToken: string;
 };
 
 // Auth API custom hooks
@@ -25,6 +26,7 @@ export const useSignUp = () => {
     mutationFn: signUpAPI,
     onSuccess: (data: AutResponse) => {
       sessionStorage.setItem('accessToken', data.accessToken);
+      sessionStorage.setItem('refreshToken', data.refreshToken);
       toast.success("You've been signed up successfully!");
       navigate('/dashboard');
     },
@@ -53,6 +55,7 @@ export const useSignIn = () => {
     mutationFn: signInAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
+      sessionStorage.setItem('refreshToken', data.refreshToken);
       toast.success('Welcome Back!');
       navigate('/dashboard');
     },
@@ -78,9 +81,9 @@ export const useLogout = () => {
     mutationFn: logoutAPI,
     onSuccess: () => {
       sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
       toast.success('Logged out successfully');
       navigate('/');
-      // Additional invalidations if needed
     },
     onError: () => {
       const errorMessage = logOutError instanceof Error ? logOutError.message : 'Error fetching bathrooms';
@@ -105,7 +108,7 @@ export const useRefreshToken = () => {
     mutationFn: refreshTokenAPI,
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
-      // Handle successful token refresh
+      sessionStorage.setItem('refreshToken', data.refreshToken); // Update with new refresh token
     },
     onError: (error) => {
       // Handle error
@@ -116,7 +119,7 @@ export const useRefreshToken = () => {
 
   return {
     refreshToken,
-    isLoading: status === 'pending', // Note: Check if the 'loading' status is correct as per your react-query version
+    isLoading: status === 'pending',
     refreshTokenError
   };
 };

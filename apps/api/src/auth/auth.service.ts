@@ -56,7 +56,7 @@ export class AuthService {
     const userRole = await this.prisma.userRole.create({
       data: {
         userId: user.id,
-        role: RoleName.USER // This can be omitted since we have a default, but added here for clarity
+        role: RoleName.USER
       },
     });
 
@@ -135,7 +135,6 @@ export class AuthService {
     // 4. Generate new access and refresh tokens.
     const tokens = await this.getTokens(user.id, user.email);
     const hashedRt = await this.hashData(tokens.refreshToken);
-    console.log("Hashed refresh token during signIn:", hashedRt);
     const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
     // 5. Save the hashed refresh token in the database.
@@ -246,7 +245,7 @@ export class AuthService {
       }
     });
 
-    const rolesArray = userRoles.map(ur => ur.role); // This will give you an array of roles
+    const rolesArray = userRoles.map(ur => ur.role); // This will give us an array of roles
 
     // Construct the payload
     const jwtPayload: JwtPayload = {
