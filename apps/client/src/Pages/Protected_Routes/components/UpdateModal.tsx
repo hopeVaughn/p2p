@@ -161,7 +161,7 @@ export default function UpdateBathroomModal() {
                     type="submit"
                     className="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-cyan-700 border border-transparent rounded-md hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
                   >
-                    Add
+                    Update
                   </button>
                 </div>
               </form>

@@ -36,7 +36,12 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   }, [refreshToken, activeRefreshToken]);
 
   if (isRefreshing) {
-    return <LoadingSpinner />;
+    return (
+      <div className="p-4 min-h-screen px-4">
+        <LoadingSpinner />;
+      </div>
+    );
+
   }
 
   return (
