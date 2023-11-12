@@ -5,37 +5,39 @@ import { Dashboard } from '.';
 import { useRefreshToken } from '../../utils/hooks';
 import { useNavigate } from "react-router-dom";
 import { LoadingSpinner } from '../Components/';
-const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
-  const activeRefreshToken = sessionStorage.getItem('refreshToken') || '';
-  const { refreshToken, isLoading: isRefreshing } = useRefreshToken();
-  const [userRoles, setUserRoles] = useState<string[]>([]);
 
-  const isAuthenticated = Boolean(sessionStorage.getItem('accessToken'));
+const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
+  const [userRoles, setUserRoles] = useState<string[]>([]);
   const navigate = useNavigate();
 
+  const { refreshToken, isLoading: isRefreshing } = useRefreshToken();
+  const activeRefreshToken = sessionStorage.getItem('refreshToken') || '';
+
+  // Check authentication and roles
   useEffect(() => {
+    const isAuthenticated = sessionStorage.getItem('accessToken') ? true : false;
     const decodedToken = decodeAccessToken();
-    if (decodedToken && decodedToken.roles) {
+
+    if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {
+      navigate('/pagenotfound'); // Redirect to login if not authenticated or roles don't match
+    } else if (decodedToken && decodedToken.roles) {
       setUserRoles(decodedToken.roles);
     }
-  }, []);
+  }, [navigate, requiredRoles, userRoles]);
 
+  // Handle token refresh
   useEffect(() => {
     if (accessTokenExpired()) {
       refreshToken({ activeRefreshToken });
     }
-  }, [refreshToken, isAuthenticated, activeRefreshToken]);
+  }, [refreshToken, activeRefreshToken]);
 
+  // Display loading spinner during token refresh
   if (isRefreshing) {
-    return (
-      <LoadingSpinner />
-    );
+    return <LoadingSpinner />;
   }
 
-  if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {
-    navigate('/pagenotfound');
-  }
-
+  // Render the protected component
   return (
     <Dashboard>
       <Outlet />
