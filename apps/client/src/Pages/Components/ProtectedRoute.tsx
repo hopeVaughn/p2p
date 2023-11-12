@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { accessTokenExpired, decodeAccessToken } from "../../utils/helpers";
 import { Dashboard } from '.';
 import { useRefreshToken } from '../../utils/hooks';
-import { useNavigate } from "react-router-dom";
 import { LoadingSpinner } from '../Components/';
 
 const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
@@ -11,33 +10,35 @@ const ProtectedRoute = ({ requiredRoles }: { requiredRoles?: string[]; }) => {
   const navigate = useNavigate();
 
   const { refreshToken, isLoading: isRefreshing } = useRefreshToken();
+  const isAuthenticated = sessionStorage.getItem('accessToken') ? true : false;
   const activeRefreshToken = sessionStorage.getItem('refreshToken') || '';
 
-  // Check authentication and roles
+  // Decoding the access token to get user roles
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem('accessToken') ? true : false;
     const decodedToken = decodeAccessToken();
-
-    if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {
-      navigate('/pagenotfound'); // Redirect to login if not authenticated or roles don't match
-    } else if (decodedToken && decodedToken.roles) {
+    if (decodedToken && decodedToken.roles) {
       setUserRoles(decodedToken.roles);
     }
-  }, [navigate, requiredRoles, userRoles]);
+  }, []);
+
+  // Check authentication and roles for navigation
+  useEffect(() => {
+    if (!isAuthenticated || (requiredRoles && !requiredRoles.some(role => userRoles.includes(role)))) {
+      navigate('/pagenotfound');
+    }
+  }, [isAuthenticated, requiredRoles, userRoles, navigate]);
 
   // Handle token refresh
   useEffect(() => {
-    if (accessTokenExpired()) {
+    if (accessTokenExpired() && activeRefreshToken) {
       refreshToken({ activeRefreshToken });
     }
   }, [refreshToken, activeRefreshToken]);
 
-  // Display loading spinner during token refresh
   if (isRefreshing) {
     return <LoadingSpinner />;
   }
 
-  // Render the protected component
   return (
     <Dashboard>
       <Outlet />
