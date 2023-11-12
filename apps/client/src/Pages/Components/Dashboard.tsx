@@ -39,12 +39,13 @@ export default function Dashboard({ children }: DashboardProps) {
     e.preventDefault();
     e.stopPropagation();
 
+    const activeRefreshToken = sessionStorage.getItem('refreshToken') || '';
     const accessToken = sessionStorage.getItem('accessToken') || '';
 
     // Check if there's an access token
     if (accessTokenExpired()) {
       try {
-        await refreshToken({ accessToken });
+        await refreshToken({ activeRefreshToken });
         const newToken = sessionStorage.getItem('accessToken');
         logout(newToken as string);
       } catch (error) {
