@@ -75,11 +75,10 @@ export class AuthController {
     * @param response - The HTTP response object.
     * @returns The HTTP response with new access token and refresh token cookie.
     */
-  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
-    @Body('refreshToken') refreshToken: string, // Accept refreshToken from the body
+    @Body('refreshToken') refreshToken: string,
     @Res() response: Response,
   ): Promise<Response> {
     const tokens = await this.authService.refresh(refreshToken);
