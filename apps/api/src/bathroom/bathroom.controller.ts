@@ -6,16 +6,14 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   HttpCode,
   HttpStatus,
   Query,
 } from '@nestjs/common';
-import { BathroomService } from './bathroom.service';
+import { BathroomService, BathroomResult } from './bathroom.service';
 import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { GetCurrentUserId } from '../common/decorators';
-import { RtGuard } from '../common/guards';
-import { Public } from '../common/decorators/public.decorator';
+
 
 @Controller('bathroom')
 export class BathroomController {
@@ -33,6 +31,17 @@ export class BathroomController {
   @HttpCode(HttpStatus.OK)
   async confirm(@Query('bathroomId') bathroomId: string, @GetCurrentUserId() userId: string) {
     return await this.bathroomService.isCreator(bathroomId, userId);
+  }
+
+  /**
+   * Get a list of all bathrooms created by the current user.
+   * This route is protected, and only authenticated users can access it.
+   * @returns A list of all bathrooms created by the current user
+   */
+  @Get('created_by_user')
+  @HttpCode(HttpStatus.OK)
+  async findAllCreatedByUser(@GetCurrentUserId() userId: string): Promise<BathroomResult[]> {
+    return await this.bathroomService.findAllCreatedByUser(userId);
   }
 
 
@@ -65,8 +74,7 @@ export class BathroomController {
    * @param id - The ID of the bathroom to retrieve
    * @returns The bathroom with the specified ID
    */
-  // @Public()
-  // @UseGuards(RtGuard)
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
@@ -79,8 +87,7 @@ export class BathroomController {
    * @param updateBathroomDto - The DTO containing the updated data for the bathroom
    * @returns The updated bathroom
    */
-  // @Public()
-  // @UseGuards(RtGuard)
+
   @Patch('update_location/:id')
   @HttpCode(HttpStatus.OK)
   async updateLocation(
@@ -97,8 +104,7 @@ export class BathroomController {
    * @param user - The authenticated user making the request
    * @returns Nothing
    */
-  // @Public()
-  // @UseGuards(RtGuard)
+
   @Delete('delete_bathroom')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteBathroom(@Body('bathroomId') bathroomId: string, @GetCurrentUserId() userId: string) {

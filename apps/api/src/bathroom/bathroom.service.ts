@@ -9,7 +9,7 @@ import { CreateBathroomDto, UpdateBathroomDto } from './dto/bathroom.dto';
 import { RatingService } from '../rating/rating.service';
 import { CreateRatingDto } from 'src/rating/dto';
 
-interface BathroomResult {
+export interface BathroomResult {
   id: string;
   latitude: number;
   longitude: number;
@@ -168,6 +168,33 @@ export class BathroomService {
       throw new InternalServerErrorException(
         `Error during bathroom creation: ${error.message}`,
       );
+    }
+  }
+
+  async findAllCreatedByUser(userId: string): Promise<BathroomResult[]> {
+    try {
+      const result = await this.prisma.$queryRaw<BathroomResult[]>`
+      SELECT 
+          b.id, 
+          ST_X(b.location) as latitude, 
+          ST_Y(b.location) as longitude,
+          b.gender, 
+          b."stallType", 
+          b."wheelchairAccessible", 
+          b.stars, 
+          b."keyRequirement", 
+          b."hoursOfOperation", 
+          b.address
+      FROM "Bathroom" b
+      WHERE b."createdById" = ${userId}
+      ;`;
+
+      return result.map(bathroom => ({
+        ...bathroom,
+        verification_count: Number(bathroom.verification_count)
+      }));
+    } catch (error) {
+      throw new InternalServerErrorException(`Error retrieving user's bathrooms: ${error.message}`);
     }
   }
 
