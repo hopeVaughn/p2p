@@ -85,26 +85,30 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
 
-  const { bathrooms, isLoadingFindAllBathrooms } = useFindAllBathrooms(
+  const { bathrooms, isLoading } = useFindAllBathrooms(
     location[0],
     location[1],
     500, // radius
-    Boolean(location)
+    true // shouldFetch
   );
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
-      {isLoadingFindAllBathrooms && <LoadingSpinner />}
       <ChangeView center={location} zoom={zoomLevel} />
       <Marker position={location} icon={blueMarker}>
         <Popup>You exist here!!</Popup>
       </Marker>
-      {!isLoadingFindAllBathrooms && bathrooms?.map((bathroom: CustomMarkerProps) => (
+      {bathrooms.map((bathroom: CustomMarkerProps) => (
         <BathroomMarker key={bathroom.id} bathroom={bathroom} />
       ))}
     </>
   );
 };
+
 
 const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
   const markerRef = useRef<LeafletMarker | null>(null);
@@ -181,7 +185,7 @@ export default function MapComponent() {
   }
 
   const recenterMap = () => {
-    dispatch({ type: 'TOGGLE_SHOULD_RECENTER' });
+    dispatch({ type: TOGGLE_SHOULD_RECENTER });
   };
 
   return (

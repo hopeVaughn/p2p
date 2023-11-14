@@ -1,10 +1,10 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useEffect, useState, useRef } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 // import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { MapComponent, HeadLogo } from '.';
 import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
-import { useLogout, useRefreshToken } from '../../utils/hooks';
+import { useLogout, useRefreshToken, useFindAllBathrooms } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
 import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
 
@@ -22,17 +22,29 @@ export default function Dashboard({ children }: DashboardProps) {
     { name: 'Search', current: state.currentNavigation === 'Search' },
     { name: 'Add Bathroom', current: state.currentNavigation === 'Add Bathroom' },
   ]);
+  const prevNavigationRef = useRef(state.currentNavigation);
   const { logout } = useLogout();
   const { refreshToken } = useRefreshToken();
   const userInfo = decodeAccessToken();
 
+  const { refetch } = useFindAllBathrooms(state.location?.[0] ?? 0, state.location?.[1] ?? 0, 500, true);
+
+
   useEffect(() => {
-    // This will run when `state.currentNavigation` changes.
+    // Update navigation state
     setNavigation(navigation.map(item => ({
       ...item,
       current: item.name === state.currentNavigation
     })));
-  }, [state.currentNavigation]); // Only re-run the effect if `state.currentNavigation` changes
+
+    // Check if navigation changed to 'Search' and location is not null
+    if (prevNavigationRef.current !== 'Search' && state.currentNavigation === 'Search' && state.location) {
+      refetch();
+    }
+
+    // Update the ref with the current navigation state
+    prevNavigationRef.current = state.currentNavigation;
+  }, [state.currentNavigation, refetch, state.location]);
 
 
   const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {

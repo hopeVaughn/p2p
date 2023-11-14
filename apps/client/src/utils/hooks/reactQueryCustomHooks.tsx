@@ -1,8 +1,9 @@
+import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI, updateBathroomAPI } from '../api';
+import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, findUserCreatedBathroomsAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI, updateBathroomAPI } from '../api';
 
 
 type AutResponse = {
@@ -221,32 +222,66 @@ export const useUpdateBathroom = () => {
 
 // Find all bathrooms near the user
 export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
+  // Fetch nearby bathrooms
   const {
-    data: bathrooms,
-    status,
+    data: nearbyBathrooms,
+    status: nearbyBathroomsStatus,
     error: errorFindAllBathrooms,
-    refetch: refetchBathrooms,
+    refetch: refetchNearbyBathrooms,
     isFetching: isLoadingFindAllBathrooms
   } = useQuery({
-    queryKey: ['bathrooms', lat, lng, radius],
+    queryKey: ['bathrooms', 'nearby', lat, lng, radius],
     queryFn: () => findAllBathroomsAPI(lat, lng, radius),
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false
+    refetchOnReconnect: false,
   });
 
-  if (status === 'error') {
-    const errorMessage = errorFindAllBathrooms instanceof Error ? errorFindAllBathrooms.message : 'Error fetching bathrooms';
+  // Fetch user-created bathrooms
+  const {
+    data: userBathrooms,
+    status: userBathroomsStatus,
+    error: errorFindUserBathrooms,
+    refetch: refetchUserBathrooms,
+    isFetching: isLoadingFindUserBathrooms
+  } = useQuery({
+    queryKey: ['bathrooms', 'user_created'],
+    queryFn: findUserCreatedBathroomsAPI,
+    enabled: shouldFetch,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  // Combine data from both queries and remove duplicates
+  const combinedBathrooms = React.useMemo(() => {
+    const allBathrooms = [...(nearbyBathrooms || []), ...(userBathrooms || [])];
+    return allBathrooms.filter((bathroom, index, self) =>
+      index === self.findIndex(t => t.id === bathroom.id) // Filter out duplicates
+    );
+  }, [nearbyBathrooms, userBathrooms]);
+
+  // Handling loading and error states
+  const isLoading = isLoadingFindAllBathrooms || isLoadingFindUserBathrooms;
+  const error = errorFindAllBathrooms || errorFindUserBathrooms;
+  const loadingStatus = nearbyBathroomsStatus || userBathroomsStatus;
+
+  if (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Error fetching bathrooms';
     toast.error(errorMessage);
   }
 
   return {
-    bathrooms,
-    isLoadingFindAllBathrooms,
-    errorFindAllBathrooms,
-    refetchBathrooms
+    bathrooms: combinedBathrooms,
+    isLoading,
+    status: loadingStatus,
+    error,
+    refetch: () => {
+      refetchNearbyBathrooms();
+      refetchUserBathrooms();
+    }
   };
 };
+
 
 // Find a specific bathroom by its ID
 export const useFindBathroomById = (id: string, shouldFetch: boolean = true) => {

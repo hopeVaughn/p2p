@@ -70,6 +70,12 @@ export const findBathroomByIdAPI = async (id: string) => {
   return response.data;
 };
 
+// Fetch user-created bathrooms
+export const findUserCreatedBathroomsAPI = async () => {
+  const response = await api.get(`${bathroomBaseURL}created_by_user`);
+  return response.data;
+};
+
 // Confirm a user is the creator of a bathroom
 export const confirmBathroomCreatorAPI = async (bathroomId: string) => {
   const response = await api.get(`${bathroomBaseURL}confirm`, {
