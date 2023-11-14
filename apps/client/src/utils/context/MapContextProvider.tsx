@@ -68,7 +68,7 @@ type ActionType =
   | { type: typeof SET_PIN_LOCATION; payload: LocationPayload; }
   | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
   | { type: typeof REMOVE_PIN; }
-  | { type: typeof SET_CONFIRM_BUTTON; }
+  | { type: typeof SET_CONFIRM_BUTTON; payload: boolean; }
   | { type: typeof SET_BATHROOM_ID; payload: string; }
   | { type: typeof SET_CONFIRM_CREATOR; payload: boolean; }
   | { type: typeof SET_IS_LOADING; payload: boolean; }
@@ -100,7 +100,7 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
     case REMOVE_PIN:
       return { ...state, pinLocation: null, confirmButton: false };
     case SET_CONFIRM_BUTTON:
-      return { ...state, confirmButton: !state.confirmButton };
+      return { ...state, confirmButton: action.payload };
     case SET_BATHROOM_ID:
       return { ...state, bathroomId: action.payload };
     case SET_CONFIRM_CREATOR:

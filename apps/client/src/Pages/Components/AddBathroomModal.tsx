@@ -4,7 +4,7 @@ import { useCreateBathroom } from '../../utils/hooks';
 import { getUserId } from '../../utils/helpers';
 import { BathroomGender, StallType } from '../../utils/api';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { TOGGLE_ADD_BATHROOM_MODAL } from '../../utils/actions';
+import { TOGGLE_ADD_BATHROOM_MODAL, REMOVE_PIN } from '../../utils/actions';
 
 type AddBathroomModalProps = {
   coordinates: [number, number];
@@ -65,7 +65,8 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
     // Call the API to submit the data
     await createBathroom(payload);
 
-    // Close the modal
+    // Reset the pin location and confirm button, but stay in Add Bathroom mode
+    dispatch({ type: REMOVE_PIN });
     dispatch({ type: TOGGLE_ADD_BATHROOM_MODAL });
 
   };

@@ -118,7 +118,7 @@ const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
     click: (e) => {
       const newLocation: [number, number] = [e.latlng.lat, e.latlng.lng];
       dispatch({ type: SET_PIN_LOCATION, payload: newLocation });
-      dispatch({ type: SET_CONFIRM_BUTTON });
+      dispatch({ type: SET_CONFIRM_BUTTON, payload: true });
     }
   });
 
@@ -130,6 +130,7 @@ const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
           const { lat, lng } = marker.getLatLng();
           const newLocation: [number, number] = [lat, lng];
           dispatch({ type: SET_PIN_LOCATION, payload: newLocation });
+          dispatch({ type: SET_CONFIRM_BUTTON, payload: true });
         }
       }
     }),
