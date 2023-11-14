@@ -123,7 +123,7 @@ export default function UpdateBathroomModal() {
 
                 <label className="block mt-4">
                   Wheelchair Accessible:
-                  <input ref={wheelchairAccessibleRef} type="checkbox" required className="ml-2 p-1 border rounded-md" />
+                  <input ref={wheelchairAccessibleRef} type="checkbox" className="ml-2 p-1 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">
@@ -140,7 +140,7 @@ export default function UpdateBathroomModal() {
 
                 <label className="block mt-4">
                   Key Requirement:
-                  <input ref={keyRequirementRef} type="checkbox" required className="ml-2 p-1 border rounded-md" />
+                  <input ref={keyRequirementRef} type="checkbox" className="ml-2 p-1 border rounded-md" />
                 </label>
 
                 <label className="block mt-4">

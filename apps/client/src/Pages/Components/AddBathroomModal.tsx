@@ -124,7 +124,7 @@ export default function AddBathroomModal({ coordinates }: AddBathroomModalProps)
                 </label>
 
                 <label className="block mt-4">
-                  Rate:
+                  Star Rating(1-5):
                   <input ref={ratingRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 
