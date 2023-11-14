@@ -15,9 +15,9 @@ export default function PageNotFound() {
             >
               Go back home
             </Link>
-            <Link to="/" className="text-sm font-semibold text-gray-900">
+            <a href="mailto:mothermonsterinteractive@gmail.com" className="text-sm font-semibold text-gray-900">
               Contact support <span aria-hidden="true">&rarr;</span>
-            </Link>
+            </a>
           </div>
         </div>
       </main>
