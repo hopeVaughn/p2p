@@ -15,6 +15,7 @@ import {
   SET_CONFIRM_CREATOR,
   SET_IS_LOADING,
   SET_CURRENT_NAVIGATION,
+  TOGGLE_SHOULD_RECENTER,
 } from '../actions';
 
 export type LocationPayload = [number, number] | null;
@@ -34,6 +35,7 @@ type MapState = {
   confirmButton: boolean;
   isLoading: boolean;
   currentNavigation: string;
+  shouldRecenter: boolean;
 };
 // Define initial state
 const initialState: MapState = {
@@ -51,6 +53,7 @@ const initialState: MapState = {
   confirmButton: false,
   isLoading: false,
   currentNavigation: 'Search',
+  shouldRecenter: true,
 };
 
 // Define action types
@@ -69,7 +72,8 @@ type ActionType =
   | { type: typeof SET_BATHROOM_ID; payload: string; }
   | { type: typeof SET_CONFIRM_CREATOR; payload: boolean; }
   | { type: typeof SET_IS_LOADING; payload: boolean; }
-  | { type: typeof SET_CURRENT_NAVIGATION; payload: string; };
+  | { type: typeof SET_CURRENT_NAVIGATION; payload: string; }
+  | { type: typeof TOGGLE_SHOULD_RECENTER; };
 
 
 // Define reducer
@@ -105,6 +109,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, isLoading: action.payload };
     case SET_CURRENT_NAVIGATION:
       return { ...state, currentNavigation: action.payload };
+    case TOGGLE_SHOULD_RECENTER:
+      return { ...state, shouldRecenter: !state.shouldRecenter };
     default:
       return state;
   }

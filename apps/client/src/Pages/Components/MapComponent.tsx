@@ -13,6 +13,7 @@ import {
   SET_HAS_INITIAL_ZOOMED,
   REMOVE_PIN,
   SET_CONFIRM_BUTTON,
+  TOGGLE_SHOULD_RECENTER,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 import { useMapContext } from '../../utils/context/MapContextProvider';
@@ -67,9 +68,19 @@ const redMarker = new L.Icon({
 
 const ChangeView = ({ center, zoom }: ChangeViewProps) => {
   const map = useMap();
-  map.flyTo(center, zoom, { duration: 1.25 });
+  const { state, dispatch } = useMapContext();
+
+  useEffect(() => {
+    if (state.shouldRecenter) {
+      map.flyTo(center, zoom, { duration: 1.25 });
+      // Optionally, toggle recentering off after moving
+      dispatch({ type: TOGGLE_SHOULD_RECENTER });
+    }
+  }, [center, zoom, state.shouldRecenter, map, dispatch]);
+
   return null;
 };
+
 
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
@@ -94,11 +105,11 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
     </>
   );
 };
-// const MemoizedMapView = React.memo(MapView);
 
 const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
   const markerRef = useRef<LeafletMarker | null>(null);
   const { dispatch, state } = useMapContext();
+
   useMapEvents({
     click: (e) => {
       const newLocation: [number, number] = [e.latlng.lat, e.latlng.lng];
@@ -169,6 +180,10 @@ export default function MapComponent() {
     );
   }
 
+  const recenterMap = () => {
+    dispatch({ type: 'TOGGLE_SHOULD_RECENTER' });
+  };
+
   return (
     <div className="h-[70vh] w-full relative">
       <MapContainer
@@ -191,6 +206,20 @@ export default function MapComponent() {
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ZoomControl position="bottomleft" />
       </MapContainer>
+
+      {/* Recenter button */}
+      {
+        !state.isAddBathroomModalOpen && !state.isAddRatingModalOpen && !state.isAddReportModalOpen && !state.isUpdateModalOpen && (
+          <button
+            onClick={recenterMap}
+            className="absolute bottom-4 right-4 bg-cyan-700 text-white p-2 rounded hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-opacity-50"
+            style={{ zIndex: 1000 }}
+          >
+            Recenter Map
+          </button>
+        )
+      }
+
 
       {state.isAddBathroomMode && (
         <div className="absolute top-4 right-4 flex flex-col space-y-2">
