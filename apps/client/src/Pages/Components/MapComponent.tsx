@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import {
-  MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents,
+  MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents
 } from 'react-leaflet';
 import L, { Marker as LeafletMarker } from 'leaflet';
 import { AddBathroomModal, AddRatingModal, AddReportModal, LoadingSpinner } from '../Components';
 import { UpdateModal } from '../Protected_Routes/components';
 import {
-  SET_LOCATION,
+  SET_USER_LOCATION,
   SET_ZOOM_LEVEL,
   TOGGLE_ADD_BATHROOM_MODAL,
   SET_PIN_LOCATION,
@@ -16,7 +16,7 @@ import {
   TOGGLE_SHOULD_RECENTER,
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
-import { useMapContext } from '../../utils/context/MapContextProvider';
+import { useMapContext, LocationPayload } from '../../utils/context/MapContextProvider';
 import { useFindAllBathrooms } from '../../utils/hooks';
 import BathroomMarker from '../Protected_Routes/components/BathroomMarker';
 
@@ -25,19 +25,19 @@ type ChangeViewProps = {
   zoom: number;
 };
 
-type CustomMarkerProps = {
-  id: React.Key | null | undefined;
-  longitude: number;
-  latitude: number;
-  gender: string;
-  stallType: string;
-  hoursOfOperation: string;
-  keyRequirement: boolean;
-  stars: number;
-  wheelchairAccessible: boolean;
-  address: string;
-  verification_count: number;
-};
+// type CustomMarkerProps = {
+//   id: React.Key | null | undefined;
+//   longitude: number;
+//   latitude: number;
+//   gender: string;
+//   stallType: string;
+//   hoursOfOperation: string;
+//   keyRequirement: boolean;
+//   stars: number;
+//   wheelchairAccessible: boolean;
+//   address: string;
+//   verification_count: number;
+// };
 
 type DraggablePinMarkerProps = {
   pinLocation: [number, number] | null;
@@ -84,13 +84,27 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
-
+  const { state, dispatch } = useMapContext();
   const { bathrooms, isLoading } = useFindAllBathrooms(
     location[0],
     location[1],
     500, // radius
     true // shouldFetch
   );
+
+  const markerRef = useRef<LeafletMarker | null>(null);
+
+  const userLocationEventHandlers = useMemo(() => ({
+    dragend: () => {
+      const marker = markerRef.current;
+      if (marker) {
+        const { lat, lng } = marker.getLatLng();
+        const newUserLocation: LocationPayload = [lat, lng];
+        dispatch({ type: SET_USER_LOCATION, payload: newUserLocation });
+      }
+    }
+  }), [dispatch]);
+
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -99,10 +113,18 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
   return (
     <>
       <ChangeView center={location} zoom={zoomLevel} />
-      <Marker position={location} icon={blueMarker}>
-        <Popup>You exist here!!</Popup>
-      </Marker>
-      {bathrooms.map((bathroom: CustomMarkerProps) => (
+      {state.userLocation && (
+        <Marker
+          position={state.userLocation}
+          icon={blueMarker}
+          draggable={true}
+          eventHandlers={userLocationEventHandlers}
+          ref={markerRef}
+        >
+          <Popup>Your selected location</Popup>
+        </Marker>
+      )}
+      {bathrooms.map(bathroom => (
         <BathroomMarker key={bathroom.id} bathroom={bathroom} />
       ))}
     </>
@@ -111,8 +133,8 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
 
 
 const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
-  const markerRef = useRef<LeafletMarker | null>(null);
   const { dispatch, state } = useMapContext();
+  const markerRef = useRef<LeafletMarker | null>(null);
 
   useMapEvents({
     click: (e) => {
@@ -152,42 +174,45 @@ const DraggablePinMarker = ({ pinLocation }: DraggablePinMarkerProps) => {
   );
 };
 
-// const MemoizedDraggablePinMarker = React.memo(DraggablePinMarker);
+function MapClickHandler() {
+  const { state, dispatch } = useMapContext();
+
+  useMapEvents({
+    click: (e) => {
+      const newLocation: LocationPayload = [e.latlng.lat, e.latlng.lng];
+
+      if (state.isAddBathroomMode) {
+        // If in add bathroom mode, update pinLocation
+        dispatch({ type: SET_PIN_LOCATION, payload: newLocation });
+      } else {
+        // Otherwise, update userLocation
+        dispatch({ type: SET_USER_LOCATION, payload: newLocation });
+      }
+    }
+  });
+
+  return null;
+}
+
 
 export default function MapComponent() {
-  const { state, dispatch } = useMapContext(); // Use global context
-  const LOAD_ZOOM = 13;
-  const SEARCH_ZOOM = 15;
+  const { state, dispatch } = useMapContext();
+  const LOAD_ZOOM = 2; // Zoom level to show the world map
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      dispatch({ type: SET_LOCATION, payload: [position.coords.latitude, position.coords.longitude] });
-
-      // Check if the initial zoom animation has not been performed yet
-      if (!state.hasInitialZoomed) {
-        // Perform the initial zoom animation
-        dispatch({ type: SET_ZOOM_LEVEL, payload: LOAD_ZOOM });
-
-        // Set a timeout to zoom to SEARCH_ZOOM after a delay (e.g., 2 seconds)
-        setTimeout(() => {
-          dispatch({ type: SET_ZOOM_LEVEL, payload: SEARCH_ZOOM });
-
-          // Update the state to indicate that the initial zoom has been completed
-          dispatch({ type: SET_HAS_INITIAL_ZOOMED, payload: true });
-        }, 500); // Adjust the delay as needed
-      }
-    });
+    if (!state.hasInitialZoomed) {
+      dispatch({ type: SET_ZOOM_LEVEL, payload: LOAD_ZOOM });
+      dispatch({ type: SET_HAS_INITIAL_ZOOMED, payload: true });
+    }
   }, [dispatch, state.hasInitialZoomed]);
-
-  if (!state.location) {
-    return (
-      <LoadingSpinner />
-    );
-  }
 
   const recenterMap = () => {
     dispatch({ type: TOGGLE_SHOULD_RECENTER });
   };
+
+  if (!state.location) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="h-[70vh] w-full relative">
@@ -199,10 +224,10 @@ export default function MapComponent() {
         className="z-0"
         style={{ height: "100%", width: "100%" }}
       >
-        <MapView
-          location={state.location}
-          zoomLevel={state.zoomLevel}
-        />
+        <MapClickHandler />
+        <MapView location={state.userLocation || [0, 0]} zoomLevel={state.zoomLevel} />
+        {/* <UserLocationMarker /> */}
+
         {state.isAddBathroomMode && (
           <DraggablePinMarker
             pinLocation={state.pinLocation}
@@ -225,7 +250,7 @@ export default function MapComponent() {
         )
       }
 
-
+      {/* Confirm button */}
       {state.isAddBathroomMode && (
         <div className="absolute top-4 right-4 flex flex-col space-y-2">
           <button

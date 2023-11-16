@@ -6,7 +6,7 @@ import { MapComponent, HeadLogo } from '.';
 import { decodeAccessToken, accessTokenExpired } from '../../utils/helpers';
 import { useLogout, useRefreshToken } from '../../utils/hooks';
 import { useMapContext } from '../../utils/context/MapContextProvider';
-import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION } from '../../utils/actions';
+import { SET_ZOOM_LEVEL, TOGGLE_ADD_BATHROOM_MODE, SET_CURRENT_NAVIGATION, SET_USER_LOCATION_MODE } from '../../utils/actions';
 
 type DashboardProps = {
   children: React.ReactNode;
@@ -71,9 +71,11 @@ export default function Dashboard({ children }: DashboardProps) {
     // Adjust the zoom level
     if (clickedItemName === 'Add Bathroom') {
       dispatch({ type: TOGGLE_ADD_BATHROOM_MODE, payload: true });
+      dispatch({ type: SET_USER_LOCATION_MODE, payload: false });
       dispatch({ type: SET_ZOOM_LEVEL, payload: 18 });
     } else if (clickedItemName === 'Search') {
       dispatch({ type: TOGGLE_ADD_BATHROOM_MODE, payload: false });
+      dispatch({ type: SET_USER_LOCATION_MODE, payload: true });
       dispatch({ type: SET_ZOOM_LEVEL, payload: 16 });
     }
   };

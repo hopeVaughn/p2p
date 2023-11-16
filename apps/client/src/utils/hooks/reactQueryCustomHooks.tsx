@@ -222,6 +222,9 @@ export const useUpdateBathroom = () => {
 
 // Find all bathrooms near the user
 export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
+  // Only fetch if valid latitude and longitude are provided
+  const isValidLocation = lat !== 0 && lng !== 0;
+
   // Fetch nearby bathrooms
   const {
     data: nearbyBathrooms,
@@ -232,7 +235,7 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
   } = useQuery({
     queryKey: ['bathrooms', 'nearby', lat, lng, radius],
     queryFn: () => findAllBathroomsAPI(lat, lng, radius),
-    enabled: shouldFetch,
+    enabled: shouldFetch && isValidLocation,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });

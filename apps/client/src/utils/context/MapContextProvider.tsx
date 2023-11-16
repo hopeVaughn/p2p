@@ -16,6 +16,8 @@ import {
   SET_IS_LOADING,
   SET_CURRENT_NAVIGATION,
   TOGGLE_SHOULD_RECENTER,
+  SET_USER_LOCATION_MODE,
+  SET_USER_LOCATION,
 } from '../actions';
 
 export type LocationPayload = [number, number] | null;
@@ -31,16 +33,18 @@ type MapState = {
   isBathroomCreator: boolean;
   bathroomId: string;
   pinLocation: LocationPayload;
+  userLocation: LocationPayload;
   hasInitialZoomed: boolean;
   confirmButton: boolean;
   isLoading: boolean;
   currentNavigation: string;
   shouldRecenter: boolean;
+  isUserLocationMode: boolean;
 };
 // Define initial state
 const initialState: MapState = {
-  location: null,
-  zoomLevel: 15,
+  location: [0, 0],
+  zoomLevel: 2,
   isAddBathroomMode: false,
   isAddBathroomModalOpen: false,
   isAddRatingModalOpen: false,
@@ -49,11 +53,13 @@ const initialState: MapState = {
   isBathroomCreator: false,
   bathroomId: '',
   pinLocation: null,
+  userLocation: null,
   hasInitialZoomed: false,
   confirmButton: false,
   isLoading: false,
   currentNavigation: 'Search',
   shouldRecenter: true,
+  isUserLocationMode: false,
 };
 
 // Define action types
@@ -66,6 +72,7 @@ type ActionType =
   | { type: typeof TOGGLE_ADD_REPORT_MODAL; }
   | { type: typeof TOGGLE_UPDATE_MODAL; }
   | { type: typeof SET_PIN_LOCATION; payload: LocationPayload; }
+  | { type: typeof SET_USER_LOCATION; payload: LocationPayload; }
   | { type: typeof SET_HAS_INITIAL_ZOOMED; payload: boolean; }
   | { type: typeof REMOVE_PIN; }
   | { type: typeof SET_CONFIRM_BUTTON; payload: boolean; }
@@ -73,7 +80,8 @@ type ActionType =
   | { type: typeof SET_CONFIRM_CREATOR; payload: boolean; }
   | { type: typeof SET_IS_LOADING; payload: boolean; }
   | { type: typeof SET_CURRENT_NAVIGATION; payload: string; }
-  | { type: typeof TOGGLE_SHOULD_RECENTER; };
+  | { type: typeof TOGGLE_SHOULD_RECENTER; }
+  | { type: typeof SET_USER_LOCATION_MODE; payload: boolean; };
 
 
 // Define reducer
@@ -95,6 +103,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, isUpdateModalOpen: !state.isUpdateModalOpen };
     case SET_PIN_LOCATION:
       return { ...state, pinLocation: action.payload };
+    case SET_USER_LOCATION:
+      return { ...state, userLocation: action.payload };
     case SET_HAS_INITIAL_ZOOMED:
       return { ...state, hasInitialZoomed: action.payload };
     case REMOVE_PIN:
@@ -111,6 +121,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, currentNavigation: action.payload };
     case TOGGLE_SHOULD_RECENTER:
       return { ...state, shouldRecenter: !state.shouldRecenter };
+    case SET_USER_LOCATION_MODE:
+      return { ...state, isUserLocationMode: action.payload };
     default:
       return state;
   }
