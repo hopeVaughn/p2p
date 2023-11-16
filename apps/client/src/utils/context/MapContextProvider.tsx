@@ -60,7 +60,7 @@ const initialState: MapState = {
 type ActionType =
   | { type: typeof SET_LOCATION; payload: LocationPayload; }
   | { type: typeof SET_ZOOM_LEVEL; payload: number; }
-  | { type: typeof TOGGLE_ADD_BATHROOM_MODE; }
+  | { type: typeof TOGGLE_ADD_BATHROOM_MODE; payload: boolean; }
   | { type: typeof TOGGLE_ADD_BATHROOM_MODAL; }
   | { type: typeof TOGGLE_ADD_RATING_MODAL; }
   | { type: typeof TOGGLE_ADD_REPORT_MODAL; }
@@ -84,7 +84,7 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
     case SET_ZOOM_LEVEL:
       return { ...state, zoomLevel: action.payload };
     case TOGGLE_ADD_BATHROOM_MODE:
-      return { ...state, isAddBathroomMode: !state.isAddBathroomMode };
+      return { ...state, isAddBathroomMode: action.payload };
     case TOGGLE_ADD_BATHROOM_MODAL:
       return { ...state, isAddBathroomModalOpen: !state.isAddBathroomModalOpen };
     case TOGGLE_ADD_RATING_MODAL:
