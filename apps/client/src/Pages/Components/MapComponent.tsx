@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import {
   MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents
 } from 'react-leaflet';
@@ -85,11 +85,20 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
   const { state, dispatch } = useMapContext();
+  const [shouldFetchBathrooms, setShouldFetchBathrooms] = useState(false);
+
+  useEffect(() => {
+    // Check if userLocation is not null and different from initial [0, 0]
+    if (state.userLocation && (state.userLocation[0] !== 0 || state.userLocation[1] !== 0)) {
+      setShouldFetchBathrooms(true);
+    }
+  }, [state.userLocation]);
+
   const { bathrooms, isLoading } = useFindAllBathrooms(
     location[0],
     location[1],
     500, // radius
-    true // shouldFetch
+    shouldFetchBathrooms // shouldFetch
   );
 
   const markerRef = useRef<LeafletMarker | null>(null);
