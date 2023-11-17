@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useMapContext } from '../context/MapContextProvider';
@@ -74,7 +74,6 @@ export const useSignIn = () => {
   };
 };
 
-
 // Logout
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -82,7 +81,7 @@ export const useLogout = () => {
   const { dispatch } = useMapContext();
 
   const { mutateAsync: logout, status, error: logOutError } = useMutation({
-    mutationFn: logoutAPI,
+    mutationFn: (data: { refreshToken: string; }) => logoutAPI(data),
     onSuccess: () => {
       // Clear session storage and application state after successful logout
       sessionStorage.removeItem('accessToken');
@@ -92,9 +91,9 @@ export const useLogout = () => {
       toast.success('Logged out successfully');
       navigate('/');
     },
-    onError: () => {
+    onError: (error) => {
       // Handle error case
-      const errorMessage = logOutError instanceof Error ? logOutError.message : 'Logout failed';
+      const errorMessage = error instanceof Error ? error.message : 'Logout failed';
       toast.error(errorMessage);
     }
   });
@@ -110,7 +109,6 @@ export const useLogout = () => {
   return {
     logout: performLogout,
     isLoading: status === 'pending',
-    // You can also return the logout error if needed
     logOutError
   };
 };
@@ -118,9 +116,8 @@ export const useLogout = () => {
 
 // Refresh Token
 export const useRefreshToken = () => {
-
   const { mutateAsync: refreshToken, status, error: refreshTokenError } = useMutation({
-    mutationFn: refreshTokenAPI,
+    mutationFn: (tokenData: { activeRefreshToken: string; }) => refreshTokenAPI(tokenData),
     onSuccess: (data) => {
       sessionStorage.setItem('accessToken', data.accessToken);
       sessionStorage.setItem('refreshToken', data.refreshToken); // Update with new refresh token
@@ -235,17 +232,97 @@ export const useUpdateBathroom = () => {
 };
 
 // Find all bathrooms near the user
-export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
-  // Only fetch if valid latitude and longitude are provided
+// export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
+//   // Determine if a valid location is provided (for nearby bathrooms)
+//   const isValidLocation = lat !== 0 && lng !== 0;
+
+//   // Fetch nearby bathrooms based on lat, lng, and radius
+//   const {
+//     data: nearbyBathrooms,
+//     status: nearbyBathroomsStatus,
+//     error: errorFindAllBathrooms,
+//     isFetching: isLoadingFindAllBathrooms
+//   } = useQuery({
+//     queryKey: ['bathrooms', 'nearby', lat, lng, radius],
+//     queryFn: () => findAllBathroomsAPI(lat, lng, radius),
+//     enabled: shouldFetch && isValidLocation,
+//     refetchOnWindowFocus: false,
+//     refetchOnReconnect: false,
+//   });
+
+//   // Fetch user-created bathrooms (initially and on re-fetch)
+//   const {
+//     data: userBathrooms,
+//     status: userBathroomsStatus,
+//     error: errorFindUserBathrooms,
+//     isFetching: isLoadingFindUserBathrooms,
+//     refetch: refetchUserBathrooms
+//   } = useQuery({
+//     queryKey: ['bathrooms', 'user_created'],
+//     queryFn: findUserCreatedBathroomsAPI,
+//     enabled: !isValidLocation || shouldFetch, // Fetch initially and on re-fetch trigger
+//     refetchOnWindowFocus: false,
+//     refetchOnReconnect: false,
+//   });
+
+//   // Combine nearby and user-created bathrooms, remove duplicates
+//   const combinedBathrooms = React.useMemo(() => {
+//     const allBathrooms = [...(nearbyBathrooms || []), ...(userBathrooms || [])];
+//     return allBathrooms.filter((bathroom, index, self) =>
+//       index === self.findIndex(t => t.id === bathroom.id)
+//     );
+//   }, [nearbyBathrooms, userBathrooms]);
+
+//   // Handling loading and error states
+//   const isLoading = isLoadingFindAllBathrooms || isLoadingFindUserBathrooms;
+//   const error = errorFindAllBathrooms || errorFindUserBathrooms;
+//   const loadingStatus = nearbyBathroomsStatus || userBathroomsStatus;
+
+//   if (error) {
+//     const errorMessage = error instanceof Error ? error.message : 'Error fetching bathrooms';
+//     toast.error(errorMessage);
+//   }
+
+//   return {
+//     bathrooms: combinedBathrooms,
+//     isLoading,
+//     status: loadingStatus,
+//     error,
+//     refetchUserBathrooms // Expose refetch function for user-created bathrooms
+//   };
+// };
+
+export const useFindUserCreatedBathrooms = () => {
+  const {
+    data: userBathrooms,
+    status: userBathroomsStatus,
+    error: errorFindUserBathrooms,
+    isFetching: isLoadingFindUserBathrooms,
+    refetch: refetchUserBathrooms
+  } = useQuery({
+    queryKey: ['bathrooms', 'user_created'],
+    queryFn: findUserCreatedBathroomsAPI,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  return {
+    userBathrooms,
+    isLoading: isLoadingFindUserBathrooms,
+    error: errorFindUserBathrooms,
+    userBathroomsStatus,
+    refetchUserBathrooms
+  };
+};
+
+export const useFindNearbyBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
   const isValidLocation = lat !== 0 && lng !== 0;
 
-  // Fetch nearby bathrooms
   const {
     data: nearbyBathrooms,
     status: nearbyBathroomsStatus,
-    error: errorFindAllBathrooms,
-    refetch: refetchNearbyBathrooms,
-    isFetching: isLoadingFindAllBathrooms
+    error: errorFindNearbyBathrooms,
+    isFetching: isLoadingFindNearbyBathrooms
   } = useQuery({
     queryKey: ['bathrooms', 'nearby', lat, lng, radius],
     queryFn: () => findAllBathroomsAPI(lat, lng, radius),
@@ -254,48 +331,11 @@ export const useFindAllBathrooms = (lat: number, lng: number, radius: number, sh
     refetchOnReconnect: false,
   });
 
-  // Fetch user-created bathrooms
-  const {
-    data: userBathrooms,
-    status: userBathroomsStatus,
-    error: errorFindUserBathrooms,
-    refetch: refetchUserBathrooms,
-    isFetching: isLoadingFindUserBathrooms
-  } = useQuery({
-    queryKey: ['bathrooms', 'user_created'],
-    queryFn: findUserCreatedBathroomsAPI,
-    enabled: shouldFetch,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-
-  // Combine data from both queries and remove duplicates
-  const combinedBathrooms = React.useMemo(() => {
-    const allBathrooms = [...(nearbyBathrooms || []), ...(userBathrooms || [])];
-    return allBathrooms.filter((bathroom, index, self) =>
-      index === self.findIndex(t => t.id === bathroom.id) // Filter out duplicates
-    );
-  }, [nearbyBathrooms, userBathrooms]);
-
-  // Handling loading and error states
-  const isLoading = isLoadingFindAllBathrooms || isLoadingFindUserBathrooms;
-  const error = errorFindAllBathrooms || errorFindUserBathrooms;
-  const loadingStatus = nearbyBathroomsStatus || userBathroomsStatus;
-
-  if (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Error fetching bathrooms';
-    toast.error(errorMessage);
-  }
-
   return {
-    bathrooms: combinedBathrooms,
-    isLoading,
-    status: loadingStatus,
-    error,
-    refetch: () => {
-      refetchNearbyBathrooms();
-      refetchUserBathrooms();
-    }
+    nearbyBathrooms,
+    isLoading: isLoadingFindNearbyBathrooms,
+    nearbyBathroomsStatus,
+    error: errorFindNearbyBathrooms
   };
 };
 

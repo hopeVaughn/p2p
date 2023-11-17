@@ -17,7 +17,7 @@ import {
 } from '../../utils/actions';
 import 'leaflet/dist/leaflet.css';
 import { useMapContext, LocationPayload } from '../../utils/context/MapContextProvider';
-import { useFindAllBathrooms } from '../../utils/hooks';
+import { useFindUserCreatedBathrooms, useFindNearbyBathrooms } from '../../utils/hooks';
 import BathroomMarker from '../Protected_Routes/components/BathroomMarker';
 
 type ChangeViewProps = {
@@ -85,21 +85,29 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLevel: number; }) => {
   const { state, dispatch } = useMapContext();
-  const [shouldFetchBathrooms, setShouldFetchBathrooms] = useState(false);
+  const [hasDroppedPin, setHasDroppedPin] = useState(false);
 
-  useEffect(() => {
-    // Check if userLocation is not null and different from initial [0, 0]
-    if (state.userLocation && (state.userLocation[0] !== 0 || state.userLocation[1] !== 0)) {
-      setShouldFetchBathrooms(true);
-    }
-  }, [state.userLocation]);
+  // Fetch user-created bathrooms
+  const { userBathrooms, isLoading: isLoadingUserBathrooms } = useFindUserCreatedBathrooms();
 
-  const { bathrooms, isLoading } = useFindAllBathrooms(
-    location[0],
-    location[1],
+  // Ensure userLocation is not null before passing it
+  const userLocation = state.userLocation || [0, 0];
+
+  // Fetch nearby bathrooms only if a pin has been dropped
+  const { nearbyBathrooms, isLoading: isLoadingNearbyBathrooms } = useFindNearbyBathrooms(
+    userLocation[0],
+    userLocation[1],
     500, // radius
-    shouldFetchBathrooms // shouldFetch
+    hasDroppedPin
   );
+
+  // Combine and filter bathrooms to remove duplicates
+  const combinedBathrooms = useMemo(() => {
+    const allBathrooms = [...(userBathrooms || []), ...(nearbyBathrooms || [])];
+    return allBathrooms.filter((bathroom, index, self) =>
+      index === self.findIndex(t => t.id === bathroom.id)
+    );
+  }, [userBathrooms, nearbyBathrooms]);
 
   const markerRef = useRef<LeafletMarker | null>(null);
 
@@ -108,20 +116,20 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
       const marker = markerRef.current;
       if (marker) {
         const { lat, lng } = marker.getLatLng();
-        const newUserLocation: LocationPayload = [lat, lng];
-        dispatch({ type: SET_USER_LOCATION, payload: newUserLocation });
+        dispatch({ type: SET_USER_LOCATION, payload: [lat, lng] });
+        setHasDroppedPin(true); // Trigger fetching nearby bathrooms
       }
     }
   }), [dispatch]);
 
-
-  if (isLoading) {
+  if (isLoadingUserBathrooms || isLoadingNearbyBathrooms) {
     return <LoadingSpinner />;
   }
 
   return (
     <>
       <ChangeView center={location} zoom={zoomLevel} />
+      {/* Render user location marker */}
       {state.userLocation && (
         <Marker
           position={state.userLocation}
@@ -133,7 +141,8 @@ const MapView = ({ location, zoomLevel }: { location: [number, number]; zoomLeve
           <Popup>Your selected location</Popup>
         </Marker>
       )}
-      {bathrooms.map(bathroom => (
+      {/* Render bathrooms */}
+      {combinedBathrooms.map(bathroom => (
         <BathroomMarker key={bathroom.id} bathroom={bathroom} />
       ))}
     </>
