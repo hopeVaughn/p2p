@@ -156,16 +156,21 @@ export class AuthService {
    * @returns - Promise with boolean.
    */
 
-  async logout(userId: string): Promise<boolean> {
-    // Step 1: Delete all refresh tokens for the user.
-    // Step 2: Return true indicating successful logout.
+  async logout(refreshToken: string): Promise<boolean> {
+    const payload = this.jwtService.verify(refreshToken, {
+      secret: this.config.get<string>("RT_SECRET"),
+    }) as JwtPayload;
+
     await this.prisma.token.deleteMany({
       where: {
-        userId: userId,
+        userId: payload.sub,
+        token: await this.hashData(refreshToken),
       }
     });
+
     return true;
   }
+
 
 
   /**

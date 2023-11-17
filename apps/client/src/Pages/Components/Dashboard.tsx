@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 // import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
@@ -17,6 +18,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function Dashboard({ children }: DashboardProps) {
+  const navigate = useNavigate();
   const { dispatch, state } = useMapContext();
   const [navigation, setNavigation] = useState([
     { name: 'Search', current: state.currentNavigation === 'Search' },
@@ -41,23 +43,41 @@ export default function Dashboard({ children }: DashboardProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    const activeRefreshToken = sessionStorage.getItem('refreshToken') || '';
-    const accessToken = sessionStorage.getItem('accessToken') || '';
-
-    // Check if there's an access token
-    if (accessTokenExpired()) {
-      try {
-        await refreshToken({ activeRefreshToken });
-        const newToken = sessionStorage.getItem('accessToken');
-        logout(newToken as string);
-      } catch (error) {
-        console.error("Failed to refresh token:", error);
+    try {
+      // If the access token has expired, attempt to refresh it
+      if (accessTokenExpired()) {
+        const refreshTokenSuccess = await attemptRefreshToken();
+        if (!refreshTokenSuccess) {
+          // Handle the case when the refresh token attempt fails
+          console.error("Failed to refresh token");
+          navigate('/login');
+          return;
+        }
       }
-    }
-    if (accessToken) {
-      logout(accessToken);
+
+      // Proceed with logout
+      await logout();
+    } catch (error) {
+      console.error("Error during logout:", error);
+      navigate('/'); // Navigate to home or login page
     }
   };
+
+  const attemptRefreshToken = async () => {
+    const activeRefreshToken = sessionStorage.getItem('refreshToken');
+    if (!activeRefreshToken) {
+      return false;
+    }
+
+    try {
+      await refreshToken({ activeRefreshToken });
+      return true;
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      return false;
+    }
+  };
+
 
   const handleNavigationClick = (clickedItemName: string) => {
     setNavigation(prevNav =>

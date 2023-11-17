@@ -84,34 +84,37 @@ export const useLogout = () => {
   const { mutateAsync: logout, status, error: logOutError } = useMutation({
     mutationFn: logoutAPI,
     onSuccess: () => {
+      // Clear session storage and application state after successful logout
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
-
-      // Clear React Query cache
       queryClient.clear();
-
-      // Reset application state
       dispatch({ type: RESET_STATE });
-
       toast.success('Logged out successfully');
-
       navigate('/');
     },
     onError: () => {
-      const errorMessage = logOutError instanceof Error ? logOutError.message : 'Error fetching bathrooms';
+      // Handle error case
+      const errorMessage = logOutError instanceof Error ? logOutError.message : 'Logout failed';
       toast.error(errorMessage);
     }
   });
 
+  const performLogout = async () => {
+    const refreshToken = sessionStorage.getItem('refreshToken');
+    if (refreshToken) {
+      // Call the logout mutation with the refreshToken
+      await logout({ refreshToken });
+    }
+  };
+
   return {
-    logout: (accessToken: string) => {
-      if (accessToken) {
-        logout({ accessToken });
-      }
-    },
+    logout: performLogout,
     isLoading: status === 'pending',
+    // You can also return the logout error if needed
+    logOutError
   };
 };
+
 
 // Refresh Token
 export const useRefreshToken = () => {
