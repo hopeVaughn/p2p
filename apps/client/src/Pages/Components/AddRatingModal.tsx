@@ -66,7 +66,7 @@ export default function AddRatingModal({ bathroomId }: AddRatingModalProps) {
               <form onSubmit={handleSubmit}>
 
                 <label className="block mt-4">
-                  Stars:
+                  Stars (1-5):
                   <input ref={starsRef} type="number" min="1" max="5" defaultValue="1" required className="mt-1 block w-full p-2 border rounded-md" />
                 </label>
 

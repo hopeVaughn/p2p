@@ -18,6 +18,7 @@ import {
   TOGGLE_SHOULD_RECENTER,
   SET_USER_LOCATION_MODE,
   SET_USER_LOCATION,
+  RESET_STATE,
 } from '../actions';
 
 export type LocationPayload = [number, number] | null;
@@ -81,7 +82,8 @@ type ActionType =
   | { type: typeof SET_IS_LOADING; payload: boolean; }
   | { type: typeof SET_CURRENT_NAVIGATION; payload: string; }
   | { type: typeof TOGGLE_SHOULD_RECENTER; }
-  | { type: typeof SET_USER_LOCATION_MODE; payload: boolean; };
+  | { type: typeof SET_USER_LOCATION_MODE; payload: boolean; }
+  | { type: typeof RESET_STATE; };
 
 
 // Define reducer
@@ -123,6 +125,8 @@ const mapReducer: React.Reducer<MapState, ActionType> = (state: typeof initialSt
       return { ...state, shouldRecenter: !state.shouldRecenter };
     case SET_USER_LOCATION_MODE:
       return { ...state, isUserLocationMode: action.payload };
+    case RESET_STATE:
+      return initialState;
     default:
       return state;
   }

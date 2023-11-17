@@ -1,10 +1,11 @@
 import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { useMapContext } from '../context/MapContextProvider';
 import { signUpAPI, signInAPI, logoutAPI, refreshTokenAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { createBathroomAPI, deleteBathroomAPI, findAllBathroomsAPI, findBathroomByIdAPI, findUserCreatedBathroomsAPI, createOrUpdateRatingAPI, reportAPI, verifyBathroomAPI, updateBathroomAPI } from '../api';
-
+import { RESET_STATE } from '../actions';
 
 type AutResponse = {
   accessToken: string;
@@ -77,13 +78,23 @@ export const useSignIn = () => {
 // Logout
 export const useLogout = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { dispatch } = useMapContext();
 
   const { mutateAsync: logout, status, error: logOutError } = useMutation({
     mutationFn: logoutAPI,
     onSuccess: () => {
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
+
+      // Clear React Query cache
+      queryClient.clear();
+
+      // Reset application state
+      dispatch({ type: RESET_STATE });
+
       toast.success('Logged out successfully');
+
       navigate('/');
     },
     onError: () => {

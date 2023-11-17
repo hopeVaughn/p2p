@@ -111,7 +111,7 @@ export default function BathroomMarker({ bathroom }: { bathroom: BathroomMarkerP
       <Popup>
         {state.isLoading ? (
           <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
-            <LoadingSpinner />
+            <LoadingSpinner inline />
           </div>
         ) : (
           <div className="bg-white p-3 rounded-md shadow-sm space-y-2">
