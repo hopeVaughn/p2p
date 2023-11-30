@@ -231,67 +231,6 @@ export const useUpdateBathroom = () => {
   };
 };
 
-// Find all bathrooms near the user
-// export const useFindAllBathrooms = (lat: number, lng: number, radius: number, shouldFetch: boolean) => {
-//   // Determine if a valid location is provided (for nearby bathrooms)
-//   const isValidLocation = lat !== 0 && lng !== 0;
-
-//   // Fetch nearby bathrooms based on lat, lng, and radius
-//   const {
-//     data: nearbyBathrooms,
-//     status: nearbyBathroomsStatus,
-//     error: errorFindAllBathrooms,
-//     isFetching: isLoadingFindAllBathrooms
-//   } = useQuery({
-//     queryKey: ['bathrooms', 'nearby', lat, lng, radius],
-//     queryFn: () => findAllBathroomsAPI(lat, lng, radius),
-//     enabled: shouldFetch && isValidLocation,
-//     refetchOnWindowFocus: false,
-//     refetchOnReconnect: false,
-//   });
-
-//   // Fetch user-created bathrooms (initially and on re-fetch)
-//   const {
-//     data: userBathrooms,
-//     status: userBathroomsStatus,
-//     error: errorFindUserBathrooms,
-//     isFetching: isLoadingFindUserBathrooms,
-//     refetch: refetchUserBathrooms
-//   } = useQuery({
-//     queryKey: ['bathrooms', 'user_created'],
-//     queryFn: findUserCreatedBathroomsAPI,
-//     enabled: !isValidLocation || shouldFetch, // Fetch initially and on re-fetch trigger
-//     refetchOnWindowFocus: false,
-//     refetchOnReconnect: false,
-//   });
-
-//   // Combine nearby and user-created bathrooms, remove duplicates
-//   const combinedBathrooms = React.useMemo(() => {
-//     const allBathrooms = [...(nearbyBathrooms || []), ...(userBathrooms || [])];
-//     return allBathrooms.filter((bathroom, index, self) =>
-//       index === self.findIndex(t => t.id === bathroom.id)
-//     );
-//   }, [nearbyBathrooms, userBathrooms]);
-
-//   // Handling loading and error states
-//   const isLoading = isLoadingFindAllBathrooms || isLoadingFindUserBathrooms;
-//   const error = errorFindAllBathrooms || errorFindUserBathrooms;
-//   const loadingStatus = nearbyBathroomsStatus || userBathroomsStatus;
-
-//   if (error) {
-//     const errorMessage = error instanceof Error ? error.message : 'Error fetching bathrooms';
-//     toast.error(errorMessage);
-//   }
-
-//   return {
-//     bathrooms: combinedBathrooms,
-//     isLoading,
-//     status: loadingStatus,
-//     error,
-//     refetchUserBathrooms // Expose refetch function for user-created bathrooms
-//   };
-// };
-
 export const useFindUserCreatedBathrooms = () => {
   const {
     data: userBathrooms,
